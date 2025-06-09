@@ -54,6 +54,18 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>📊 ข้อมูลจากฐานข้อมูล</h2>
     </div>
+
+    <!-- 🔻 CHART SECTION -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <canvas id="entityChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="trunkChart"></canvas>
+        </div>
+    </div>
+
+
     <div style="overflow-x: auto;">
     {% if error %}
         <div class="alert alert-danger">{{ error }}</div>
@@ -92,6 +104,8 @@
     {% endif %}
 </div>
 
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -102,6 +116,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 $(document).ready(function () {
