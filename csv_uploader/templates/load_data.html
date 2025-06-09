@@ -148,14 +148,21 @@
                     <th>{{ col }}</th>
                     {% endfor %}
                 </tr>
+                
+                <tr class="filters">
+                        {% for col in columns %}
+                        <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
+                        {% endfor %}
+                </tr>
+
             </thead>
-            <tfoot>
+            <!-- <tfoot>
                 <tr>
                     {% for col in columns %}
                     <th></th>
                     {% endfor %}
                 </tr>
-            </tfoot>
+            </tfoot> -->
             <tbody>
                 {% for row in data %}
                 <tr>
