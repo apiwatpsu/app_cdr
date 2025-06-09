@@ -149,37 +149,37 @@ def load_data():
 
     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
 
-@app.route('/export_csv')
-def export_csv():
-    if 'username' not in session:
-        return redirect(url_for('login'))
+# @app.route('/export_csv')
+# def export_csv():
+#     if 'username' not in session:
+#         return redirect(url_for('login'))
 
-    config = DBConfig.query.first()
-    if not config:
-        return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
+#     config = DBConfig.query.first()
+#     if not config:
+#         return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
 
-    try:
-        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
-        engine = create_engine(conn_str)
+#     try:
+#         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+#         engine = create_engine(conn_str)
 
-        with engine.connect() as connection:
-            result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
-            columns = result.keys()
-            rows = [dict(row._mapping) for row in result]
+#         with engine.connect() as connection:
+#             result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
+#             columns = result.keys()
+#             rows = [dict(row._mapping) for row in result]
 
-        # Export to CSV
-        si = StringIO()
-        writer = csv.DictWriter(si, fieldnames=columns)
-        writer.writeheader()
-        writer.writerows(rows)
+#         # Export to CSV
+#         si = StringIO()
+#         writer = csv.DictWriter(si, fieldnames=columns)
+#         writer.writeheader()
+#         writer.writerows(rows)
 
-        output = make_response(si.getvalue())
-        output.headers["Content-Disposition"] = "attachment; filename=data_export.csv"
-        output.headers["Content-type"] = "text/csv"
-        return output
+#         output = make_response(si.getvalue())
+#         output.headers["Content-Disposition"] = "attachment; filename=data_export.csv"
+#         output.headers["Content-type"] = "text/csv"
+#         return output
 
-    except Exception as e:
-        return f"Error exporting CSV: {e}", 500
+#     except Exception as e:
+#         return f"Error exporting CSV: {e}", 500
 
 @app.route('/logout')
 def logout():
