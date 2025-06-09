@@ -184,32 +184,10 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-<!-- <script>
-        $(document).ready(function () {
-            var table = $('#dataTable').DataTable({
-                orderCellsTop: true,
-                fixedHeader: true
-            });
-
-            // Apply column search
-            $('#dataTable thead tr.filters th').each(function (i) {
-                var input = $('input', this);
-                input.on('keyup change', function () {
-                    if (table.column(i).search() !== this.value) {
-                        table
-                            .column(i)
-                            .search(this.value)
-                            .draw();
-                    }
-                });
-            });
-        });
-    </script> -->
-
     <script>
 $(document).ready(function () {
     var table = $('#dataTable').DataTable({
-        orderCellsTop: true,
+        // orderCellsTop: true,
         fixedHeader: true
     });
 
