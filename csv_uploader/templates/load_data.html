@@ -69,11 +69,11 @@
                     {% endfor %}
                 </tr>
                 
-                <!-- <tr class="filters">
+                <tr class="filters">
                         {% for col in columns %}
                         <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
                         {% endfor %}
-                </tr> -->
+                </tr>
 
             </thead>
             <tbody>
@@ -111,10 +111,9 @@ $(document).ready(function () {
         // fixedHeader: true,
         // dom: 'Blfrtip',
         dom: 
-         "<'row mt-2'<'col-sm-12'B>>" +
+         "<'row mt-2'<'col-sm-12 text-end'B>>" +
          "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
          "<'row'<'col-sm-12'tr>>" +
-         
          "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
          
         buttons: [
