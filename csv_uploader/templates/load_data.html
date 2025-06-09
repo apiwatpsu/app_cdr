@@ -63,10 +63,10 @@
     <div>
         <canvas id="trunkChart" style="width: 650px; height: 350px;"></canvas>
     </div>
+    <div>
+        <canvas id="queueChart" style="width: 350px; height: 350px;"></canvas>
+    </div>
 </div>
-
-
-
 
 
 
@@ -156,21 +156,28 @@ $(document).ready(function () {
     });
 
     // Chart setup
-    let entityChart, trunkChart;
+    let entityChart, trunkChart, queueChart;
     function drawCharts(data) {
         const entityCount = {};
         const trunkCount = {};
+        const queueCount = {};
 
         data.forEach(row => {
-            const entity = row[3]; // index for source_entity_type
-            const trunk = row[9];  // index for source_participant_trunk_did
+            const entity = row[3]; 
+            const trunk = row[9];
+            const type = row[15];    
+            const queue = row[18]  
 
             entityCount[entity] = (entityCount[entity] || 0) + 1;
             trunkCount[trunk] = (trunkCount[trunk] || 0) + 1;
+            if (type === 'queue') {
+            queueCount[queue] = (queueCount[queue] || 0) + 1;
+            }
         });
 
         if (entityChart) entityChart.destroy();
         if (trunkChart) trunkChart.destroy();
+        if (queueChart) queueChart.destroy();
 
         entityChart = new Chart(document.getElementById('entityChart'), {
             type: 'pie',
@@ -191,6 +198,25 @@ $(document).ready(function () {
                     data: Object.values(trunkCount),
                     backgroundColor: ['#BA68C8', '#4DD0E1', '#FFD54F', '#81C784']
                 }]
+            }
+        });
+
+        queueChart = new Chart(document.getElementById('queueChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(queueCount),
+                datasets: [{
+                    label: 'Queue Group',
+                    data: Object.values(queueCount),
+                    backgroundColor: '#FF7043'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Grouped by Queue (when type = queue)' }
+                }
             }
         });
     }
