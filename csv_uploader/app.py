@@ -123,7 +123,7 @@ def load_data():
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
         with engine.connect() as connection:
-            result = connection.execute(text(f"SELECT * FROM {config.table} cdr_started_at DESC LIMIT 10000"))
+            result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
     except Exception as e:
