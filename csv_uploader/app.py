@@ -9,7 +9,7 @@ app.secret_key = 'your_secret_key'
 
 # 🔗 เชื่อมต่อ PostgreSQL
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://csvuploader:Tum0848989750@localhost/csvuploader'
-# MySQL (ใช้ pymysql เป็น driver)
+# MySQL or Mariadb (ใช้ pymysql เป็น driver)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:Tum_0848989750@localhost/myapp'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
