@@ -49,23 +49,18 @@
         <h2 class="mb-4">📊 ข้อมูลจากฐานข้อมูล</h2>
 
         {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
+            <div class="alert alert-danger" role="alert">
+                เกิดข้อผิดพลาด: {{ error }}
+            </div>
         {% endif %}
 
         {% if data %}
         <div class="table-responsive">
-            <table id="dataTable" class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover">
                 <thead>
-                    <!-- หัวตาราง (คลิก sort ได้) -->
                     <tr>
                         {% for col in columns %}
-                        <th>{{ col }}</th>
-                        {% endfor %}
-                    </tr>
-                    <!-- ช่องค้นหา -->
-                    <tr class="filters">
-                        {% for col in columns %}
-                        <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
+                        <th scope="col">{{ col }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -81,7 +76,9 @@
             </table>
         </div>
         {% else %}
-        <p class="text-muted">ไม่มีข้อมูลให้แสดง</p>
+        <div class="alert alert-warning" role="alert">
+            ไม่มีข้อมูลให้แสดง
+        </div>
         {% endif %}
     </div>
 </body>
@@ -151,19 +148,14 @@
                     <th>{{ col }}</th>
                     {% endfor %}
                 </tr>
-                <tr>
-                    {% for col in columns %}
-                    <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..."></th>
-                    {% endfor %}
-                </tr>
             </thead>
-<!--             <tfoot>
+            <tfoot>
                 <tr>
                     {% for col in columns %}
                     <th></th>
                     {% endfor %}
                 </tr>
-            </tfoot> -->
+            </tfoot>
             <tbody>
                 {% for row in data %}
                 <tr>
