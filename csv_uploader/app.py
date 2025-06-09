@@ -4,6 +4,7 @@ from models import db, User
 from models import db, DBConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
+from datetime import datetime, timedelta
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -107,6 +108,31 @@ def db_config():
     # GET method แสดง config เดิม
     return render_template('db_config.html', username=session['username'], config=config)
 
+# @app.route('/load_data')
+# def load_data():
+#     if 'username' not in session:
+#         return redirect(url_for('login'))
+
+#     config = DBConfig.query.first()
+#     if not config:
+#         return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
+
+#     data = []
+#     columns = []
+#     error = None
+#     try:
+#         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+#         engine = create_engine(conn_str)
+#         with engine.connect() as connection:
+#             result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
+#             columns = result.keys()
+#             data = [dict(row._mapping) for row in result]
+#     except Exception as e:
+#         error = str(e)
+
+#     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
+
+
 @app.route('/load_data')
 def load_data():
     if 'username' not in session:
@@ -119,13 +145,25 @@ def load_data():
     data = []
     columns = []
     error = None
+
+    date_columns = ['cdr_started_at', 'created_at', 'updated_at']  # เพิ่มชื่อ column ที่ต้องการแปลงเวลา
+
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
+
         with engine.connect() as connection:
             result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            # แปลงเวลา +7 ชั่วโมง
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col] + timedelta(hours=7)
+            data = rows
+
     except Exception as e:
         error = str(e)
 
