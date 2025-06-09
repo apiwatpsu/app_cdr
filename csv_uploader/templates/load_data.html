@@ -31,11 +31,30 @@
         .main-content {
             margin-left: 240px;
             padding: 20px;
+            overflow-x: auto;
         }
-        tfoot input {
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 0.9em;
+
+        .sticky-top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            background-color: white;
+            padding: 15px 0 10px;
+        }
+
+        th {
+            position: sticky;
+            top: 70px;
+            background: white;
+            z-index: 1010;
+        }
+
+        thead tr.filters th {
+            top: 110px; /* Offset ต่อจาก header แรก */
+        }
+
+        .dt-buttons {
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -51,10 +70,17 @@
     </div>
 
 <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>ข้อมูลจากฐานข้อมูล</h2>
+    </div> -->
+    
+    <div class="sticky-top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">ข้อมูลจากฐานข้อมูล</h2>
+                <div class="dt-buttons btn-group"></div> <!-- ปุ่ม Export จะ auto มาอยู่ตรงนี้ -->
+            </div>
     </div>
-    <div style="overflow-x: auto;">
+    
     {% if error %}
         <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
