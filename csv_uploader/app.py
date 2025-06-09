@@ -8,9 +8,9 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # 🔗 เชื่อมต่อ PostgreSQL
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://csvuploader:Tum0848989750@localhost/csvuploader'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://csvuploader:!Q1q2w3e4r5t@localhost/csvuploader'
 # MySQL or Mariadb (ใช้ pymysql เป็น driver)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:Tum_0848989750@localhost/myapp'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
