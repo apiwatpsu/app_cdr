@@ -183,27 +183,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<!-- <script>
-    $(document).ready(function () {
-        // Initialize DataTables
-        var table = $('#dataTable').DataTable({
-            initComplete: function () {
-                this.api().columns().every(function () {
-                    var column = this;
-                    var input = $('<input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." />')
-                        .appendTo($(column.footer()).empty())
-                        .on('keyup change clear', function () {
-                            if (column.search() !== this.value) {
-                                column.search(this.value).draw();
-                            }
-                        });
-                });
-            }
-        });
-    });
-</script> -->
 
-<script>
+<!-- <script>
         $(document).ready(function () {
             var table = $('#dataTable').DataTable({
                 orderCellsTop: true,
@@ -223,7 +204,38 @@
                 });
             });
         });
-    </script>
+    </script> -->
+
+    <script>
+$(document).ready(function () {
+    var table = $('#dataTable').DataTable({
+        orderCellsTop: true,
+        fixedHeader: true
+    });
+
+    // จับ header row ช่องกรอง
+    $('#dataTable thead tr.filters th').each(function (i) {
+        var title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
+        var isDateColumn = title.includes('date') || title.includes('started_at') || title.includes('created_at');
+
+        // กรองเป็น date picker ถ้าเป็นคอลัมน์วันที่
+        if (isDateColumn) {
+            $(this).html('<input type="date" class="form-control form-control-sm" />');
+        } else {
+            $(this).html('<input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." />');
+        }
+
+        // Event listener
+        $('input', this).on('change keyup clear', function () {
+            var val = this.value;
+            if (table.column(i).search() !== val) {
+                table.column(i).search(val).draw();
+            }
+        });
+    });
+});
+</script>
+
 
 </body>
 </html>
