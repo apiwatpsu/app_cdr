@@ -52,7 +52,7 @@
 
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>ข้อมูลจากฐานข้อมูล</h2>
+        <h2>📊 ข้อมูลจากฐานข้อมูล</h2>
     </div>
     <div style="overflow-x: auto;">
     {% if error %}
@@ -60,6 +60,19 @@
     {% endif %}
 
     {% if data %}
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h5>Source Entity Type</h5>
+            <canvas id="chartEntityType"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h5>Trunk DID</h5>
+            <canvas id="chartTrunkDID"></canvas>
+        </div>
+        </div>
+
+
     <div class="table-responsive">
         <table id="dataTable" class="table table-bordered table-hover">
             <thead>
@@ -102,8 +115,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+
+<!-- <script>
 $(document).ready(function () {
     var table = $('#dataTable').DataTable({
         order: [],
@@ -133,6 +148,110 @@ $(document).ready(function () {
     });
 
     // Header filter
+    $('#dataTable thead tr.filters th').each(function (i) {
+        var title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
+        var isDateColumn = title.includes('date') || title.includes('_at');
+        if (isDateColumn) {
+            $(this).html('<input type="date" class="form-control form-control-sm" />');
+        } else {
+            $(this).html('<input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." />');
+        }
+        $('input', this).on('change keyup clear', function () {
+            var val = this.value;
+            if (table.column(i).search() !== val) {
+                table.column(i).search(val).draw();
+            }
+        });
+    });
+});
+
+</script> -->
+
+<script>
+    $(document).ready(function () {
+    var table = $('#dataTable').DataTable({
+        order: [],
+        orderCellsTop: true,
+        dom: 
+         "<'row mt-2'<'col-sm-12 text-end'B>>" +
+         "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+         
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: '📤 Export CSV',
+                className: 'btn btn-success mb-3',
+                exportOptions: {
+                    columns: ':visible',
+                    modifier: {
+                        search: 'applied',
+                        order: 'applied'
+                    }
+                }
+            }
+        ]
+    });
+
+    // Get column index from Jinja2 context
+    const entityColIndex = {{ columns.index('source_entity_type') }};
+    const trunkColIndex = {{ columns.index('source_participant_trunk_did') }};
+
+    // Create charts
+    const chartEntity = new Chart(document.getElementById('chartEntityType'), {
+        type: 'pie',
+        data: {
+            labels: [],
+            datasets: [{ data: [], backgroundColor: [] }]
+        },
+        options: { responsive: true }
+    });
+
+    const chartTrunk = new Chart(document.getElementById('chartTrunkDID'), {
+        type: 'pie',
+        data: {
+            labels: [],
+            datasets: [{ data: [], backgroundColor: [] }]
+        },
+        options: { responsive: true }
+    });
+
+    function getFilteredCounts(colIndex) {
+        const data = {};
+        table.rows({ search: 'applied' }).every(function () {
+            const val = this.data()[colIndex];
+            if (val) {
+                data[val] = (data[val] || 0) + 1;
+            }
+        });
+        return data;
+    }
+
+    function updateChart(chart, dataObj) {
+        const labels = Object.keys(dataObj);
+        const values = Object.values(dataObj);
+        const colors = labels.map((_, i) => `hsl(${(i * 45) % 360}, 70%, 60%)`);
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.update();
+    }
+
+    function refreshCharts() {
+        const entityData = getFilteredCounts(entityColIndex);
+        const trunkData = getFilteredCounts(trunkColIndex);
+        updateChart(chartEntity, entityData);
+        updateChart(chartTrunk, trunkData);
+    }
+
+    // Trigger chart update on table draw
+    table.on('draw', refreshCharts);
+
+    // Initial render
+    refreshCharts();
+
+    // Your filter header code (unchanged)
     $('#dataTable thead tr.filters th').each(function (i) {
         var title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
         var isDateColumn = title.includes('date') || title.includes('_at');
