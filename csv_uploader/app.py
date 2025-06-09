@@ -4,7 +4,7 @@ from models import db, User
 from models import db, DBConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 BANGKOK_TZ = timezone(timedelta(hours=7))
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
