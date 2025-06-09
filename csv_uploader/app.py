@@ -5,6 +5,9 @@ from models import db, DBConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
+import csv
+from io import StringIO
+from flask import make_respons
 BANGKOK_TZ = timezone(timedelta(hours=7))
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -109,30 +112,6 @@ def db_config():
     # GET method แสดง config เดิม
     return render_template('db_config.html', username=session['username'], config=config)
 
-# @app.route('/load_data')
-# def load_data():
-#     if 'username' not in session:
-#         return redirect(url_for('login'))
-
-#     config = DBConfig.query.first()
-#     if not config:
-#         return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
-
-#     data = []
-#     columns = []
-#     error = None
-#     try:
-#         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
-#         engine = create_engine(conn_str)
-#         with engine.connect() as connection:
-#             result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
-#             columns = result.keys()
-#             data = [dict(row._mapping) for row in result]
-#     except Exception as e:
-#         error = str(e)
-
-#     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
-
 @app.route('/load_data')
 def load_data():
     if 'username' not in session:
@@ -145,7 +124,7 @@ def load_data():
     data = []
     columns = []
     error = None
-    date_columns = ['cdr_started_at', 'created_at', 'updated_at']  # ปรับตาม column ที่มี
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']  # ปรับตาม column ที่มี
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -170,7 +149,37 @@ def load_data():
 
     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
 
+@app.route('/export_csv')
+def export_csv():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
+            columns = result.keys()
+            rows = [dict(row._mapping) for row in result]
+
+        # Export to CSV
+        si = StringIO()
+        writer = csv.DictWriter(si, fieldnames=columns)
+        writer.writeheader()
+        writer.writerows(rows)
+
+        output = make_response(si.getvalue())
+        output.headers["Content-Disposition"] = "attachment; filename=data_export.csv"
+        output.headers["Content-type"] = "text/csv"
+        return output
+
+    except Exception as e:
+        return f"Error exporting CSV: {e}", 500
 
 @app.route('/logout')
 def logout():
