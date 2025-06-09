@@ -109,7 +109,11 @@ $(document).ready(function () {
         order: [],
         orderCellsTop: true,
         // fixedHeader: true,
-        dom: 'Blfrtip',  // เพิ่มสำหรับปุ่ม
+        // dom: 'Blfrtip',
+        dom: "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>" +
+         "<'row mt-2'<'col-sm-12'B>>",
         buttons: [
             {
                 extend: 'csvHtml5',
@@ -118,7 +122,7 @@ $(document).ready(function () {
                 exportOptions: {
                     columns: ':visible',
                     modifier: {
-                        search: 'applied',  // เฉพาะแถวที่ถูก filter แล้ว
+                        search: 'applied',
                         order: 'applied'
                     }
                 }
