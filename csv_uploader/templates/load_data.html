@@ -33,15 +33,6 @@
             padding: 20px;
             overflow-x: auto;
         }
-
-        .sticky-top-bar {
-            position: sticky;
-            top: 0;
-            z-index: 1020;
-            background-color: white;
-            padding: 15px 0 10px;
-        }
-
         th {
             position: sticky;
             top: 70px;
@@ -70,16 +61,16 @@
     </div>
 
 <div class="main-content">
-    <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>ข้อมูลจากฐานข้อมูล</h2>
-    </div> -->
+    </div>
     
-    <div class="sticky-top-bar">
+    <!-- <div class="sticky-top-bar">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">ข้อมูลจากฐานข้อมูล</h2>
-                <div class="dt-buttons btn-group"></div> <!-- ปุ่ม Export จะ auto มาอยู่ตรงนี้ -->
+                <div class="dt-buttons btn-group"></div>
             </div>
-    </div>
+    </div> -->
     
     {% if error %}
         <div class="alert alert-danger">{{ error }}</div>
