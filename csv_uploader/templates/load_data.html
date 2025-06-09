@@ -118,7 +118,7 @@
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+<!-- <script>
 $(document).ready(function () {
     var table = $('#dataTable').DataTable({
         order: [],
@@ -165,6 +165,87 @@ $(document).ready(function () {
     });
 });
 
+</script> -->
+
+<script>
+$(document).ready(function () {
+    const table = $('#dataTable').DataTable({
+        order: [],
+        orderCellsTop: true,
+        dom: 
+            "<'row mt-2'<'col-sm-12 text-end'B>>" +
+            "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: '📤 Export CSV',
+                className: 'btn btn-success mb-3',
+                exportOptions: {
+                    columns: ':visible',
+                    modifier: { search: 'applied', order: 'applied' }
+                }
+            }
+        ]
+    });
+
+    // Header filter
+    $('#dataTable thead tr.filters th').each(function (i) {
+        $('input', this).on('keyup change clear', function () {
+            if (table.column(i).search() !== this.value) {
+                table.column(i).search(this.value).draw();
+            }
+        });
+    });
+
+    // Chart setup
+    let entityChart, trunkChart;
+    function drawCharts(data) {
+        const entityCount = {};
+        const trunkCount = {};
+
+        data.forEach(row => {
+            const entity = row[3]; // index for source_entity_type
+            const trunk = row[9];  // index for source_participant_trunk_did
+
+            entityCount[entity] = (entityCount[entity] || 0) + 1;
+            trunkCount[trunk] = (trunkCount[trunk] || 0) + 1;
+        });
+
+        if (entityChart) entityChart.destroy();
+        if (trunkChart) trunkChart.destroy();
+
+        entityChart = new Chart(document.getElementById('entityChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(entityCount),
+                datasets: [{
+                    data: Object.values(entityCount),
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
+                }]
+            }
+        });
+
+        trunkChart = new Chart(document.getElementById('trunkChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(trunkCount),
+                datasets: [{
+                    data: Object.values(trunkCount),
+                    backgroundColor: ['#BA68C8', '#4DD0E1', '#FFD54F', '#81C784']
+                }]
+            }
+        });
+    }
+
+    table.on('draw', function () {
+        const filteredData = table.rows({ search: 'applied' }).data().toArray();
+        drawCharts(filteredData);
+    });
+
+    drawCharts(table.rows({ search: 'applied' }).data().toArray());
+});
 </script>
 </body>
 </html>
