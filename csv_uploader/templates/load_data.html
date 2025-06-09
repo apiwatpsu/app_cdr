@@ -49,18 +49,23 @@
         <h2 class="mb-4">📊 ข้อมูลจากฐานข้อมูล</h2>
 
         {% if error %}
-            <div class="alert alert-danger" role="alert">
-                เกิดข้อผิดพลาด: {{ error }}
-            </div>
+        <div class="alert alert-danger">{{ error }}</div>
         {% endif %}
 
         {% if data %}
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table id="dataTable" class="table table-bordered table-hover">
                 <thead>
+                    <!-- หัวตาราง (คลิก sort ได้) -->
                     <tr>
                         {% for col in columns %}
-                        <th scope="col">{{ col }}</th>
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    <!-- ช่องค้นหา -->
+                    <tr class="filters">
+                        {% for col in columns %}
+                        <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -76,9 +81,7 @@
             </table>
         </div>
         {% else %}
-        <div class="alert alert-warning" role="alert">
-            ไม่มีข้อมูลให้แสดง
-        </div>
+        <p class="text-muted">ไม่มีข้อมูลให้แสดง</p>
         {% endif %}
     </div>
 </body>
