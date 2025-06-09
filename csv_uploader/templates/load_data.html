@@ -216,7 +216,7 @@ $(document).ready(function () {
     // จับ header row ช่องกรอง
     $('#dataTable thead tr.filters th').each(function (i) {
         var title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
-        var isDateColumn = title.includes('date') || title.includes('started_at') || title.includes('created_at');
+        var isDateColumn = title.includes('date') || title.includes('_at');
 
         // กรองเป็น date picker ถ้าเป็นคอลัมน์วันที่
         if (isDateColumn) {
