@@ -61,11 +61,12 @@
         <canvas id="entityChart" style="width: 350px; height: 350px;"></canvas>
     </div>
     <div>
-        <canvas id="trunkChart" style="width: 650px; height: 350px;"></canvas>
-    </div>
-    <div>
         <canvas id="queueChart" style="width: 350px; height: 350px;"></canvas>
     </div>
+    <div>
+        <canvas id="trunkChart" style="width: 650px; height: 350px;"></canvas>
+    </div>
+
 </div>
 
 
@@ -184,6 +185,7 @@ $(document).ready(function () {
             data: {
                 labels: Object.keys(entityCount),
                 datasets: [{
+                    label: 'Group By Type',
                     data: Object.values(entityCount),
                     backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
                 }]
@@ -195,8 +197,13 @@ $(document).ready(function () {
             data: {
                 labels: Object.keys(trunkCount),
                 datasets: [{
+                    label: 'Group By DID',
                     data: Object.values(trunkCount),
-                    backgroundColor: ['#BA68C8', '#4DD0E1', '#FFD54F', '#81C784']
+                    backgroundColor: [
+                            '#BA68C8', '#4DD0E1', '#FFD54F', '#81C784',
+                            '#FF8A65', '#7986CB', '#A1887F', '#90A4AE',
+                            '#F06292', '#4DB6AC'
+                        ]
                 }]
             }
         });
@@ -206,9 +213,13 @@ $(document).ready(function () {
             data: {
                 labels: Object.keys(queueCount),
                 datasets: [{
-                    label: 'Queue Group',
+                    label: 'Group By Queue',
                     data: Object.values(queueCount),
-                    backgroundColor: '#FF7043'
+                    backgroundColor: [
+                        '#BA68C8', '#4DD0E1', '#FFD54F', '#81C784',
+                        '#FF8A65', '#7986CB', '#A1887F', '#90A4AE',
+                        '#F06292', '#4DB6AC'
+                    ]
                 }]
             },
             options: {
