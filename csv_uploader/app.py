@@ -5,6 +5,7 @@ from models import db, DBConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timedelta
+BANGKOK_TZ = timezone(timedelta(hours=7))
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -132,7 +133,6 @@ def db_config():
 
 #     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
 
-
 @app.route('/load_data')
 def load_data():
     if 'username' not in session:
@@ -145,8 +145,7 @@ def load_data():
     data = []
     columns = []
     error = None
-
-    date_columns = ['cdr_started_at', 'created_at', 'updated_at']  # เพิ่มชื่อ column ที่ต้องการแปลงเวลา
+    date_columns = ['cdr_started_at', 'created_at', 'updated_at']  # ปรับตาม column ที่มี
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -157,17 +156,20 @@ def load_data():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
-            # แปลงเวลา +7 ชั่วโมง
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col] + timedelta(hours=7)
+                        # ใช้ astimezone เพื่อแปลงเวลาแบบมี timezone-awareness
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
             data = rows
 
     except Exception as e:
         error = str(e)
 
     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
+
 
 
 @app.route('/logout')
