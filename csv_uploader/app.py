@@ -7,7 +7,7 @@ from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
 import csv
 from io import StringIO
-from flask import make_respons
+from flask import make_response
 BANGKOK_TZ = timezone(timedelta(hours=7))
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
