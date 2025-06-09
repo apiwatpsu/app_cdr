@@ -43,7 +43,7 @@
 
     <div class="sidebar">
         <h5 class="text-white text-center">Menu</h5>
-        <a href="{{ url_for('upload') }}">📤 Upload CSV</a>
+        <!-- <a href="{{ url_for('upload') }}">📤 Upload CSV</a> -->
         <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
         <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
         <a href="{{ url_for('load_data') }}">📊 Load Data</a>
@@ -122,54 +122,6 @@
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- <script>
-$(document).ready(function () {
-    var table = $('#dataTable').DataTable({
-        order: [],
-        orderCellsTop: true,
-        // fixedHeader: true,
-        // dom: 'Blfrtip',
-        dom: 
-         "<'row mt-2'<'col-sm-12 text-end'B>>" +
-         "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
-         "<'row'<'col-sm-12'tr>>" +
-         "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
-         
-        buttons: [
-            {
-                extend: 'csvHtml5',
-                text: '📤 Export CSV',
-                className: 'btn btn-success mb-3',
-                exportOptions: {
-                    columns: ':visible',
-                    modifier: {
-                        search: 'applied',
-                        order: 'applied'
-                    }
-                }
-            }
-        ]
-    });
-
-    // Header filter
-    $('#dataTable thead tr.filters th').each(function (i) {
-        var title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
-        var isDateColumn = title.includes('date') || title.includes('_at');
-        if (isDateColumn) {
-            $(this).html('<input type="date" class="form-control form-control-sm" />');
-        } else {
-            $(this).html('<input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." />');
-        }
-        $('input', this).on('change keyup clear', function () {
-            var val = this.value;
-            if (table.column(i).search() !== val) {
-                table.column(i).search(val).draw();
-            }
-        });
-    });
-});
-
-</script> -->
 
 <script>
 $(document).ready(function () {
