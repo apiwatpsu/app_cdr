@@ -110,10 +110,10 @@
 
       {% if data %}
       
-        <div class="card-body">
+        <!-- <div class="card-body"> -->
           <div class="table-responsive">
             <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
-              <thead>
+              <thead class="table-light">
                 <tr>
                   {% for col in columns %}
                   <th>{{ col }}</th>
@@ -137,7 +137,7 @@
             </table>
           </div>
         </div>
-      </div>
+      <!-- </div> -->
       {% else %}
       <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
       {% endif %}
