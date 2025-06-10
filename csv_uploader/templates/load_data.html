@@ -50,11 +50,10 @@
         <a href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
 
-<div class="main-content">
+<!-- <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>📊 ข้อมูลจากฐานข้อมูล</h2>
     </div>
-
 
 <div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
     <div>
@@ -67,7 +66,28 @@
         <canvas id="trunkChart" style="width: 650px; height: 350px;"></canvas>
     </div>
 
-</div>
+</div> -->
+
+    <div id="fixed-top-charts" class="bg-white shadow sticky-top py-3" style="z-index: 1040;">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>📊 ข้อมูลจากฐานข้อมูล</h2>
+            <button class="btn btn-success">📤 Export CSV</button>
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+            <div>
+                <canvas id="entityChart" style="width: 350px; height: 350px;"></canvas>
+            </div>
+            <div>
+                <canvas id="queueChart" style="width: 350px; height: 350px;"></canvas>
+            </div>
+            <div>
+                <canvas id="trunkChart" style="width: 650px; height: 350px;"></canvas>
+            </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -77,6 +97,8 @@
     {% endif %}
 
     {% if data %}
+
+
     <div class="table-responsive">
         <table id="dataTable" class="table table-bordered table-hover">
             <thead>
