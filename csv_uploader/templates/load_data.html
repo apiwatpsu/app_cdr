@@ -236,6 +236,18 @@ $(document).ready(function () {
         if (trunkChart) trunkChart.destroy();
         if (queueChart) queueChart.destroy();
 
+        // entityChart = new Chart(document.getElementById('entityChart'), {
+        //     type: 'pie',
+        //     data: {
+        //         labels: Object.keys(entityCount),
+        //         datasets: [{
+        //             label: 'Group By Type',
+        //             data: Object.values(entityCount),
+        //             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
+        //         }]
+        //     }
+        // });
+
         entityChart = new Chart(document.getElementById('entityChart'), {
             type: 'pie',
             data: {
@@ -245,6 +257,19 @@ $(document).ready(function () {
                     data: Object.values(entityCount),
                     backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
                 }]
+            },
+            // เพิ่มส่วน options ตรงนี้
+            options: {
+                plugins: {
+                    title: {
+                        display: true, // กำหนดให้แสดงชื่อกราฟ
+                        text: 'ชื่อกราฟของคุณที่นี่', // ข้อความชื่อกราฟ
+                        font: {
+                            size: 16 // ขนาดตัวอักษรของชื่อกราฟ (ไม่บังคับ)
+                        },
+                        color: '#333' // สีของตัวอักษรชื่อกราฟ (ไม่บังคับ)
+                    }
+                }
             }
         });
 
