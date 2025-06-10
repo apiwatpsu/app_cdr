@@ -66,19 +66,10 @@
         max-height: 600px; /* หรือสูงเท่าที่คุณต้องการ */
         overflow: auto;
         }
-
-        .table thead tr:nth-child(1) th {
+        
+        .fixtablehead {
         position: sticky;
-        top: 0;
-        background: #f8f9fa; /* Bootstrap Light Gray */
-        z-index: 3;
-        }
-
-        .table thead tr.filters th {
-        position: sticky;
-        top: 40px; /* ปรับค่าตามความสูงของแถวหัวตารางแรก */
         background: #fff;
-        z-index: 2;
         }
 
 
@@ -132,13 +123,13 @@
         <!-- <div class="card-body"> -->
           <div class="table-responsive">
             <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
-              <thead class="table-light">
+              <thead class="fixtablehead">
                 <tr>
                   {% for col in columns %}
                   <th>{{ col }}</th>
                   {% endfor %}
                 </tr>
-                <tr class="filters">
+                <tr>
                   {% for col in columns %}
                   <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
                   {% endfor %}
