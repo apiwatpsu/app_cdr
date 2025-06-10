@@ -44,6 +44,24 @@
         z-index: 1050;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
+        .table-responsive {
+            max-height: 600px; /* หรือความสูงที่คุณต้องการ */
+            overflow: auto;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa; /* สีเทาอ่อนจาก Bootstrap */
+            z-index: 2;
+        }
+
+        .filters th {
+            position: sticky;
+            top: 42px; /* ปรับตามความสูงของ header row แรก */
+            background: #fff;
+            z-index: 1;
+        }
 
     </style>
 </head>
@@ -57,24 +75,6 @@
         <a href="{{ url_for('load_data') }}">📊 Call Detail Record</a>
         <a href="{{ url_for('logout') }}">🚪 Logout</a>
     </div>
-
-<!-- <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>📊 ข้อมูลจากฐานข้อมูล</h2>
-    </div>
-
-<div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
-    <div>
-        <canvas id="entityChart" style="width: 350px; height: 350px;"></canvas>
-    </div>
-    <div>
-        <canvas id="queueChart" style="width: 350px; height: 350px;"></canvas>
-    </div>
-    <div>
-        <canvas id="trunkChart" style="width: 650px; height: 350px;"></canvas>
-    </div>
-
-</div> -->
 
       <!-- Main content -->
   <div class="main-content">
@@ -102,47 +102,6 @@
     </div>
 
 
-
-<!-- <div style="overflow-x: auto;">
-    {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-
-    {% if data %}
-
-<div class="main-content container mt-5 pt-5">
-    <div class="table-responsive">
-        <table id="dataTable" class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    {% for col in columns %}
-                    <th>{{ col }}</th>
-                    {% endfor %}
-                </tr>
-                
-                <tr class="filters">
-                        {% for col in columns %}
-                        <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
-                        {% endfor %}
-                </tr>
-
-            </thead>
-            <tbody>
-                {% for row in data %}
-                <tr>
-                    {% for col in columns %}
-                    <td>{{ row[col] }}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-        <p class="text-muted">ไม่มีข้อมูลให้แสดง</p>
-    {% endif %}
-</div> -->
-
 <!-- Data Table Section -->
     <div>
       {% if error %}
@@ -150,7 +109,7 @@
       {% endif %}
 
       {% if data %}
-      <!-- <div class="card shadow-sm"> -->
+      
         <div class="card-body">
           <div class="table-responsive">
             <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
@@ -183,7 +142,7 @@
       <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
       {% endif %}
     </div>
-  <!-- </div> -->
+
 
 
 
