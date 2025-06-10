@@ -37,6 +37,14 @@
             box-sizing: border-box;
             font-size: 0.9em;
         }
+        .sticky-top {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1050;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -98,7 +106,7 @@
 
     {% if data %}
 
-
+<div class="main-content container mt-5 pt-5">
     <div class="table-responsive">
         <table id="dataTable" class="table table-bordered table-hover">
             <thead>
