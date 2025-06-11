@@ -95,13 +95,13 @@
 
         <div class="d-flex justify-content-center gap-5">
           <div>
-            <canvas id="entityChart" style="width: 300px; height: 250px;"></canvas>
+            <canvas id="entityChart" style="width: 300px; height: 350px;"></canvas>
           </div>
           <div>
-            <canvas id="queueChart" style="width: 300px; height: 250px;"></canvas>
+            <canvas id="queueChart" style="width: 300px; height: 350px;"></canvas>
           </div>
           <div>
-            <canvas id="trunkChart" style="width: 300px; height: 250px;"></canvas>
+            <canvas id="trunkChart" style="width: 300px; height: 350px;"></canvas>
           </div>
         </div>
       </div>
@@ -280,6 +280,10 @@ $(document).ready(function () {
                         },
                         color: '#333'
                     },
+                    legend: {
+                    position: 'right', // << ย้าย Legend ไปขวา
+                    align: 'center'    // จัดให้อยู่กลางแนวตั้ง (option เพิ่มเติม)
+                    },
                     datalabels: {
                         align: 'center',         // วาง label ด้านนอก slice
                         anchor: 'center',        // ยึดกับขอบนอก
@@ -321,6 +325,10 @@ $(document).ready(function () {
                             size: 16 
                         },
                         color: '#333'
+                    },
+                    legend: {
+                    position: 'right', // << ย้าย Legend ไปขวา
+                    align: 'center'    // จัดให้อยู่กลางแนวตั้ง (option เพิ่มเติม)
                     },
                     datalabels: {
                         align: 'center',         // วาง label ด้านนอก slice
