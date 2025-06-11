@@ -61,6 +61,39 @@
             background: #fff;
             z-index: 2;
         }
+
+        thead.table-light th {
+            background-color: #f8f9fa;
+            color: #343a40;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* ปรับ input filter */
+        tr.filters input {
+            width: 100%;
+            padding: 4px 8px;
+            font-size: 0.875rem;
+        }
+
+        /* สลับสีแถว */
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #e9f5ff;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        table.table td,
+        table.table th {
+            vertical-align: middle;
+            text-align: center;
+            padding: 0.75rem;
+        }
+                
+
         canvas {
         max-width: 100%;
         height: auto;
@@ -327,12 +360,12 @@ $(document).ready(function () {
                         color: '#333'
                     },
                     legend: {
-                    position: 'right', // << ย้าย Legend ไปขวา
-                    align: 'center'    // จัดให้อยู่กลางแนวตั้ง (option เพิ่มเติม)
+                    position: 'right',
+                    align: 'center'
                     },
                     datalabels: {
-                        align: 'center',         // วาง label ด้านนอก slice
-                        anchor: 'center',        // ยึดกับขอบนอก
+                        align: 'center',
+                        anchor: 'center',
                         color: '#000',
                         formatter: (value, context) => {
                             const label = context.chart.data.labels[context.dataIndex];
@@ -373,12 +406,12 @@ $(document).ready(function () {
                         color: '#333'
                     },
                     legend: {
-                    position: 'right', // << ย้าย Legend ไปขวา
-                    align: 'center'    // จัดให้อยู่กลางแนวตั้ง (option เพิ่มเติม)
+                    position: 'right',
+                    align: 'center'
                     },
                     datalabels: {
-                        align: 'center',         // วาง label ด้านนอก slice
-                        anchor: 'center',        // ยึดกับขอบนอก
+                        align: 'center',
+                        anchor: 'center',
                         color: '#000',
                         formatter: (value, context) => {
                             const label = context.chart.data.labels[context.dataIndex];
