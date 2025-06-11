@@ -164,6 +164,8 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 
 
 <script>
@@ -173,11 +175,8 @@ $(document).ready(function () {
         orderCellsTop: true,
         fixedHeader: true,
         dom: 
-            // "<'row mt-2'<'col-sm-12 text-end'B>>" +
-            // "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
-            // "<'row'<'col-sm-12'tr>>" +
-            // "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
-            "<'row mb-3'<'col-sm-4'l><'col-sm-4'f><'col-sm-4 text-end'B>>" +
+            "<'row mt-2'<'col-sm-12 text-end'B>>" +
+            "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
@@ -245,6 +244,19 @@ $(document).ready(function () {
         //             data: Object.values(entityCount),
         //             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
         //         }]
+        //     },
+            
+        //     options: {
+        //         plugins: {
+        //             title: {
+        //                 display: true, 
+        //                 text: 'Group By Type', 
+        //                 font: {
+        //                     size: 16 
+        //                 },
+        //                 color: '#333'
+        //             }
+        //         }
         //     }
         // });
 
@@ -258,20 +270,33 @@ $(document).ready(function () {
                     backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
                 }]
             },
-            
             options: {
                 plugins: {
                     title: {
-                        display: true, 
-                        text: 'Group By Type', 
+                        display: true,
+                        text: 'Group By Type',
                         font: {
-                            size: 16 
+                            size: 16
                         },
                         color: '#333'
+                    },
+                    datalabels: {
+                        align: 'end',         // วาง label ด้านนอก slice
+                        anchor: 'end',        // ยึดกับขอบนอก
+                        color: '#000',
+                        formatter: (value, context) => {
+                            const label = context.chart.data.labels[context.dataIndex];
+                            return `${label}: ${value}`;
+                        },
+                        font: {
+                            weight: 'bold'
+                        }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
+
 
         trunkChart = new Chart(document.getElementById('trunkChart'), {
             type: 'pie',
