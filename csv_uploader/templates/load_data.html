@@ -321,9 +321,23 @@ $(document).ready(function () {
                             size: 16 
                         },
                         color: '#333'
+                    },
+                    datalabels: {
+                        align: 'center',         // วาง label ด้านนอก slice
+                        anchor: 'center',        // ยึดกับขอบนอก
+                        color: '#000',
+                        formatter: (value, context) => {
+                            const label = context.chart.data.labels[context.dataIndex];
+                            return `${value}`;
+                        },
+                        font: {
+                            weight: 'bold'
+                        }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
+
         });
 
         queueChart = new Chart(document.getElementById('queueChart'), {
@@ -349,9 +363,23 @@ $(document).ready(function () {
                             size: 16 
                         },
                         color: '#333'
+                    },
+                    datalabels: {
+                        align: 'center',         // วาง label ด้านนอก slice
+                        anchor: 'center',        // ยึดกับขอบนอก
+                        color: '#000',
+                        formatter: (value, context) => {
+                            const label = context.chart.data.labels[context.dataIndex];
+                            return `${value}`;
+                        },
+                        font: {
+                            weight: 'bold'
+                        }
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
+
         });
     }
 
