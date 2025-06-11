@@ -281,12 +281,12 @@ $(document).ready(function () {
                         color: '#333'
                     },
                     datalabels: {
-                        align: 'end',         // วาง label ด้านนอก slice
-                        anchor: 'end',        // ยึดกับขอบนอก
+                        align: 'center',         // วาง label ด้านนอก slice
+                        anchor: 'center',        // ยึดกับขอบนอก
                         color: '#000',
                         formatter: (value, context) => {
                             const label = context.chart.data.labels[context.dataIndex];
-                            return `${label}: ${value}`;
+                            return `${value}`;
                         },
                         font: {
                             weight: 'bold'
