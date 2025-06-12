@@ -151,7 +151,7 @@ def load_data():
 
 
 
-    @app.route('/report/agent_performance')
+    @app.route('/agent_performance')
     def report_agent_performance():
         if 'username' not in session:
             return redirect(url_for('login'))
