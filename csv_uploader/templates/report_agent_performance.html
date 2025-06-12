@@ -84,7 +84,7 @@
 
 
     <div class="main-content">
-        <h2>📈 Average Call Handling Time by Agent</h2>
+        <!-- <h2>📈 Average Call Handling Time by Agent</h2>
         <div class="table-responsive mt-4">
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
@@ -105,6 +105,49 @@
                 </tbody>
             </table>
         </div>
+    </div> -->
+
+    <!-- Data Table Section -->
+    <div>
+      {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+
+      {% if data %}
+      
+        <!-- <div class="card-body"> -->
+          <div class="table-responsive">
+            <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  {% for col in columns %}
+                  <th>{{ col }}</th>
+                  {% endfor %}
+                </tr>
+                <tr class="filters">
+                  {% for col in columns %}
+                  <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in data %}
+                <tr>
+                  {% for col in columns %}
+                  <td>{{ row[col] }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <!-- </div> -->
+      {% else %}
+      <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
+      {% endif %}
     </div>
+
+
 </body>
 </html>
