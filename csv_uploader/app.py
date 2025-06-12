@@ -149,6 +149,63 @@ def load_data():
 
     return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
 
+
+
+    @app.route('/report/agent_performance')
+    def report_agent_performance():
+        if 'username' not in session:
+            return redirect(url_for('login'))
+
+        config = DBConfig.query.first()
+        if not config:
+            return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
+
+        data = []
+        columns = []
+        error = None
+
+        try:
+            conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+            engine = create_engine(conn_str)
+
+            with engine.connect() as connection:
+                result = connection.execute(text("""
+                    SELECT
+                        source_participant_name AS agent_name,
+                        AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_handling_time_seconds
+                    FROM cdroutput
+                    WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                    GROUP BY agent_name
+                    ORDER BY average_handling_time_seconds
+                """))
+
+                columns = result.keys()
+                rows = [dict(row._mapping) for row in result]
+
+                # แปลงวินาทีเป็นเวลาที่อ่านง่าย (optional)
+                for row in rows:
+                    secs = row.get('average_handling_time_seconds', 0)
+                    if secs is not None:
+                        mins, secs = divmod(int(secs), 60)
+                        row['average_handling_time'] = f"{mins} นาที {secs} วินาที"
+                    else:
+                        row['average_handling_time'] = "N/A"
+
+                data = rows
+
+        except Exception as e:
+            error = str(e)
+
+        return render_template(
+            'report_agent_performance.html',
+            username=session['username'],
+            data=data,
+            columns=['agent_name', 'average_handling_time'],  # ใช้ column แสดงผลหลังแปลง
+            error=error
+        )
+
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
