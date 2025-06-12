@@ -158,7 +158,7 @@ def report_agent_performance():
 
     config = DBConfig.query.first()
     if not config:
-        return "ยังไม่มีการตั้งค่า database กรุณาตั้งค่าในเมนู Database Settings", 400
+        return "ยังไม่มีการตั้งค่า database", 400
 
     data = []
     columns = []
@@ -178,22 +178,11 @@ def report_agent_performance():
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
                 GROUP BY agent_name
-                ORDER BY average_handling_time_seconds
+                ORDER BY average_handling_time_seconds;
             """))
 
             columns = result.keys()
-            rows = [dict(row._mapping) for row in result]
-
-            # แปลงวินาทีเป็นเวลาที่อ่านง่าย (optional)
-            for row in rows:
-                secs = row.get('average_handling_time_seconds', 0)
-                if secs is not None:
-                    mins, secs = divmod(int(secs), 60)
-                    row['average_handling_time'] = f"{mins} นาที {secs} วินาที"
-                else:
-                    row['average_handling_time'] = "N/A"
-
-            data = rows
+            data = [dict(row._mapping) for row in result]
 
     except Exception as e:
         error = str(e)
@@ -202,7 +191,7 @@ def report_agent_performance():
         'report_agent_performance.html',
         username=session['username'],
         data=data,
-        columns=['agent_name', 'average_handling_time'],  # ใช้ column แสดงผลหลังแปลง
+        columns=columns,
         error=error
     )
 
