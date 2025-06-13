@@ -240,36 +240,31 @@
         <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
-    {# Main Content Area #}
     <div class="main-content">
-        {# This is where content from other templates (e.g., agent_performance_report.html) will be inserted #}
         {% block content %}{% endblock %}
     </div>
 
-    {# jQuery (for DataTables) #}
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    {# Bootstrap JS (bundle for Popper.js) #}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    {# DataTables JS #}
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> {# ต้องใช้ Bootstrap5 DataTables JS ด้วย #}
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
 
-    {# JSZip (Necessary for CSV/Excel export) #}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-    {# Chart.js (If you are using charts) #}
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    {# You should define a 'scripts' block here if you want to add page-specific scripts #}
-    {# {% block scripts %}{% endblock %} #}
 
-    <script>
-        // Dropdown Toggle Script
+<script>
+
         document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 this.classList.toggle('active');
@@ -282,12 +277,6 @@
             });
         });
 
-        // The DataTable and Chart.js initialization code examples should go into a specific block
-        // (e.g., {% block scripts %}) in your *child* templates, or a separate JS file.
-        // They are commented out here to prevent direct execution in layout.html.
-
-        /*
-        // Example for initializing a DataTable
         $(document).ready(function() {
             $('#yourDataTableId').DataTable({
                 dom: "<'row mt-2'<'col-sm-12 text-end'B>>" +
@@ -303,7 +292,7 @@
             });
         });
 
-        // Example for initializing a Chart.js Chart
+        
         const entityChartCtx = document.getElementById('entityChart');
         if (entityChartCtx) {
             new Chart(entityChartCtx, {
@@ -333,7 +322,7 @@
                 }
             });
         }
-        */
-    </script>
+</script>
+
 </body>
 </html>
