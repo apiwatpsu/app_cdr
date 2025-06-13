@@ -146,45 +146,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
-$(document).ready(function () {
-    const table = $('#dataTable').DataTable({
-        order: [],
-        orderCellsTop: true,
-        // dom: 
-        //     "<'row mt-2'<'col-sm-12 text-end'B>>" +
-        //     "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
-        //     "<'row'<'col-sm-12'tr>>" +
-        //     "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons: [
-            {
-                extend: 'csvHtml5',
-                text: '📤 Export',
-                className: 'btn btn-success mb-3',
-                exportOptions: {
-                    columns: ':visible',
-                    modifier: { search: 'applied', order: 'applied' }
-                }
-            }
-        ]
-    });
 
-    // ฟิลเตอร์เฉพาะ column
-    $('#dataTable thead tr.filters th').each(function (i) {
-        const title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
-        const isDateColumn = title.includes('date') || title.includes('_at');
-
-        if (isDateColumn) {
-            $(this).html('<input type="date" class="form-control form-control-sm" />');
-        } else {
-            $(this).html('<input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." />');
-        }
-
-        $('input', this).on('keyup change clear', function () {
-            if (table.column(i).search() !== this.value) {
-                table.column(i).search(this.value).draw();
-            }
-        });
-    });
 
     // ✅ ตรงนี้คือตำแหน่งที่ถูกต้องสำหรับ dropdown toggle
     document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
@@ -194,7 +156,7 @@ $(document).ready(function () {
             dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
         });
     });
-});
+
 </script>
 
 
