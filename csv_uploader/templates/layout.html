@@ -134,7 +134,33 @@
     {% block content %}{% endblock %}
 </div>
 
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 <script>
+    $(document).ready(function () {
+        $('#dataTable').DataTable({
+        pageLength: 25,
+        lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "ทั้งหมด"] ],
+        responsive: true,
+        scrollX: true,
+        language: {
+            lengthMenu: "แสดง _MENU_ รายการต่อหน้า",
+            search: "ค้นหา:",
+            paginate: {
+            first: "หน้าแรก",
+            last: "หน้าสุดท้าย",
+            next: "ถัดไป",
+            previous: "ก่อนหน้า"
+            },
+            zeroRecords: "ไม่พบข้อมูล",
+            info: "แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ",
+            infoEmpty: "ไม่มีข้อมูลให้แสดง",
+            infoFiltered: "(กรองจากทั้งหมด _MAX_ รายการ)"
+        }
+        });
+        });
+
     document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             this.classList.toggle('active');
