@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> {# เพิ่ม viewport meta tag เพื่อรองรับ responsive #}
+    <title>{% block title %}My Report{% endblock %}</title>
+
+    {# Bootstrap CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    {# Google Font - Roboto #}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    {# Font Awesome Icons #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    {# DataTables CSS #}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+
+    <style>
+        /* Global & Body Styles */
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #F8F9FA; /* Light Gray Background */
+            color: #212529; /* Dark Gray Text */
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            top: 0; /* ตรึงด้านบน */
+            left: 0; /* ตรึงด้านซ้าย */
+            background-color: #303F9F; /* Deep Indigo */
+            box-shadow: 2px 0px 8px rgba(0, 0, 0, 0.15); /* Subtle Shadow */
+            overflow-y: auto; /* ให้ scroll ได้ถ้าเนื้อหาเกิน */
+        }
+
+        .sidebar h5 {
+            color: white;
+            margin-bottom: 0; /* ลบ margin ล่างของ h5 */
+        }
+
+        .sidebar a, .dropdown-btn {
+            display: flex; /* ใช้ flexbox เพื่อจัด icon และ text */
+            align-items: center; /* จัดให้อยู่กึ่งกลางในแนวตั้ง */
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%; /* ทำให้ปุ่มเต็มความกว้าง */
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth Transition */
+        }
+
+        .sidebar a:hover, .dropdown-btn:hover, .dropdown-btn.active {
+            background-color: #3F51B5; /* Indigo (lighter) on hover/active */
+        }
+
+        .sidebar a i, .dropdown-btn i {
+            margin-right: 10px; /* Space between icon and text */
+            width: 20px; /* กำหนดความกว้างของ icon เพื่อจัดแนว */
+            text-align: center; /* จัด icon ให้อยู่ตรงกลางของพื้นที่ */
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown-container {
+            display: none;
+            background-color: #4C60CD; /* Medium Indigo for sub-menu */
+            padding-left: 10px; /* Indent sub-menu */
+        }
+
+        .dropdown-container a {
+            padding: 10px 20px; /* Adjust padding for sub-items */
+            color: #E0E0E0; /* Lighter text for sub-menu */
+        }
+
+        .dropdown-container a:hover {
+            background-color: #5A6EDA; /* Lighter Indigo on sub-menu hover */
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 220px; /* Match sidebar width */
+            min-height: 100vh;
+            box-sizing: border-box;
+            padding: 20px;
+            overflow-x: hidden; /* ป้องกัน overflow-x บน main-content */
+        }
+
+        /* Sticky Charts Section */
+        #fixed-top-charts {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 1050;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* Clearer Shadow */
+            padding: 15px 0; /* Add padding for charts section */
+        }
+        
+        #fixed-top-charts .container {
+            /* ให้ container ใน sticky-top สามารถ scroll ได้ ถ้าเนื้อหาเยอะ */
+            overflow-x: auto; 
+            max-width: 100%; /* ใช้ความกว้างเต็มที่ */
+        }
+
+
+        /* Charts (Canvas) Styles */
+        canvas {
+            max-width: 100%; /* Ensure charts are responsive */
+            height: auto !important; /* Allow height to adjust automatically */
+            border-radius: 8px; /* Rounded corners for charts */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07); /* Subtle shadow for charts */
+            margin-bottom: 10px; /* Add some space below charts */
+        }
+
+        /* Responsive Table Container */
+        .table-responsive {
+            max-height: 600px; /* Fixed height for scrollable table */
+            overflow: auto; /* Enable vertical scroll */
+            overflow-x: auto; /* Enable horizontal scroll */
+            border-radius: 8px; /* Rounded corners for the table container */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Shadow for the table container */
+            margin-top: 20px; /* Space above the table */
+            background-color: white; /* Ensure table background is white */
+        }
+
+        /* DataTables Header & Filter Styles */
+        thead th {
+            position: sticky;
+            top: 0;
+            background: #E0E0E0; /* Light Gray for table header */
+            z-index: 1;
+            color: #333;
+            padding: 10px; /* Add padding to header cells */
+            text-align: left; /* Align text left */
+        }
+
+        .filters th {
+            position: sticky;
+            top: 42px; /* Adjusted based on thead th height */
+            background: #F0F0F0; /* Slightly darker gray for filter row */
+            z-index: 2;
+            padding: 8px; /* Add padding to filter cells */
+        }
+        
+        /* DataTables General Styles */
+        table.dataTable {
+            width: 100% !important; /* Ensure DataTables takes full width */
+            border-collapse: collapse; /* Remove space between cells */
+        }
+
+        table.dataTable thead th,
+        table.dataTable tbody td {
+            border: none; /* No borders for cells */
+            padding: 12px; /* Comfortable padding for table cells */
+        }
+
+        table.dataTable.hover tbody tr:hover,
+        table.dataTable.display tbody tr:hover {
+            background-color: #EBF5FF; /* Light Blue on row hover */
+        }
+
+        /* DataTables Filter & Pagination */
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out; /* Smooth transition */
+        }
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.375rem 0.75rem;
+            margin: 0 0.25rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            color: #007BFF !important; /* Ensure link color */
+            border: 1px solid transparent; /* Transparent border by default */
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #007BFF; /* Bootstrap Blue */
+            color: white !important;
+            border-color: #007BFF;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #007BFF;
+            color: white !important;
+            border: 1px solid #007BFF;
+        }
+        
+        /* DataTables Buttons Styling */
+        .dt-buttons .btn {
+            background-color: #4CAF50; /* Green accent for buttons */
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-left: 5px; /* Space between buttons */
+        }
+        .dt-buttons .btn:hover {
+            background-color: #43A047; /* Darker green on hover */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    {# Sidebar Navigation #}
+    <div class="sidebar">
+        <h5 class="text-center py-3">Menu</h5>
+
+        <a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i> Manage Users</a>
+        <a href="{{ url_for('db_config') }}"><i class="fas fa-cog"></i> Database Settings</a>
+        
+        {# Main Report Menu with Dropdown #}
+        <button class="dropdown-btn"><i class="fas fa-chart-bar"></i> Report <i class="fas fa-caret-down" style="margin-left: auto;"></i></button>
+        <div class="dropdown-container">
+            <a href="{{ url_for('load_data') }}"> <i class="fas fa-database"></i> Call Detail Record</a>
+            <a href="{{ url_for('report_agent_performance') }}"> <i class="fas fa-chart-line"></i> Agent Performance</a>
+        </div>
+
+        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+
+<script>
+
+        document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                this.classList.toggle('active');
+                const dropdown = this.nextElementSibling;
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                } else {
+                    dropdown.style.display = 'block';
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#yourDataTableId').DataTable({
+                dom: "<'row mt-2'<'col-sm-12 text-end'B>>" +
+                     "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5'
+                ],
+                responsive: true
+            });
+        });
+
+        
+        const entityChartCtx = document.getElementById('entityChart');
+        if (entityChartCtx) {
+            new Chart(entityChartCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Label A', 'Label B', 'Label C', 'Label D'],
+                    datasets: [{
+                        label: 'Group By Type',
+                        data: [100, 150, 120, 80],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Group By Entity Type',
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+</script>
+
+</body>
+</html>
