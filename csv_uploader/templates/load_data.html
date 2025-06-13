@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,7 @@
             height: 100vh;
             position: fixed;
             background-color: #343a40;
-            /* padding-top: 20px; */
+            
         }
         .sidebar a {
             display: block;
@@ -30,7 +30,7 @@
         }
         .main-content {
             margin-left: 240px;
-            /* padding: 20px; */
+            
         }
         tfoot input {
             width: 100%;
@@ -74,7 +74,7 @@
 
     <div class="sidebar">
         <h5 class="text-white text-center">Menu</h5>
-        <!-- <a href="{{ url_for('upload') }}">📤 Upload CSV</a> -->
+        
         <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
         <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
         <a href="{{ url_for('load_data') }}">📊 Call Detail Record</a>
@@ -87,10 +87,7 @@
     
     <div id="fixed-top-charts" class="bg-white sticky-top py-2 shadow" style="z-index: 1040;">
       <div class="container">
-        <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-          <h2 class="mb-0">📊 ข้อมูลจากฐานข้อมูล</h2>
-          <button class="btn btn-success">📤 Export CSV</button>
-        </div> -->
+
 
         <div class="d-flex justify-content-center gap-5">
           <div>
@@ -107,7 +104,7 @@
     </div>
 
 
-<!-- Data Table Section -->
+
     <div>
       {% if error %}
       <div class="alert alert-danger">{{ error }}</div>
@@ -115,7 +112,7 @@
 
       {% if data %}
       
-        <!-- <div class="card-body"> -->
+        
           <div class="table-responsive">
             <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
               <thead class="table-light">
@@ -142,7 +139,7 @@
             </table>
           </div>
         </div>
-      <!-- </div> -->
+      
       {% else %}
       <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
       {% endif %}
@@ -191,12 +188,12 @@ $(document).ready(function () {
         ]
     });
 
-    // Header filter
+    
     $('#dataTable thead tr.filters th').each(function (i) {
         var title = $('#dataTable thead tr:eq(0) th').eq(i).text().toLowerCase();
         var isDateColumn = title.includes('date') || title.includes('_at');
 
-        // กรองเป็น date picker ถ้าเป็นคอลัมน์วันที่
+        
         if (isDateColumn) {
             $(this).html('<input type="date" class="form-control form-control-sm" />');
         } else {
@@ -210,7 +207,7 @@ $(document).ready(function () {
         });
     });
 
-    // Chart setup
+    
     let entityChart, trunkChart, queueChart;
     function drawCharts(data) {
         const entityCount = {};
@@ -256,12 +253,12 @@ $(document).ready(function () {
                         color: '#333'
                     },
                     legend: {
-                    position: 'right', // << ย้าย Legend ไปขวา
-                    align: 'center'    // จัดให้อยู่กลางแนวตั้ง (option เพิ่มเติม)
+                    position: 'right', 
+                    align: 'center'    
                     },
                     datalabels: {
-                        align: 'center',         // วาง label ด้านนอก slice
-                        anchor: 'center',        // ยึดกับขอบนอก
+                        align: 'center',         
+                        anchor: 'center',        
                         color: '#000',
                         formatter: (value, context) => {
                             const label = context.chart.data.labels[context.dataIndex];
@@ -379,4 +376,48 @@ $(document).ready(function () {
 });
 </script>
 </body>
-</html>
+</html> -->
+
+{% extends "layout.html" %}
+
+{% block title %}Call Detail Record{% endblock %}
+
+{% block content %}
+<h2>Call Detail Record</h2>
+<div>
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  {% if data %}
+    <div class="table-responsive">
+      <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            {% for col in columns %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+          <tr class="filters">
+            {% for col in columns %}
+            <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr>
+            {% for col in columns %}
+            <td>{{ row[col] }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+  <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
+  {% endif %}
+</div>
+{% endblock %}
+
