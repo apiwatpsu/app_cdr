@@ -122,5 +122,19 @@
     {% block content %}{% endblock %}
 </div>
 
+<script>
+    document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            this.classList.toggle('active');
+            var dropdown = this.nextElementSibling;
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            } else {
+                dropdown.style.display = 'block';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
