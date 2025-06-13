@@ -107,7 +107,7 @@
         }
         
         #fixed-top-charts .container {
-             /* ให้ container ใน sticky-top สามารถ scroll ได้ ถ้าเนื้อหาเยอะ */
+            /* ให้ container ใน sticky-top สามารถ scroll ได้ ถ้าเนื้อหาเยอะ */
             overflow-x: auto; 
             max-width: 100%; /* ใช้ความกว้างเต็มที่ */
         }
@@ -242,6 +242,7 @@
 
     {# Main Content Area #}
     <div class="main-content">
+        {# This is where content from other templates (e.g., agent_performance_report.html) will be inserted #}
         {% block content %}{% endblock %}
     </div>
 
@@ -264,6 +265,9 @@
     {# Chart.js (If you are using charts) #}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+    {# You should define a 'scripts' block here if you want to add page-specific scripts #}
+    {# {% block scripts %}{% endblock %} #}
+
     <script>
         // Dropdown Toggle Script
         document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
@@ -278,11 +282,14 @@
             });
         });
 
-        // Example for initializing a DataTable (คุณจะต้องเพิ่มโค้ด DataTables ของคุณในส่วน {% block content %} หรือในไฟล์ JS แยกต่างหาก)
-        // เพื่อให้ DataTables ทำงานได้ถูกต้อง คุณต้องเรียกใช้ jQuery และ DataTables scripts ก่อน
+        // The DataTable and Chart.js initialization code examples should go into a specific block
+        // (e.g., {% block scripts %}) in your *child* templates, or a separate JS file.
+        // They are commented out here to prevent direct execution in layout.html.
+
+        /*
+        // Example for initializing a DataTable
         $(document).ready(function() {
             $('#yourDataTableId').DataTable({
-                // Your DataTables configurations
                 dom: "<'row mt-2'<'col-sm-12 text-end'B>>" +
                      "<'row mb-3'<'col-sm-6'l><'col-sm-6'f>>" +
                      "<'row'<'col-sm-12'tr>>" +
@@ -292,13 +299,11 @@
                     'excelHtml5',
                     'csvHtml5'
                 ],
-                responsive: true // Enable responsive behavior for DataTables
+                responsive: true
             });
         });
 
-
-        //Example for initializing a Chart.js Chart
-        //(คุณจะต้องเพิ่มโค้ด Chart.js ของคุณในส่วน {% block content %} หรือในไฟล์ JS แยกต่างหาก)
+        // Example for initializing a Chart.js Chart
         const entityChartCtx = document.getElementById('entityChart');
         if (entityChartCtx) {
             new Chart(entityChartCtx, {
@@ -313,22 +318,22 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // สำคัญมากสำหรับ responsive charts
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Group By Entity Type', // Your chart title
+                            text: 'Group By Entity Type',
                             font: { size: 16, weight: 'bold' },
                             color: '#333'
                         },
                         legend: {
-                            position: 'bottom' // Place legend at the bottom
+                            position: 'bottom'
                         }
                     }
                 }
             });
         }
+        */
     </script>
-{% endblock %}
 </body>
 </html>
