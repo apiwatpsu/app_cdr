@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
             height: 100vh;
             position: fixed;
             background-color: #343a40;
-            /* padding-top: 20px; */
+            
         }
         .sidebar a {
             display: block;
@@ -29,7 +29,7 @@
         }
         .main-content {
             margin-left: 240px;
-            /* padding: 20px; */
+            
         }
         tfoot input {
             width: 100%;
@@ -73,7 +73,7 @@
     
     <div class="sidebar">
         <h5 class="text-white text-center">Menu</h5>
-        <!-- <a href="{{ url_for('upload') }}">📤 Upload CSV</a> -->
+        
         <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
         <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
         <a href="{{ url_for('load_data') }}">📊 Call Detail Record</a>
@@ -84,7 +84,7 @@
 
 
     <div class="main-content">
-    <!-- Data Table Section -->
+    
     <h2>📈 Average Call Handling Time by Agent</h2>
     <div>
       {% if error %}
@@ -93,7 +93,7 @@
 
       {% if data %}
       
-        <!-- <div class="card-body"> -->
+        
           <div class="table-responsive">
             <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
               <thead class="table-light">
@@ -120,7 +120,7 @@
             </table>
           </div>
         </div>
-      <!-- </div> -->
+      
       {% else %}
       <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
       {% endif %}
@@ -128,4 +128,48 @@
 
 
 </body>
-</html>
+</html> -->
+
+{% extends "layout.html" %}
+
+{% block title %}Agent Performance Report{% endblock %}
+
+{% block content %}
+<h2>📈 Average Call Handling Time by Agent</h2>
+<div>
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  {% if data %}
+    <div class="table-responsive">
+      <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            {% for col in columns %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+          <tr class="filters">
+            {% for col in columns %}
+            <th><input type="text" class="form-control form-control-sm" placeholder="ค้นหา..." /></th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr>
+            {% for col in columns %}
+            <td>{{ row[col] }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+  <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
+  {% endif %}
+</div>
+{% endblock %}
+

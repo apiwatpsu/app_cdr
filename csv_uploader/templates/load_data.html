@@ -234,30 +234,6 @@ $(document).ready(function () {
         if (trunkChart) trunkChart.destroy();
         if (queueChart) queueChart.destroy();
 
-        // entityChart = new Chart(document.getElementById('entityChart'), {
-        //     type: 'pie',
-        //     data: {
-        //         labels: Object.keys(entityCount),
-        //         datasets: [{
-        //             label: 'Group By Type',
-        //             data: Object.values(entityCount),
-        //             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A']
-        //         }]
-        //     },
-            
-        //     options: {
-        //         plugins: {
-        //             title: {
-        //                 display: true, 
-        //                 text: 'Group By Type', 
-        //                 font: {
-        //                     size: 16 
-        //                 },
-        //                 color: '#333'
-        //             }
-        //         }
-        //     }
-        // });
 
         entityChart = new Chart(document.getElementById('entityChart'), {
             type: 'pie',
