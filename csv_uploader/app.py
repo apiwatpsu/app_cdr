@@ -401,6 +401,58 @@ def calls_handled_by_each_queue():
         columns=columns,
         error=error
     )
+
+@app.route('/average_time_before_agents_answered')
+def average_time_before_agents_answered():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT
+
+                    destination_dn_name AS queue_name,
+
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_talk_time_seconds
+
+                FROM cdroutput
+
+                WHERE destination_entity_type = 'queue'
+
+                    AND cdr_answered_at IS NOT NULL
+
+                    AND cdr_ended_at IS NOT NULL
+
+                GROUP BY destination_dn_name
+
+                ORDER BY average_talk_time_seconds DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'average_time_before_agents_answered.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
