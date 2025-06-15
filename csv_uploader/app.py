@@ -112,8 +112,8 @@ def db_config():
     # GET method แสดง config เดิม
     return render_template('db_config.html', username=session['username'], config=config)
 
-@app.route('/load_data')
-def load_data():
+@app.route('/cdr_data')
+def cdr_data():
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -147,7 +147,7 @@ def load_data():
     except Exception as e:
         error = str(e)
 
-    return render_template('load_data.html', username=session['username'], data=data, columns=columns, error=error)
+    return render_template('cdr_data.html', username=session['username'], data=data, columns=columns, error=error)
 
 
 
@@ -348,8 +348,6 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=1881)
 
