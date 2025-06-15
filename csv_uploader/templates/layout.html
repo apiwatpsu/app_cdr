@@ -284,12 +284,6 @@
       });
     }
 
-    
-  //   $('#myTable').DataTable({
-  //     pageLength: 10,
-  //     lengthMenu: [ [5, 10, 25, 50], [5, 10, 25, 50] ]
-  //   });
-  // });
 
   const table = $('#myTable').DataTable({
       scrollX: true,         // เปิด scroll แนวนอน
@@ -297,7 +291,8 @@
       scrollCollapse: true,
       fixedHeader: true,     // ทำให้หัวตารางลอยอยู่
       pageLength: 10,
-      lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]]
+      lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+      ordering: false
     });
   });
 </script>
