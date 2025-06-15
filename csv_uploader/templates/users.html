@@ -3,22 +3,26 @@
 {% block title %}Manage Users{% endblock %}
 
 {% block content %}
-  <h2 class="mb-4">👥 Manage Users</h2>
+  <h2 class="mb-4">👥 จัดการผู้ใช้</h2>
 
-  <table class="table table-striped mt-3">
-      <thead class="table-dark">
-          <tr>
-              <th>ID</th>
-              <th>Username</th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for user in users %}
-          <tr>
-              <td>{{ user.id }}</td>
-              <td>{{ user.username }}</td>
-          </tr>
-          {% endfor %}
-      </tbody>
-  </table>
+  <div class="bg-white p-4 rounded shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped mb-0">
+          <thead class="table-light">
+              <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for user in users %}
+              <tr>
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.username }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}
