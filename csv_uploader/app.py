@@ -453,6 +453,58 @@ def average_time_before_agents_answered():
         columns=columns,
         error=error
     )
+
+@app.route('/terminated_before_being_answered')
+def terminated_before_being_answered():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT
+
+                    destination_dn_name AS queue_name,
+
+                    COUNT(DISTINCT call_history_id) AS abandoned_calls
+
+                FROM cdroutput
+
+                WHERE destination_entity_type = 'queue'
+
+                        AND source_entity_type = 'external_line' -- Consider only external callers
+
+                    AND termination_reason = 'src_participant_terminated'
+
+                GROUP BY destination_dn_name
+
+                ORDER BY abandoned_calls DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'terminated_before_being_answered.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
