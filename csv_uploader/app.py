@@ -232,6 +232,48 @@ def internal_calls():
     )
 
 
+@app.route('/outbound_calls')
+def outbound_calls():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT *
+                FROM cdroutput
+                
+                WHERE source_entity_type = 'extension'
+                AND destination_entity_type = 'outbound_rule'
+                ORDER BY cdr_started_at DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'outbound_calls.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
+
+
 
 @app.route('/average_call_handling_by_agent')
 def average_call_handling_by_agent():
