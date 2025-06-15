@@ -120,7 +120,7 @@
 </div>
 
 <!-- Sidebar -->
-<div class="sidebar">
+<!-- <div class="sidebar">
   <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
   <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
 
@@ -136,11 +136,35 @@
     <a href="{{ url_for('call_handled_per_agent') }}">Calls Handled per Agent</a>
     <a href="{{ url_for('agent_utilization_rate') }}">Agent Utilization Rate</a>
   </div>
+</div> -->
 
 
+<!-- Sidebar -->
+<div class="sidebar">
 
-  <!-- <a href="{{ url_for('logout') }}">🚪 Logout</a> -->
+  <!-- Settings Group -->
+  <div class="sidebar-label">⚙️ Settings</div>
+  <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
+  <a href="{{ url_for('db_config') }}">🗄️ Database Settings</a>
+
+  <!-- CDR Group -->
+  <div class="sidebar-label mt-3">📊 Call Detail Record</div>
+  <button class="dropdown-btn">📁 CDR Menu ▾</button>
+  <div class="dropdown-container">
+    <a href="{{ url_for('cdr_data') }}">📊 Call Detail Record</a>
+  </div>
+
+  <!-- Agent Performance Group -->
+  <div class="sidebar-label mt-3">👨‍💼 Agent Performance</div>
+  <button class="dropdown-btn">📈 Agent Reports ▾</button>
+  <div class="dropdown-container">
+    <a href="{{ url_for('average_call_handling_by_agent') }}">⏱️ Average Call Handling Time</a>
+    <a href="{{ url_for('call_handled_per_agent') }}">📞 Calls Handled</a>
+    <a href="{{ url_for('agent_utilization_rate') }}">📊 Utilization Rate</a>
+  </div>
+
 </div>
+
 
 <!-- Main content -->
 <div class="main-content">
