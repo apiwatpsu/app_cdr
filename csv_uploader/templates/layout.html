@@ -363,18 +363,8 @@
       fixedHeader: true,     // ทำให้หัวตารางลอยอยู่
       pageLength: 10,
       lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
-      ordering: false,
-      columnDefs: [
-        {
-          targets: [3, 4, 5],  // ตัวอย่าง: cdr_id = 3, call_history_id = 4, source_participant_id = 5
-          visible: false
-        }
-      ],
-      dom: 'Bfrtip',
-      buttons: [
-        'colvis'  // ปุ่ม toggle column visibility
-      ]
-    });
+      ordering: false
+    }); 
   });
 </script>
 
