@@ -169,7 +169,8 @@ def count_call_by_type():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT * FROM cdroutput
+                SELECT source_entity_type 
+                FROM cdroutput
                 GROUP BY source_entity_type
                 ORDER BY cdr_started_at DESC;
             """))
