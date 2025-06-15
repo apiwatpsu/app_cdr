@@ -30,7 +30,7 @@ def login():
         user = User.query.filter_by(username=request.form['username']).first()
         if user and check_password_hash(user.password, request.form['password']):
             session['username'] = user.username
-            return redirect(url_for('load_data'))
+            return redirect(url_for('agent_performance'))
         else:
             return render_template('login.html', error='Invalid credentials')
     return render_template('login.html')
