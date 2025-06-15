@@ -1498,6 +1498,17 @@ def create_user():
 
     return render_template('create_user.html')
 
+@app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if request.method == 'POST':
+        user.username = request.form['username']
+        user.role = request.form['role']
+        db.session.commit()
+        return redirect(url_for('manage_users'))
+    return render_template('edit_user.html', user=user)
+
+
 
 @app.route('/logout')
 def logout():

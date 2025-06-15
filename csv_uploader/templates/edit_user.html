@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3>✏️ แก้ไขผู้ใช้</h3>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Username</label>
+      <input type="text" class="form-control" name="username" value="{{ user.username }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Role</label>
+      <select name="role" class="form-select" required>
+        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>admin</option>
+        <option value="viewer" {% if user.role == 'viewer' %}selected{% endif %}>viewer</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">💾 บันทึก</button>
+    <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">ย้อนกลับ</a>
+  </form>
+</div>
+{% endblock %}
