@@ -33,6 +33,7 @@ def login():
         user = User.query.filter_by(username=request.form['username']).first()
         if user and check_password_hash(user.password, request.form['password']):
             session['username'] = user.username
+            session['role'] = user.role
             return redirect(url_for('average_call_handling_by_agent'))
         else:
             return render_template('login.html', error='Invalid credentials')
@@ -1482,6 +1483,7 @@ def create_user():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        role = request.form['role']
 
         # ตรวจสอบว่า username ซ้ำหรือไม่
         if User.query.filter_by(username=username).first():

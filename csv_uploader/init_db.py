@@ -6,7 +6,7 @@ with app.app_context():
 
     # เพิ่มผู้ใช้เริ่มต้น
     if not User.query.filter_by(username='admin').first():
-        admin = User(username='admin', password='admin123')
+        admin = User(username='admin', password='admin123', , role='admin')
         db.session.add(admin)
         db.session.commit()
         print("Admin user created.")
