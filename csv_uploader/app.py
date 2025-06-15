@@ -1477,6 +1477,25 @@ def inject_system_utilization():
     except:
         return {}  # fallback กัน error ไม่ให้แครช
 
+@app.route('/create_user', methods=['GET', 'POST'])
+def create_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # ตรวจสอบว่า username ซ้ำหรือไม่
+        if User.query.filter_by(username=username).first():
+            flash('Username นี้มีอยู่แล้ว', 'danger')
+            return redirect(url_for('create_user'))
+
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('สร้างผู้ใช้สำเร็จ', 'success')
+        return redirect(url_for('manage_users'))
+
+    return render_template('create_user.html')
+
 
 @app.route('/logout')
 def logout():
