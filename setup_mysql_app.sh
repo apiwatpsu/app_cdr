@@ -5,7 +5,7 @@
 # ================================
 DB_NAME="myapp"
 DB_USER="myapp"
-DB_PASS="Tum_0848989750"
+DB_PASS="!Q1q2w3e4r5t"
 DB_HOST="localhost"
 MYSQL_ROOT_PASSWORD="your_mysql_root_password"  # แก้ตรงนี้ให้ตรงกับ root password
 
