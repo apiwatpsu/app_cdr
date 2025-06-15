@@ -607,6 +607,58 @@ def avg_call_duration_answered_external():
         columns=columns,
         error=error
     )
+
+@app.route('/longest_internal_calls')
+def longest_internal_calls():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT call_history_id, source_dn_number, destination_dn_number,
+
+                    (cdr_ended_at - cdr_answered_at) AS duration
+
+                FROM cdroutput
+
+                WHERE source_entity_type != 'external_line'
+
+                    AND destination_entity_type != 'external_line'
+
+                    AND cdr_answered_at IS NOT NULL
+
+                    AND cdr_ended_at IS NOT NULL
+
+                ORDER BY duration DESC
+
+                LIMIT 10;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'longest_internal_calls.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
