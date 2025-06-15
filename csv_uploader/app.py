@@ -124,14 +124,40 @@ def cdr_data():
     data = []
     columns = []
     error = None
-    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']  # ปรับตาม column ที่มี
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
 
         with engine.connect() as connection:
-            result = connection.execute(text(f"SELECT * FROM {config.table} ORDER BY cdr_started_at DESC LIMIT 10000"))
+            result = connection.execute(text(f"""
+                SELECT * FROM {config.table}
+                WHERE cdr_started_at >= :from_date AND cdr_started_at < :to_date
+                ORDER BY cdr_started_at DESC
+                LIMIT 10000
+            """), {"from_date": from_date, "to_date": to_date})
+
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
@@ -139,7 +165,6 @@ def cdr_data():
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        # ใช้ astimezone เพื่อแปลงเวลาแบบมี timezone-awareness
                         row[col] = row[col].astimezone(BANGKOK_TZ)
 
             data = rows
@@ -147,7 +172,13 @@ def cdr_data():
     except Exception as e:
         error = str(e)
 
-    return render_template('cdr_data.html', username=session['username'], data=data, columns=columns, error=error)
+    return render_template(
+        'cdr_data.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 
 
 @app.route('/count_call_by_type')
