@@ -45,6 +45,14 @@
       padding-top: 10px;
     }
 
+    .sidebar-label {
+    padding: 8px 16px; /* เท่ากับเมนู */
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    }
+
     .sidebar a,
     .dropdown-btn {
       display: block;
@@ -143,7 +151,7 @@
 <div class="sidebar">
 
   <!-- Settings Group -->
-  <div class="text-muted">Settings</div>
+  <div class="sidebar-label text-muted">Settings</div>
   <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
   <a href="{{ url_for('db_config') }}">🗄️ Database Settings</a>
 
