@@ -143,19 +143,19 @@
 <div class="sidebar">
 
   <!-- Settings Group -->
-  <div class="sidebar-label">⚙️ Settings</div>
+  <div class="sidebar-label text-muted">Settings</div>
   <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
   <a href="{{ url_for('db_config') }}">🗄️ Database Settings</a>
 
   <!-- CDR Group -->
-  <div class="sidebar-label mt-3">📊 Call Detail Record</div>
+  <div class="sidebar-label text-muted">Call Detail Record</div>
   <button class="dropdown-btn">📁 CDR Menu ▾</button>
   <div class="dropdown-container">
     <a href="{{ url_for('cdr_data') }}">📊 Call Detail Record</a>
   </div>
 
   <!-- Agent Performance Group -->
-  <div class="sidebar-label mt-3">👨‍💼 Agent Performance</div>
+  <div class="sidebar-label text-muted">Agent Performance</div>
   <button class="dropdown-btn">📈 Agent Reports ▾</button>
   <div class="dropdown-container">
     <a href="{{ url_for('average_call_handling_by_agent') }}">⏱️ Average Call Handling Time</a>
