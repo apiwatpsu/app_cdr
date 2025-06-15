@@ -1264,32 +1264,73 @@ def calls_no_route():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่าช่วงวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
 
+        # ใช้เวลาเทียบกับฟิลด์ cdr_started_at หรือฟิลด์อื่นที่เหมาะสม
+        query = """
+            SELECT 
+                call_history_id, 
+                source_participant_name, 
+                destination_participant_phone_number, 
+                termination_reason_details
+            FROM 
+                cdroutput
+            WHERE 
+                termination_reason_details = 'no_route'
+                AND cdr_started_at >= :from_date
+                AND cdr_started_at < :to_date;
+        """
+
         with engine.connect() as connection:
-            result = connection.execute(text("""
-                SELECT call_history_id, source_participant_name, destination_participant_phone_number, termination_reason_details
-
-                FROM cdroutput
-
-                WHERE termination_reason_details = 'no_route';
-            """))
+            result = connection.execute(text(query), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
-        error = str(e)
+        error = f"เกิดข้อผิดพลาดในการดึงข้อมูล: {e}"
 
     return render_template(
         'calls_no_route.html',
-        username=session['username'],
+        username=session.get('username'),
         data=data,
         columns=columns,
-        error=error
+        error=error,
+        from_date=from_date.strftime('%Y-%m-%d'),
+        to_date=(to_date - timedelta(days=1)).strftime('%Y-%m-%d')
     )
 
 
@@ -1305,33 +1346,69 @@ def calls_license_limits():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่าช่วงวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
 
+        query = """
+            SELECT COUNT(*) AS license_limit_terminations
+            FROM cdroutput
+            WHERE termination_reason_details = 'license_limit_reached'
+              AND cdr_started_at >= :from_date
+              AND cdr_started_at < :to_date;
+        """
+
         with engine.connect() as connection:
-            result = connection.execute(text("""
-                SELECT COUNT(*) AS license_limit_terminations
-
-                FROM cdroutput
-
-                WHERE termination_reason_details = 'license_limit_reached';
-            """))
+            result = connection.execute(text(query), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
-        error = str(e)
+        error = f"เกิดข้อผิดพลาดในการดึงข้อมูล: {e}"
 
     return render_template(
         'calls_license_limits.html',
-        username=session['username'],
+        username=session.get('username'),
         data=data,
         columns=columns,
-        error=error
+        error=error,
+        from_date=from_date.strftime('%Y-%m-%d'),
+        to_date=(to_date - timedelta(days=1)).strftime('%Y-%m-%d')
     )
+
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
