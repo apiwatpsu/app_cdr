@@ -10,6 +10,7 @@
   <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.dataTables.min.css" rel="stylesheet">
 
   <style>
     body {
@@ -206,21 +207,8 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
 
-<!-- <script>
-  
-  lucide.createIcons();
-
-  
-  const dropdowns = document.getElementsByClassName("dropdown-btn");
-  for (let i = 0; i < dropdowns.length; i++) {
-    dropdowns[i].addEventListener("click", function () {
-      this.classList.toggle("active");
-      const content = this.nextElementSibling;
-      content.style.display = content.style.display === "block" ? "none" : "block";
-    });
-  }
-</script> -->
 
 <script>
   $(document).ready(function() {
@@ -237,10 +225,20 @@
       });
     }
 
-    // Initialize DataTables
-    $('#myTable').DataTable({
+    
+  //   $('#myTable').DataTable({
+  //     pageLength: 10,
+  //     lengthMenu: [ [5, 10, 25, 50], [5, 10, 25, 50] ]
+  //   });
+  // });
+
+  const table = $('#myTable').DataTable({
+      scrollX: true,         // เปิด scroll แนวนอน
+      scrollY: '400px',      // scroll แนวตั้งถ้าตารางยาว
+      scrollCollapse: true,
+      fixedHeader: true,     // ทำให้หัวตารางลอยอยู่
       pageLength: 10,
-      lengthMenu: [ [5, 10, 25, 50], [5, 10, 25, 50] ]
+      lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]]
     });
   });
 </script>
