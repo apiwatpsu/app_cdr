@@ -10,6 +10,23 @@
   {% endif %}
 
   {% if data %}
+<form method="get" class="d-flex gap-2 mb-3">
+    <div>
+        <label for="fromDate" class="form-label mb-0">From:</label>
+        <input type="date" id="fromDate" name="from_date" class="form-control form-control-sm"
+            value="{{ request.args.get('from_date', '') }}">
+    </div>
+    <div>
+        <label for="toDate" class="form-label mb-0">To:</label>
+        <input type="date" id="toDate" name="to_date" class="form-control form-control-sm"
+            value="{{ request.args.get('to_date', '') }}">
+    </div>
+    <div class="align-self-end">
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    </div>
+</form>
+
+
   <div class="bg-white p-4 rounded shadow-sm">
   <!-- สร้าง wrapper ให้ DataTable ควบคุม scroll ได้ดี -->
   <div style="overflow-x: auto;">
