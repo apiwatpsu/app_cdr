@@ -163,6 +163,26 @@ def count_call_by_type():
     columns = []
     error = None
 
+    # รับค่าช่วงวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
+
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
@@ -171,9 +191,11 @@ def count_call_by_type():
             result = connection.execute(text("""
                 SELECT source_entity_type, COUNT(*) AS count
                 FROM cdroutput
+                WHERE cdr_started_at >= :from_date
+                  AND cdr_started_at < :to_date
                 GROUP BY source_entity_type
                 ORDER BY count DESC;
-            """))
+            """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
@@ -188,6 +210,7 @@ def count_call_by_type():
         columns=columns,
         error=error
     )
+
 
 
 @app.route('/internal_calls')
