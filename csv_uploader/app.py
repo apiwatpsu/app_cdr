@@ -150,6 +150,45 @@ def cdr_data():
     return render_template('cdr_data.html', username=session['username'], data=data, columns=columns, error=error)
 
 
+@app.route('/count_call_by_type')
+def count_call_by_type():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT * FROM cdroutput
+                GROUP BY source_entity_type
+                ORDER BY cdr_started_at DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'count_call_by_type.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
+
+
 
 @app.route('/average_call_handling_by_agent')
 def average_call_handling_by_agent():
