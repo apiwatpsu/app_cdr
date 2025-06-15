@@ -680,7 +680,7 @@ def calls_no_route():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT call_history_id, source_participant_name, destination_participant_phone_number
+                SELECT call_history_id, source_participant_name, destination_participant_phone_number, termination_reason_details
 
                 FROM cdroutput
 
