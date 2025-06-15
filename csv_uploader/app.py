@@ -355,6 +355,52 @@ def list_all_lost_queue_calls():
         columns=columns,
         error=error
     )
+
+@app.route('/calls_handled_by_each_queue')
+def calls_handled_by_each_queue():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT destination_dn_name AS queue_name, COUNT(DISTINCT call_history_id) AS calls_handled
+
+                FROM cdroutput
+
+                WHERE destination_entity_type = 'queue'
+
+                    AND cdr_answered_at IS NOT NULL
+
+                GROUP BY destination_dn_name
+
+                ORDER BY calls_handled DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'calls_handled_by_each_queue.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:

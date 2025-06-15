@@ -175,7 +175,7 @@
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('cdr_data') }}">
-        <i data-lucide="bar-chart-3"></i>
+
         Call Detail Record
         </a>
     </div>
@@ -188,15 +188,15 @@
   </button>
   <div class="dropdown-container">
     <a href="{{ url_for('average_call_handling_by_agent') }}">
-      <i data-lucide="clock"></i>
+      <!-- <i data-lucide="clock"></i> -->
       Avg Call Handling Time
     </a>
     <a href="{{ url_for('call_handled_per_agent') }}">
-      <i data-lucide="phone-incoming"></i>
+      <!-- <i data-lucide="phone-incoming"></i> -->
       Calls Handled
     </a>
     <a href="{{ url_for('agent_utilization_rate') }}">
-      <i data-lucide="activity"></i>
+      <!-- <i data-lucide="activity"></i> -->
       Utilization Rate
     </a>
   </div>
@@ -205,14 +205,19 @@
   <!-- Queue Performance Group -->
   <div class="sidebar-label text-muted">Queue Performance</div>
   <button class="dropdown-btn">
-    <i data-lucide="headphones"></i>
+    <i data-lucide="list-ordered"></i>
     Queue Reports ▾
   </button>
   <div class="dropdown-container">
     <a href="{{ url_for('list_all_lost_queue_calls') }}">
-      <i data-lucide="list-x"></i>
+      <!-- <i data-lucide="list-x"></i> -->
       List all lost queue calls
     </a>
+        <a href="{{ url_for('calls_handled_by_each_queue') }}">
+      <!-- <i data-lucide="list-x"></i> -->
+      Calls handled by each queue
+    </a>
+  
   </div>
 
 </div>
