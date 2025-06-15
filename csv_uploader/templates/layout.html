@@ -71,6 +71,12 @@
       background-color: #f0f0f0;
     }
 
+    .sidebar i {
+    stroke: #666;
+    width: 18px;
+    height: 18px;
+    }
+
     .dropdown-container {
       display: none;
       padding-left: 15px;
@@ -127,48 +133,80 @@
   </div>
 </div>
 
+
 <!-- Sidebar -->
 <!-- <div class="sidebar">
-  <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
-  <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
 
-  <button class="dropdown-btn">📊 Call Detail Record ▾</button>
-  <div class="dropdown-container">
-    <a href="{{ url_for('cdr_data') }}">📊 Call Detail Record</a>
-  </div>
-
-  <button class="dropdown-btn">👨‍💼 Agent Performance ▾</button>
-  <div class="dropdown-container">
-    
-    <a href="{{ url_for('average_call_handling_by_agent') }}">Average Call Handling Time by Agent</a>
-    <a href="{{ url_for('call_handled_per_agent') }}">Calls Handled per Agent</a>
-    <a href="{{ url_for('agent_utilization_rate') }}">Agent Utilization Rate</a>
-  </div>
-</div> -->
-
-
-<!-- Sidebar -->
-<div class="sidebar">
-
-  <!-- Settings Group -->
+  
   <div class="sidebar-label text-muted">Settings</div>
   <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
   <a href="{{ url_for('db_config') }}">🗄️ Database Settings</a>
 
-  <!-- CDR Group -->
+  
   <div class="sidebar-label text-muted">Call Detail Record</div>
   <button class="dropdown-btn">📁 CDR Menu ▾</button>
   <div class="dropdown-container">
     <a href="{{ url_for('cdr_data') }}">📊 Call Detail Record</a>
   </div>
 
-  <!-- Agent Performance Group -->
+  
   <div class="sidebar-label text-muted">Agent Performance</div>
   <button class="dropdown-btn">📈 Agent Reports ▾</button>
   <div class="dropdown-container">
     <a href="{{ url_for('average_call_handling_by_agent') }}">⏱️ Average Call Handling Time</a>
     <a href="{{ url_for('call_handled_per_agent') }}">📞 Calls Handled</a>
     <a href="{{ url_for('agent_utilization_rate') }}">📊 Utilization Rate</a>
+  </div>
+
+</div> -->
+
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+    <!-- Settings Group -->
+    <div class="sidebar-label text-muted">Settings</div>
+    <a href="{{ url_for('manage_users') }}">
+        <i data-lucide="users"></i>
+        Manage Users
+    </a>
+    <a href="{{ url_for('db_config') }}">
+        <i data-lucide="settings"></i>
+        Database Settings
+    </a>
+
+    <!-- CDR Group -->
+    <div class="sidebar-label text-muted">Call Detail Record</div>
+    <button class="dropdown-btn">
+        <i data-lucide="folder"></i>
+        CDR Menu ▾
+    </button>
+    <div class="dropdown-container">
+        <a href="{{ url_for('cdr_data') }}">
+        <i data-lucide="bar-chart-3"></i>
+        Call Detail Record
+        </a>
+    </div>
+
+  <!-- Agent Performance Group -->
+  <div class="sidebar-label text-muted">Agent Performance</div>
+  <button class="dropdown-btn">
+    <i data-lucide="headphones"></i>
+    Agent Reports ▾
+  </button>
+  <div class="dropdown-container">
+    <a href="{{ url_for('average_call_handling_by_agent') }}">
+      <i data-lucide="clock"></i>
+      Avg Call Handling Time
+    </a>
+    <a href="{{ url_for('call_handled_per_agent') }}">
+      <i data-lucide="phone-incoming"></i>
+      Calls Handled
+    </a>
+    <a href="{{ url_for('agent_utilization_rate') }}">
+      <i data-lucide="activity"></i>
+      Utilization Rate
+    </a>
   </div>
 
 </div>
@@ -187,6 +225,7 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
 <script>
   // Toggle dropdown in sidebar
