@@ -505,6 +505,62 @@ def terminated_before_being_answered():
         columns=columns,
         error=error
     )
+
+@app.route('/calls_transferred_to_queue')
+def calls_transferred_to_queue():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT
+
+                    c2.call_history_id,
+
+                    c1.source_participant_name AS original_caller,
+
+                    c1.destination_participant_name AS original_destination,
+
+                    c2.destination_dn_name AS transferred_queue
+
+                FROM cdroutput c1
+
+                JOIN cdroutput c2 ON c1.call_history_id = c2.call_history_id
+
+                WHERE c1.creation_method IN ('call_init', 'route_to')
+
+                    AND c2.creation_method = 'transfer'
+
+                    AND c2.destination_entity_type = 'queue'
+
+                    AND c2.base_cdr_id = c1.cdr_id;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'calls_transferred_to_queue.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
