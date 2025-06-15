@@ -273,6 +273,46 @@ def outbound_calls():
         error=error
     )
 
+# @app.route('/inbound_calls')
+# def inbound_calls():
+#     if 'username' not in session:
+#         return redirect(url_for('login'))
+
+#     config = DBConfig.query.first()
+#     if not config:
+#         return "ยังไม่มีการตั้งค่า database", 400
+
+#     data = []
+#     columns = []
+#     error = None
+
+#     try:
+#         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+#         engine = create_engine(conn_str)
+
+#         with engine.connect() as connection:
+#             result = connection.execute(text("""
+#                 SELECT *
+#                 FROM cdroutput
+                
+#                 WHERE source_entity_type = 'external_line'
+#                 ORDER BY cdr_started_at DESC;
+#             """))
+
+#             columns = result.keys()
+#             data = [dict(row._mapping) for row in result]
+
+#     except Exception as e:
+#         error = str(e)
+
+#     return render_template(
+#         'inbound_calls.html',
+#         username=session['username'],
+#         data=data,
+#         columns=columns,
+#         error=error
+#     )
+
 @app.route('/inbound_calls')
 def inbound_calls():
     if 'username' not in session:
@@ -286,6 +326,27 @@ def inbound_calls():
     columns = []
     error = None
 
+    
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
+
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
@@ -294,10 +355,11 @@ def inbound_calls():
             result = connection.execute(text("""
                 SELECT *
                 FROM cdroutput
-                
                 WHERE source_entity_type = 'external_line'
+                  AND cdr_started_at >= :from_date
+                  AND cdr_started_at < :to_date
                 ORDER BY cdr_started_at DESC;
-            """))
+            """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
