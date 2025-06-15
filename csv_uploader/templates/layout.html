@@ -124,10 +124,11 @@
   <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
   <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
 
-  <button class="dropdown-btn">📑 Reports ▾</button>
+  <button class="dropdown-btn">📑 Agent Performance ▾</button>
   <div class="dropdown-container">
-    <a href="{{ url_for('load_data') }}">📊 Call Detail Record</a>
-    <a href="{{ url_for('report_agent_performance') }}">📈 Agent Performance</a>
+    <!-- <a href="{{ url_for('load_data') }}">📊 Call Detail Record</a> -->
+    <a href="{{ url_for('average_call_handling_by_agent') }}">📈 Average Call Handling Time by Agent</a>
+    <a href="{{ url_for('call_handled_per_agent') }}">📈 Calls Handled per Agent</a>
   </div>
 
   <!-- <a href="{{ url_for('logout') }}">🚪 Logout</a> -->

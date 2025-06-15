@@ -151,8 +151,8 @@ def load_data():
 
 
 
-@app.route('/agent_performance')
-def report_agent_performance():
+@app.route('/average_call_handling_by_agent')
+def average_call_handling_by_agent():
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -188,7 +188,50 @@ def report_agent_performance():
         error = str(e)
 
     return render_template(
-        'report_agent_performance.html',
+        'average_call_handling_by_agent.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
+
+@app.route('/call_handled_per_agent')
+def call_handled_per_agent():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT
+                    source_participant_name AS agent_name,
+                    COUNT(DISTINCT call_history_id) AS calls_handled
+                FROM cdroutput
+                WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
+                    AND cdr_answered_at IS NOT NULL
+                GROUP BY agent_name
+                ORDER BY calls_handled DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'call_handled_per_agent.html',
         username=session['username'],
         data=data,
         columns=columns,
