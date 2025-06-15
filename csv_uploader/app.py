@@ -1508,6 +1508,21 @@ def edit_user(user_id):
         return redirect(url_for('manage_users'))
     return render_template('edit_user.html', user=user)
 
+@app.route('/users/<int:user_id>/delete', methods=['POST'])
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+
+    # 🔒 ห้ามลบ admin
+    if user.username == 'admin':
+        flash('ไม่สามารถลบ admin ได้', 'danger')
+        return redirect(url_for('manage_users'))
+
+    # ✅ ลบผู้ใช้
+    db.session.delete(user)
+    db.session.commit()
+
+    flash(f'ลบผู้ใช้ {user.username} แล้ว', 'success')
+    return redirect(url_for('manage_users'))
 
 
 @app.route('/logout')
