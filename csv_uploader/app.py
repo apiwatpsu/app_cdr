@@ -467,7 +467,6 @@ def inbound_calls():
     )
 
 
-
 @app.route('/average_call_handling_by_agent')
 def average_call_handling_by_agent():
     if 'username' not in session:
@@ -482,6 +481,26 @@ def average_call_handling_by_agent():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
+    # รับค่าช่วงวันที่จาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
+
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
@@ -495,13 +514,13 @@ def average_call_handling_by_agent():
                 WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
+                    AND cdr_answered_at >= :from_date AND cdr_answered_at < :to_date
                 GROUP BY agent_name
                 ORDER BY average_handling_time_seconds;
-            """))
+            """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
-
+            rows = [dict(row._mapping) for row in result]
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
@@ -520,6 +539,7 @@ def average_call_handling_by_agent():
         error=error
     )
 
+
 @app.route('/call_handled_per_agent')
 def call_handled_per_agent():
     if 'username' not in session:
@@ -532,6 +552,27 @@ def call_handled_per_agent():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # อ่านช่วงวันที่จาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -545,12 +586,23 @@ def call_handled_per_agent():
                 FROM cdroutput
                 WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                     AND cdr_answered_at IS NOT NULL
+                    AND cdr_answered_at >= :from_date AND cdr_answered_at < :to_date
                 GROUP BY agent_name
                 ORDER BY calls_handled DESC;
-            """))
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -562,6 +614,7 @@ def call_handled_per_agent():
         columns=columns,
         error=error
     )
+
 
 @app.route('/agent_utilization_rate')
 def agent_utilization_rate():
@@ -575,6 +628,27 @@ def agent_utilization_rate():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่าจาก URL parameter
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -583,48 +657,44 @@ def agent_utilization_rate():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 WITH AgentCalls AS (
-
-                            SELECT
-
-                                source_participant_name AS agent_name,
-
-                                cdr_started_at,
-
-                                cdr_ended_at,
-
-                                cdr_answered_at,
-
-                                CASE
-
-                                    WHEN cdr_answered_at IS NOT NULL THEN 1 ELSE 0
-
-                                END AS was_answered
-
-                            FROM cdroutput
-
-                            WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
-
-                        )
-
-                        SELECT
-
-                            agent_name,
-
-                            SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_seconds,
-
-                            SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) AS total_talk_time_seconds,
-
-                            (SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) / SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at)))) AS utilization_rate
-
-                        FROM AgentCalls
-
-                        GROUP BY agent_name
-
-                        ORDER BY utilization_rate DESC;
-            """))
+                    SELECT
+                        source_participant_name AS agent_name,
+                        cdr_started_at,
+                        cdr_ended_at,
+                        cdr_answered_at,
+                        CASE
+                            WHEN cdr_answered_at IS NOT NULL THEN 1 ELSE 0
+                        END AS was_answered
+                    FROM cdroutput
+                    WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
+                        AND cdr_started_at >= :from_date
+                        AND cdr_started_at < :to_date
+                )
+                SELECT
+                    agent_name,
+                    SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_seconds,
+                    SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) AS total_talk_time_seconds,
+                    (
+                        SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) /
+                        NULLIF(SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))), 0)
+                    ) AS utilization_rate
+                FROM AgentCalls
+                GROUP BY agent_name
+                ORDER BY utilization_rate DESC;
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -636,6 +706,7 @@ def agent_utilization_rate():
         columns=columns,
         error=error
     )
+
 
 @app.route('/list_all_lost_queue_calls')
 def list_all_lost_queue_calls():
@@ -649,6 +720,27 @@ def list_all_lost_queue_calls():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับพารามิเตอร์วันที่จาก URL
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -657,18 +749,26 @@ def list_all_lost_queue_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT c.*
-
                 FROM public.cdroutput AS c
-
                 WHERE c.destination_entity_type = 'queue'
-
-                AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
-
+                  AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+                  AND c.cdr_started_at >= :from_date
+                  AND c.cdr_started_at < :to_date
                 ORDER BY c.main_call_history_id DESC, c.cdr_id DESC;
-            """))
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -680,6 +780,7 @@ def list_all_lost_queue_calls():
         columns=columns,
         error=error
     )
+
 
 @app.route('/calls_handled_by_each_queue')
 def calls_handled_by_each_queue():
