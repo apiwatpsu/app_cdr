@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}Agent Utilization Rate{% endblock %}
+
+{% block content %}
+<h2>Agent Utilization Rate</h2>
+<div>
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  {% if data %}
+  <div class="bg-white p-4 rounded shadow-sm">
+    <div class="table-responsive">
+      <table id="dataTable" class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            {% for col in columns %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr>
+            {% for col in columns %}
+            <td>{{ row[col] }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    </div>
+  {% else %}
+  <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
+  {% endif %}
+</div>
+{% endblock %}
+

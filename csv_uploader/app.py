@@ -238,6 +238,79 @@ def call_handled_per_agent():
         error=error
     )
 
+@app.route('/agent_utilization_rate')
+def agent_utilization_rate():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                WITH AgentCalls AS (
+
+                            SELECT
+
+                                source_participant_name AS agent_name,
+
+                                cdr_started_at,
+
+                                cdr_ended_at,
+
+                                cdr_answered_at,
+
+                                CASE
+
+                                    WHEN cdr_answered_at IS NOT NULL THEN 1 ELSE 0
+
+                                END AS was_answered
+
+                            FROM cdroutput
+
+                            WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
+
+                        )
+
+                        SELECT
+
+                            agent_name,
+
+                            SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_seconds,
+
+                            SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) AS total_talk_time_seconds,
+
+                            (SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) / SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at)))) AS utilization_rate
+
+                        FROM AgentCalls
+
+                        GROUP BY agent_name
+
+                        ORDER BY utilization_rate DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'agent_utilization_rate.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
