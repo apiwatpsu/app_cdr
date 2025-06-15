@@ -247,6 +247,22 @@
         </a>
     </div>
 
+
+    <!-- Error and Failure Analysis Group -->
+    <div class="sidebar-label text-muted">Error and Failure Analysis</div>
+    <button class="dropdown-btn">
+        <i data-lucide="circle-x"></i>
+        Error and Failure ▾
+    </button>
+    <div class="dropdown-container">
+        <a href="{{ url_for('calls_no_route') }}">
+         List calls failed
+        </a>
+        <a href="{{ url_for('calls_license_limits') }}">
+         Calls license limits
+        </a>
+    </div>
+
 </div>
 
 
