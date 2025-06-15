@@ -124,6 +124,11 @@
   <a href="{{ url_for('manage_users') }}">👥 Manage Users</a>
   <a href="{{ url_for('db_config') }}">⚙️ Database Settings</a>
 
+  <button class="dropdown-btn">📊 Call Detail Record ▾</button>
+  <div class="dropdown-container">
+    <a href="{{ url_for('cdr_data') }}">📊 Call Detail Record</a>
+  </div>
+
   <button class="dropdown-btn">👨‍💼 Agent Performance ▾</button>
   <div class="dropdown-container">
     
@@ -132,10 +137,7 @@
     <a href="{{ url_for('agent_utilization_rate') }}">Agent Utilization Rate</a>
   </div>
 
-    <button class="dropdown-btn">📊 Call Detail Record ▾</button>
-  <div class="dropdown-container">
-    <a href="{{ url_for('cdr_data') }}">📊 Call Detail Record</a>
-  </div>
+
 
   <!-- <a href="{{ url_for('logout') }}">🚪 Logout</a> -->
 </div>
