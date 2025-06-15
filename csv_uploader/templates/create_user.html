@@ -13,6 +13,14 @@
       <label for="password" class="form-label">Password</label>
       <input type="password" class="form-control" name="password" required>
     </div>
+    <div class="mb-3">
+    <label for="role" class="form-label">สิทธิ์การใช้งาน</label>
+    <select name="role" class="form-select" required>
+        <option value="admin">Admin</option>
+        <option value="editor">Editor</option>
+        <option value="viewer" selected>Viewer</option>
+    </select>
+    </div>
     <button type="submit" class="btn btn-success">✅ สร้างผู้ใช้</button>
     <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">ย้อนกลับ</a>
   </form>
