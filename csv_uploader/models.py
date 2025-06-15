@@ -9,7 +9,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False, default='viewer')
 
-    def __init__(self, username, password, , role='viewer'):
+    def __init__(self, username, password, role='viewer'):
         self.username = username
         self.password = generate_password_hash(password)
         self.role = role
