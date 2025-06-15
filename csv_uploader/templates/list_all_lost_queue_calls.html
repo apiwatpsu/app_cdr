@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}List all lost queue calls{% endblock %}
+
+{% block content %}
+<h2>List all lost queue calls</h2>
+<div>
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  {% if data %}
+  <div class="bg-white p-4 rounded shadow-sm">
+  <!-- สร้าง wrapper ให้ DataTable ควบคุม scroll ได้ดี -->
+  <div style="overflow-x: auto;">
+    <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%; border-collapse: collapse;">
+      <thead class="table-light">
+        <tr>
+          {% for col in columns %}
+          <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr>
+          {% for col in columns %}
+          <td>{{ row[col] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  {% else %}
+  <p class="text-muted mt-4">ไม่มีข้อมูลให้แสดง</p>
+  {% endif %}
+</div>
+{% endblock %}
+

@@ -311,6 +311,50 @@ def agent_utilization_rate():
         columns=columns,
         error=error
     )
+
+@app.route('/list_all_lost_queue_calls')
+def list_all_lost_queue_calls():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT c.*
+
+                FROM public.cdroutput AS c
+
+                WHERE c.destination_entity_type = 'queue'
+
+                AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+
+                ORDER BY c.main_call_history_id DESC, c.cdr_id DESC;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'list_all_lost_queue_calls.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:
