@@ -794,6 +794,27 @@ def calls_handled_by_each_queue():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับช่วงวันที่จาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -801,21 +822,30 @@ def calls_handled_by_each_queue():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT destination_dn_name AS queue_name, COUNT(DISTINCT call_history_id) AS calls_handled
-
+                SELECT
+                    destination_dn_name AS queue_name,
+                    COUNT(DISTINCT call_history_id) AS calls_handled
                 FROM cdroutput
-
                 WHERE destination_entity_type = 'queue'
-
-                    AND cdr_answered_at IS NOT NULL
-
+                  AND cdr_answered_at IS NOT NULL
+                  AND cdr_started_at >= :from_date
+                  AND cdr_started_at < :to_date
                 GROUP BY destination_dn_name
-
                 ORDER BY calls_handled DESC;
-            """))
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -827,6 +857,7 @@ def calls_handled_by_each_queue():
         columns=columns,
         error=error
     )
+
 
 @app.route('/average_time_before_agents_answered')
 def average_time_before_agents_answered():
@@ -840,6 +871,27 @@ def average_time_before_agents_answered():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับช่วงวันที่จาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -848,26 +900,30 @@ def average_time_before_agents_answered():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-
                     destination_dn_name AS queue_name,
-
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_talk_time_seconds
-
                 FROM cdroutput
-
                 WHERE destination_entity_type = 'queue'
-
-                    AND cdr_answered_at IS NOT NULL
-
-                    AND cdr_ended_at IS NOT NULL
-
+                  AND cdr_answered_at IS NOT NULL
+                  AND cdr_ended_at IS NOT NULL
+                  AND cdr_started_at >= :from_date
+                  AND cdr_started_at < :to_date
                 GROUP BY destination_dn_name
-
                 ORDER BY average_talk_time_seconds DESC;
-            """))
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -879,6 +935,8 @@ def average_time_before_agents_answered():
         columns=columns,
         error=error
     )
+
+
 
 @app.route('/terminated_before_being_answered')
 def terminated_before_being_answered():
@@ -892,6 +950,26 @@ def terminated_before_being_answered():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่าจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -900,26 +978,30 @@ def terminated_before_being_answered():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-
                     destination_dn_name AS queue_name,
-
                     COUNT(DISTINCT call_history_id) AS abandoned_calls
-
                 FROM cdroutput
-
                 WHERE destination_entity_type = 'queue'
-
-                        AND source_entity_type = 'external_line' -- Consider only external callers
-
+                    AND source_entity_type = 'external_line'
                     AND termination_reason = 'src_participant_terminated'
-
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at < :to_date
                 GROUP BY destination_dn_name
-
                 ORDER BY abandoned_calls DESC;
-            """))
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -931,6 +1013,8 @@ def terminated_before_being_answered():
         columns=columns,
         error=error
     )
+
+
 
 @app.route('/calls_transferred_to_queue')
 def calls_transferred_to_queue():
@@ -944,6 +1028,26 @@ def calls_transferred_to_queue():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่า from_date / to_date จาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -952,30 +1056,32 @@ def calls_transferred_to_queue():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-
                     c2.call_history_id,
-
                     c1.source_participant_name AS original_caller,
-
                     c1.destination_participant_name AS original_destination,
-
                     c2.destination_dn_name AS transferred_queue
-
                 FROM cdroutput c1
-
                 JOIN cdroutput c2 ON c1.call_history_id = c2.call_history_id
-
                 WHERE c1.creation_method IN ('call_init', 'route_to')
-
                     AND c2.creation_method = 'transfer'
-
                     AND c2.destination_entity_type = 'queue'
-
-                    AND c2.base_cdr_id = c1.cdr_id;
-            """))
+                    AND c2.base_cdr_id = c1.cdr_id
+                    AND c2.cdr_started_at >= :from_date
+                    AND c2.cdr_started_at < :to_date
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -987,6 +1093,8 @@ def calls_transferred_to_queue():
         columns=columns,
         error=error
     )
+
+
 
 @app.route('/avg_call_duration_answered_external')
 def avg_call_duration_answered_external():
@@ -1000,6 +1108,26 @@ def avg_call_duration_answered_external():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่าช่วงวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1007,21 +1135,29 @@ def avg_call_duration_answered_external():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_duration_seconds
-
+                SELECT 
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_duration_seconds
                 FROM cdroutput
-
                 WHERE source_entity_type != 'external_line'
-
                     AND destination_entity_type = 'external_line'
-
                     AND cdr_answered_at IS NOT NULL
-
-                    AND cdr_ended_at IS NOT NULL;
-            """))
+                    AND cdr_ended_at IS NOT NULL
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at < :to_date
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -1033,6 +1169,7 @@ def avg_call_duration_answered_external():
         columns=columns,
         error=error
     )
+
 
 @app.route('/longest_internal_calls')
 def longest_internal_calls():
@@ -1046,6 +1183,26 @@ def longest_internal_calls():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับค่าช่วงวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+
+    try:
+        if from_date_str:
+            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+        else:
+            from_date = datetime.utcnow() - timedelta(days=30)
+
+        if to_date_str:
+            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+        else:
+            to_date = datetime.utcnow() + timedelta(days=1)
+    except ValueError:
+        error = "Invalid date format"
+        from_date = datetime.utcnow() - timedelta(days=30)
+        to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1053,27 +1210,34 @@ def longest_internal_calls():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT call_history_id, source_dn_number, destination_dn_number,
-
+                SELECT
+                    call_history_id,
+                    source_dn_number,
+                    destination_dn_number,
                     (cdr_ended_at - cdr_answered_at) AS duration
-
                 FROM cdroutput
-
                 WHERE source_entity_type != 'external_line'
-
                     AND destination_entity_type != 'external_line'
-
                     AND cdr_answered_at IS NOT NULL
-
                     AND cdr_ended_at IS NOT NULL
-
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at < :to_date
                 ORDER BY duration DESC
-
                 LIMIT 10;
-            """))
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
@@ -1085,6 +1249,7 @@ def longest_internal_calls():
         columns=columns,
         error=error
     )
+
 
 
 @app.route('/calls_no_route')
