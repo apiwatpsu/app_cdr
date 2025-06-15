@@ -229,7 +229,7 @@ def count_call_by_type():
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
 
             # Convert datetime fields to Bangkok time
             for row in rows:
@@ -302,7 +302,7 @@ def internal_calls():
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
 
             # Convert datetime fields to Bangkok time
             for row in rows:
@@ -374,7 +374,7 @@ def outbound_calls():
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
 
             for row in rows:
                 for col in date_columns:
@@ -446,7 +446,7 @@ def inbound_calls():
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
-            data = [dict(row._mapping) for row in result]
+            rows = [dict(row._mapping) for row in result]
 
             for row in rows:
                 for col in date_columns:
