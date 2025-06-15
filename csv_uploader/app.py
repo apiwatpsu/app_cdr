@@ -6,8 +6,11 @@ from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
 import csv
+import psutil
+import shutil
 from io import StringIO
 from flask import make_response
+
 BANGKOK_TZ = timezone(timedelta(hours=7))
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -1440,6 +1443,45 @@ def calls_license_limits():
 
 #     except Exception as e:
 #         return f"Error exporting CSV: {e}", 500
+
+@app.route('/system_utilization')
+def system_utilization():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    try:
+        # CPU
+        cpu_usage = psutil.cpu_percent(interval=0.5)
+        cpu_cores = psutil.cpu_count(logical=True)
+        cpu_processes = len(psutil.pids())
+
+        # Memory
+        mem = psutil.virtual_memory()
+        mem_total = round(mem.total / (1024 * 1024))  # MB
+        mem_used = round(mem.used / (1024 * 1024))
+        mem_percent = mem.percent
+
+        # Disk
+        disk = shutil.disk_usage("/")
+        disk_total = round(disk.total / (1024**3))  # GB
+        disk_used = round(disk.used / (1024**3))
+        disk_percent = round((disk.used / disk.total) * 100)
+
+        return render_template(
+            'your_sidebar_template.html',
+            username=session['username'],
+            cpu_usage=cpu_usage,
+            cpu_cores=cpu_cores,
+            cpu_processes=cpu_processes,
+            mem_total=mem_total,
+            mem_used=mem_used,
+            mem_percent=mem_percent,
+            disk_total=disk_total,
+            disk_used=disk_used,
+            disk_percent=disk_percent
+        )
+    except Exception as e:
+        return f"Error: {str(e)}", 500
 
 @app.route('/logout')
 def logout():

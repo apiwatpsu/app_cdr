@@ -4,4 +4,5 @@ pymysql
 psycopg2-binary
 SQLAlchemy
 Werkzeug
+psutil
 
