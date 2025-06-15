@@ -227,15 +227,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
-<script>
-  // Toggle dropdown in sidebar
+<!-- <script>
+  
   document.querySelectorAll('.dropdown-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       const dropdown = this.nextElementSibling;
       dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
     });
   });
+</script> -->
+<script>
+  // Activate Lucide icons
+  lucide.createIcons();
+
+  // Handle dropdown toggles
+  const dropdowns = document.getElementsByClassName("dropdown-btn");
+  for (let i = 0; i < dropdowns.length; i++) {
+    dropdowns[i].addEventListener("click", function () {
+      this.classList.toggle("active");
+      const content = this.nextElementSibling;
+      content.style.display = content.style.display === "block" ? "none" : "block";
+    });
+  }
 </script>
+
 
 </body>
 </html>
