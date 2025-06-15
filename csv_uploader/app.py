@@ -154,8 +154,7 @@ def cdr_data():
             result = connection.execute(text(f"""
                 SELECT * FROM {config.table}
                 WHERE cdr_started_at >= :from_date AND cdr_started_at < :to_date
-                ORDER BY cdr_started_at DESC
-                LIMIT 10000
+                ORDER BY cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
