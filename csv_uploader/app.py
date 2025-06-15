@@ -1444,32 +1444,26 @@ def calls_license_limits():
 #     except Exception as e:
 #         return f"Error exporting CSV: {e}", 500
 
-@app.route('/system_utilization')
-def system_utilization():
-    if 'username' not in session:
-        return redirect(url_for('login'))
+@app.context_processor
+def inject_system_utilization():
+    import psutil, shutil
 
     try:
-        # CPU
-        cpu_usage = psutil.cpu_percent(interval=0.5)
+        cpu_usage = psutil.cpu_percent(interval=0.1)
         cpu_cores = psutil.cpu_count(logical=True)
         cpu_processes = len(psutil.pids())
 
-        # Memory
         mem = psutil.virtual_memory()
-        mem_total = round(mem.total / (1024 * 1024))  # MB
+        mem_total = round(mem.total / (1024 * 1024))
         mem_used = round(mem.used / (1024 * 1024))
         mem_percent = mem.percent
 
-        # Disk
         disk = shutil.disk_usage("/")
-        disk_total = round(disk.total / (1024**3))  # GB
+        disk_total = round(disk.total / (1024**3))
         disk_used = round(disk.used / (1024**3))
         disk_percent = round((disk.used / disk.total) * 100)
 
-        return render_template(
-            'your_sidebar_template.html',
-            username=session['username'],
+        return dict(
             cpu_usage=cpu_usage,
             cpu_cores=cpu_cores,
             cpu_processes=cpu_processes,
@@ -1480,8 +1474,9 @@ def system_utilization():
             disk_used=disk_used,
             disk_percent=disk_percent
         )
-    except Exception as e:
-        return f"Error: {str(e)}", 500
+    except:
+        return {}  # fallback กัน error ไม่ให้แครช
+
 
 @app.route('/logout')
 def logout():

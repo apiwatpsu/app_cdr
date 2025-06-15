@@ -292,32 +292,33 @@
   <h6 class="sidebar-label text-muted text-uppercase">System Utilization</h6>
 
   <!-- CPU -->
-    <div class="mb-2">
-      <div class="small text-muted mb-1">CPU USAGE</div>
-      <div class="progress" style="height: 5px;">
-        <div class="progress-bar bg-primary" style="width: {{ cpu_usage }}%;"></div>
-      </div>
-      <div class="small text-muted mt-1">{{ cpu_processes }} processes. {{ (cpu_cores // 4) or 1 }}/{{ cpu_cores }} cores</div>
+  <div class="mb-2">
+    <div class="small text-muted mb-1">CPU USAGE</div>
+    <div class="progress" style="height: 5px;">
+      <div class="progress-bar bg-primary" style="width: {{ cpu_usage }}%;"></div>
     </div>
-
-    <!-- Memory -->
-    <div class="mb-2">
-      <div class="small text-muted mb-1">MEMORY USAGE</div>
-      <div class="progress" style="height: 5px;">
-        <div class="progress-bar bg-warning" style="width: {{ mem_percent }}%;"></div>
-      </div>
-      <div class="small text-muted mt-1">{{ mem_used }}MB / {{ mem_total }}MB</div>
-    </div>
-
-    <!-- SSD -->
-    <div class="mb-2">
-      <div class="small text-muted mb-1">SSD USAGE</div>
-      <div class="progress" style="height: 5px;">
-        <div class="progress-bar bg-danger" style="width: {{ disk_percent }}%;"></div>
-      </div>
-      <div class="small text-muted mt-1">{{ disk_used }}GB / {{ disk_total }}GB</div>
-    </div>
+    <div class="small text-muted mt-1">{{ cpu_processes }} processes. {{ (cpu_cores // 4) or 1 }}/{{ cpu_cores }} cores</div>
   </div>
+
+  <!-- Memory -->
+  <div class="mb-2">
+    <div class="small text-muted mb-1">MEMORY USAGE</div>
+    <div class="progress" style="height: 5px;">
+      <div class="progress-bar bg-warning" style="width: {{ mem_percent }}%;"></div>
+    </div>
+    <div class="small text-muted mt-1">{{ mem_used }}MB / {{ mem_total }}MB</div>
+  </div>
+
+  <!-- SSD -->
+  <div class="mb-2">
+    <div class="small text-muted mb-1">SSD USAGE</div>
+    <div class="progress" style="height: 5px;">
+      <div class="progress-bar bg-danger" style="width: {{ disk_percent }}%;"></div>
+    </div>
+    <div class="small text-muted mt-1">{{ disk_used }}GB / {{ disk_total }}GB</div>
+  </div>
+</div>
+
 
 </div>
 
