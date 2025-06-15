@@ -214,7 +214,7 @@ def internal_calls():
                 
                 WHERE source_entity_type = 'extension'
                 AND destination_entity_type = 'extension'
-                ORDER BY count DESC;
+                ORDER BY cdr_created_at DESC;
             """))
 
             columns = result.keys()
