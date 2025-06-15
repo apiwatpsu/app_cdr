@@ -561,6 +561,52 @@ def calls_transferred_to_queue():
         columns=columns,
         error=error
     )
+
+@app.route('/avg_call_duration_answered_external')
+def avg_call_duration_answered_external():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_duration_seconds
+
+                FROM cdroutput
+
+                WHERE source_entity_type != 'external_line'
+
+                    AND destination_entity_type = 'external_line'
+
+                    AND cdr_answered_at IS NOT NULL
+
+                    AND cdr_ended_at IS NOT NULL;
+            """))
+
+            columns = result.keys()
+            data = [dict(row._mapping) for row in result]
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'avg_call_duration_answered_external.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        error=error
+    )
 # @app.route('/export_csv')
 # def export_csv():
 #     if 'username' not in session:

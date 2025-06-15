@@ -230,8 +230,19 @@
       <!-- <i data-lucide="list-x"></i> -->
       Calls transferred to queue
     </a>
-  
   </div>
+
+      <!-- Call Duration & Analysis Group -->
+    <div class="sidebar-label text-muted">Call Duration & Analysis</div>
+    <button class="dropdown-btn">
+        <i data-lucide="phone"></i>
+        Call Duration ▾
+    </button>
+    <div class="dropdown-container">
+        <a href="{{ url_for('avg_call_duration_answered_external') }}">
+        average duration external calls
+        </a>
+    </div>
 
 </div>
 
