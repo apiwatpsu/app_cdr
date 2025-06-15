@@ -10,6 +10,17 @@
   {% endif %}
 
   {% if data %}
+
+  <div class="d-flex gap-2 mb-3">
+    <div>
+        <label for="fromDate" class="form-label mb-0">From:</label>
+        <input type="date" id="fromDate" class="form-control form-control-sm" />
+    </div>
+    <div>
+        <label for="toDate" class="form-label mb-0">To:</label>
+        <input type="date" id="toDate" class="form-control form-control-sm" />
+    </div>
+  </div>
   <div class="bg-white p-4 rounded shadow-sm">
   <!-- สร้าง wrapper ให้ DataTable ควบคุม scroll ได้ดี -->
   <div style="overflow-x: auto;">
