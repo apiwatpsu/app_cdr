@@ -192,6 +192,7 @@ def count_call_by_type():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
     # รับค่าช่วงวันจาก query string
     from_date_str = request.args.get("from_date")
@@ -230,6 +231,14 @@ def count_call_by_type():
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
+
     except Exception as e:
         error = str(e)
 
@@ -255,6 +264,7 @@ def internal_calls():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
     # รับค่าจาก query string
     from_date_str = request.args.get("from_date")
@@ -294,6 +304,14 @@ def internal_calls():
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
+
     except Exception as e:
         error = str(e)
 
@@ -318,6 +336,7 @@ def outbound_calls():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
     # รับค่าจาก query string
     from_date_str = request.args.get("from_date")
@@ -357,6 +376,13 @@ def outbound_calls():
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
 
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
+
     except Exception as e:
         error = str(e)
 
@@ -382,6 +408,7 @@ def inbound_calls():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
     
     from_date_str = request.args.get("from_date")
@@ -421,6 +448,13 @@ def inbound_calls():
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
 
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
+
     except Exception as e:
         error = str(e)
 
@@ -446,6 +480,7 @@ def average_call_handling_by_agent():
     data = []
     columns = []
     error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -466,6 +501,13 @@ def average_call_handling_by_agent():
 
             columns = result.keys()
             data = [dict(row._mapping) for row in result]
+
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].astimezone(BANGKOK_TZ)
+
+            data = rows
 
     except Exception as e:
         error = str(e)
