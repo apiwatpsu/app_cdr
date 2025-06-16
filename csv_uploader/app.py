@@ -1609,9 +1609,9 @@ def dashboard():
         data = get_dashboard_data(from_date, to_date)
 
         return render_template("dashboard.html",
-            inbound_count=data.get['inbound_count'],
-            outbound_count=data.get['outbound_count'],
-            internal_count=data.get['internal_count']
+            inbound_count=data['inbound_count', 0],
+            outbound_count=data['outbound_count', 0],
+            internal_count=data['internal_count', 0]
             
         )
     except Exception as e:
