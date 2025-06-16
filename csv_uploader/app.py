@@ -1524,6 +1524,20 @@ def delete_user(user_id):
     flash(f'ลบผู้ใช้ {user.username} แล้ว', 'success')
     return redirect(url_for('manage_users'))
 
+@app.route('/dashboard')
+def dashboard():
+    # ตัวอย่างสมมุติ count จากหลาย source
+    inbound_count = 120
+    outbound_count = 80
+    missed_count = 15
+
+    return render_template(
+        'dashboard.html',
+        inbound_count=inbound_count,
+        outbound_count=outbound_count,
+        missed_count=missed_count
+    )
+
 
 @app.route('/logout')
 def logout():
