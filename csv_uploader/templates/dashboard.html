@@ -27,59 +27,52 @@
     </div>
   </form>
 
-  <div class="row">
-  
-<!-- <div class="col-md-4">
-  <div class="card bg-success-gradient text-white mb-3">
-    <div class="card-body d-flex align-items-center gap-3">
-      <i data-lucide="phone-incoming" style="width: 40px; height: 40px;"></i>
-      <div>
-        <h5 class="card-title">Inbound</h5>
-        <h2>{{ inbound_count }}</h2>
-      </div>
+<div class="row">
+  <div class="card p-3 border-0 shadow-sm rounded bg-white">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+        <div class="text-muted small">Inbound Calls</div>
+        <div class="h4 fw-bold">{{ inbound_count }}</div>
+        <div class="text-danger small">
+            (-12.4%) <i data-lucide="arrow-down-right" class="lucide" style="width: 14px; height: 14px;"></i>
+        </div>
+        </div>
+        <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i data-lucide="phone-incoming" class="lucide text-primary" style="width: 20px; height: 20px;"></i>
+        </div>
     </div>
-  </div>
-</div> -->
+    </div>
 
-<div class="card p-3 border-0 shadow-sm rounded bg-white">
-  <div class="d-flex justify-content-between align-items-start">
-    <div>
-      <div class="text-muted small">Inbound Calls</div>
-      <div class="h4 fw-bold">{{ inbound_count }}</div>
-      <div class="text-danger small">
-        (-12.4%) <i data-lucide="arrow-down-right" class="lucide" style="width: 14px; height: 14px;"></i>
-      </div>
+    <div class="card p-3 border-0 shadow-sm rounded bg-white">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+        <div class="text-muted small">Outbound</div>
+        <div class="h4 fw-bold">{{ outbound_count }}</div>
+        <div class="text-danger small">
+            (-12.4%) <i data-lucide="arrow-up-right" class="lucide" style="width: 14px; height: 14px;"></i>
+        </div>
+        </div>
+        <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i data-lucide="phone-outgoing" class="lucide text-primary" style="width: 20px; height: 20px;"></i>
+        </div>
     </div>
-    <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-      <i data-lucide="phone-incoming" class="lucide text-primary" style="width: 20px; height: 20px;"></i>
     </div>
-  </div>
-</div>
 
 
-<div class="col-md-4">
-  <div class="card bg-primary-gradient text-white mb-3">
-    <div class="card-body d-flex align-items-center gap-3">
-      <i data-lucide="phone-outgoing" style="width: 40px; height: 40px;"></i>
-      <div>
-        <h5 class="card-title">Outbound</h5>
-        <h2>{{ outbound_count }}</h2>
-      </div>
+    <div class="card p-3 border-0 shadow-sm rounded bg-white">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+        <div class="text-muted small">Internal</div>
+        <div class="h4 fw-bold">{{ internal_count }}</div>
+        <div class="text-danger small">
+            (-12.4%) <i data-lucide="arrow-up-right" class="lucide" style="width: 14px; height: 14px;"></i>
+        </div>
+        </div>
+        <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i data-lucide="phone" class="lucide text-primary" style="width: 20px; height: 20px;"></i>
+        </div>
     </div>
-  </div>
-</div>
-
-<div class="col-md-4">
-  <div class="card bg-warning-gradient text-white mb-3">
-    <div class="card-body d-flex align-items-center gap-3">
-      <i data-lucide="phone" style="width: 40px; height: 40px;"></i>
-      <div>
-        <h5 class="card-title">Internal</h5>
-        <h2>{{ internal_count }}</h2>
-      </div>
     </div>
-  </div>
-</div>
 
 </div>
 
