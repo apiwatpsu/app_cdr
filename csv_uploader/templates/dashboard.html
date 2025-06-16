@@ -28,10 +28,11 @@
   </form>
 <div class="bg-white p-4 rounded shadow-sm">
   <div class="row">
-  <div class="col-md-4">
+  
+<div class="col-md-4">
   <div class="card bg-success-gradient text-white mb-3">
     <div class="card-body d-flex align-items-center gap-3">
-      <i data-lucide="phone-incoming" style="width: 46px; height: 46px;"></i>
+      <i data-lucide="phone-incoming" style="width: 40px; height: 40px;"></i>
       <div>
         <h5 class="card-title">Inbound</h5>
         <h2>{{ inbound_count }}</h2>
@@ -39,22 +40,31 @@
     </div>
   </div>
 </div>
-  <div class="col-md-4">
-    <div class="card bg-info-gradient text-white mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Outbound Calls</h5>
+
+<div class="col-md-4">
+  <div class="card bg-success-gradient text-white mb-3">
+    <div class="card-body d-flex align-items-center gap-3">
+      <i data-lucide="phone-outgoing" style="width: 40px; height: 40px;"></i>
+      <div>
+        <h5 class="card-title">Outbound</h5>
         <h2>{{ outbound_count }}</h2>
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="card bg-warning-gradient text-white mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Internal Calls</h5>
+</div>
+
+<div class="col-md-4">
+  <div class="card bg-success-gradient text-white mb-3">
+    <div class="card-body d-flex align-items-center gap-3">
+      <i data-lucide="phone" style="width: 40px; height: 40px;"></i>
+      <div>
+        <h5 class="card-title">Internal</h5>
         <h2>{{ internal_count }}</h2>
       </div>
     </div>
   </div>
+</div>
+
 </div>
 
 </div>
