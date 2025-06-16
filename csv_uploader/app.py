@@ -1524,19 +1524,83 @@ def delete_user(user_id):
     flash(f'ลบผู้ใช้ {user.username} แล้ว', 'success')
     return redirect(url_for('manage_users'))
 
+def get_dashboard_data(from_date, to_date):
+    config = DBConfig.query.first()
+    if not config:
+        raise Exception("ยังไม่มีการตั้งค่า database")
+
+    conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+    engine = create_engine(conn_str)
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    dashboard_data = {}
+
+    with engine.connect() as connection:
+        #Inbound Calls
+        inbound_result = connection.execute(text("""
+                SELECT *
+                FROM cdroutput
+                WHERE source_entity_type = 'external_line'
+                  AND cdr_started_at >= :from_date
+                  AND cdr_started_at < :to_date
+                ORDER BY cdr_started_at DESC;
+        """), {"from_date": from_date, "to_date": to_date})
+
+        inbound_rows = [dict(row._mapping) for row in inbound_result]
+        for row in inbound_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].astimezone(BANGKOK_TZ)
+
+        dashboard_data['inbound_data'] = inbound_rows
+        dashboard_data['inbound_count'] = len(inbound_rows)
+
+        #Outbound Calls
+        outbound_result = connection.execute(text("""
+                SELECT *
+                FROM cdroutput
+                WHERE destination_entity_type = 'external_line'
+                AND cdr_started_at >= :from_date
+                AND cdr_started_at < :to_date
+        """), {"from_date": from_date, "to_date": to_date})
+
+        outbound_row = outbound_result.fetchone()
+        dashboard_data['outbound_count'] = outbound_row['outbound_count'] if outbound_row else 0
+
+        #Internal Calls
+        missed_result = connection.execute(text("""
+                SELECT *
+                FROM cdroutput
+                WHERE source_entity_type = 'extension'
+                  AND destination_entity_type = 'extension'
+                  AND cdr_started_at >= :from_date
+                  AND cdr_started_at < :to_date
+                ORDER BY cdr_started_at DESC;
+        """), {"from_date": from_date, "to_date": to_date})
+
+        internal_row = internal_result.fetchone()
+        dashboard_data['internal_count'] = internal_row['internal_count'] if internal_row else 0
+
+    return dashboard_data
+
+
+
 @app.route('/dashboard')
 def dashboard():
-    # ตัวอย่างสมมุติ count จากหลาย source
-    inbound_count = 120
-    outbound_count = 80
-    missed_count = 15
+    from_date = datetime.utcnow() - timedelta(days=30)
+    to_date = datetime.utcnow() + timedelta(days=1)
 
-    return render_template(
-        'dashboard.html',
-        inbound_count=inbound_count,
-        outbound_count=outbound_count,
-        missed_count=missed_count
-    )
+    try:
+        data = get_dashboard_data(from_date, to_date)
+
+        return render_template("dashboard.html",
+            inbound_count=data['inbound_count'],
+            outbound_count=data['outbound_count'],
+            internal_count=data['internal_count']
+            
+        )
+    except Exception as e:
+        return render_template("dashboard.html", error=str(e))
 
 
 @app.route('/logout')
