@@ -1544,7 +1544,7 @@ def get_dashboard_data(from_date, to_date):
                   AND cdr_started_at >= :from_date
                   AND cdr_started_at < :to_date
                 ORDER BY cdr_started_at DESC;
-        """), {"from_date": from_date, "to_date": to_date})
+        """), {"from_date": from_date, "to_date": to_date}).mappings()
 
         inbound_rows = [dict(row) for row in inbound_result]
         
@@ -1563,7 +1563,7 @@ def get_dashboard_data(from_date, to_date):
                 WHERE destination_entity_type = 'external_line'
                 AND cdr_started_at >= :from_date
                 AND cdr_started_at < :to_date
-        """), {"from_date": from_date, "to_date": to_date})
+        """), {"from_date": from_date, "to_date": to_date}).mappings()
 
         outbound_rows = [dict(row) for row in outbound_result]
         
@@ -1576,7 +1576,7 @@ def get_dashboard_data(from_date, to_date):
         dashboard_data['outbound_count'] = len(outbound_rows)
 
         #Internal Calls
-        missed_result = connection.execute(text("""
+        internal_result = connection.execute(text("""
                 SELECT *
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
@@ -1584,7 +1584,7 @@ def get_dashboard_data(from_date, to_date):
                   AND cdr_started_at >= :from_date
                   AND cdr_started_at < :to_date
                 ORDER BY cdr_started_at DESC;
-        """), {"from_date": from_date, "to_date": to_date})
+        """), {"from_date": from_date, "to_date": to_date}).mappings()
 
         internal_rows = [dict(row) for row in internal_result]
         
