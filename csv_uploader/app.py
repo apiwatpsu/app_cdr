@@ -1606,9 +1606,10 @@ def dashboard():
     to_date = datetime.utcnow() + timedelta(days=1)
 
     try:
+        print("Before get_dashboard_data()")
         data = get_dashboard_data(from_date, to_date)
-
-        print("Inbound Data Count:", len(data('inbound_data', [])))
+        print("After get_dashboard_data()")
+        print("Inbound Data Count:", len(data.get('inbound_data', [])))
 
         return render_template("dashboard.html",
             inbound_count=data['inbound_count', 0],
