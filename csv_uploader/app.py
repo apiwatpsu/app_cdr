@@ -1612,9 +1612,10 @@ def dashboard():
         print("Inbound Data Count:", len(data.get('inbound_data', [])))
 
         return render_template("dashboard.html",
-            inbound_count=data['inbound_count', 0],
-            outbound_count=data['outbound_count', 0],
-            internal_count=data['internal_count', 0]
+            inbound_count=data.get('inbound_count', 0),
+            outbound_count=data.get('outbound_count', 0),
+            internal_count=data.get('internal_count', 0),
+            inbound_data=data.get('inbound_data', [])
             
         )
     except Exception as e:
