@@ -1608,6 +1608,8 @@ def dashboard():
     try:
         data = get_dashboard_data(from_date, to_date)
 
+        print("Inbound Data Count:", len(data('inbound_data', [])))
+
         return render_template("dashboard.html",
             inbound_count=data['inbound_count', 0],
             outbound_count=data['outbound_count', 0],
