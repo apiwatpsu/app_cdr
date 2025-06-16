@@ -1546,7 +1546,8 @@ def get_dashboard_data(from_date, to_date):
                 ORDER BY cdr_started_at DESC;
         """), {"from_date": from_date, "to_date": to_date})
 
-        inbound_rows = [dict(row._mapping) for row in inbound_result]
+        inbound_rows = [dict(row) for row in inbound_result]
+        
         for row in inbound_rows:
             for col in date_columns:
                 if col in row and isinstance(row[col], datetime):
@@ -1564,8 +1565,15 @@ def get_dashboard_data(from_date, to_date):
                 AND cdr_started_at < :to_date
         """), {"from_date": from_date, "to_date": to_date})
 
-        outbound_row = outbound_result.fetchone()
-        dashboard_data['outbound_count'] = outbound_row['outbound_count'] if outbound_row else 0
+        outbound_rows = [dict(row) for row in outbound_result]
+        
+        for row in outbound_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].astimezone(BANGKOK_TZ)
+
+        dashboard_data['outbound_data'] = inbound_rows
+        dashboard_data['outbound_count'] = len(outbound_rows)
 
         #Internal Calls
         missed_result = connection.execute(text("""
@@ -1578,8 +1586,15 @@ def get_dashboard_data(from_date, to_date):
                 ORDER BY cdr_started_at DESC;
         """), {"from_date": from_date, "to_date": to_date})
 
-        internal_row = internal_result.fetchone()
-        dashboard_data['internal_count'] = internal_row['internal_count'] if internal_row else 0
+        internal_rows = [dict(row) for row in internal_result]
+        
+        for row in internal_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].astimezone(BANGKOK_TZ)
+
+        dashboard_data['internal_data'] = internal_rows
+        dashboard_data['internal_count'] = len(internal_rows)
 
     return dashboard_data
 
