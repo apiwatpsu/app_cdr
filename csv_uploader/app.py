@@ -757,7 +757,7 @@ def list_all_lost_queue_calls():
                 WHERE c.destination_entity_type = 'queue'
                   AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
                   AND c.cdr_started_at >= :from_date
-                  AND c.cdr_started_at < :to_date
+                  AND c.cdr_started_at <= :to_date
                 ORDER BY c.main_call_history_id DESC, c.cdr_id DESC;
             """), {
                 "from_date": from_date,
