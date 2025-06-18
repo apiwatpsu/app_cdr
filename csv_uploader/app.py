@@ -946,12 +946,24 @@ def list_all_lost_queue_calls():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT c.*
+                SELECT 
+                    c.source_entity_type,
+                    c.source_participant_phone_number,
+                    c.source_participant_trunk_did,
+                    c.destination_entity_type,
+                    c.destination_dn_number,
+                    c.destination_dn_name,
+                    c.destination_participant_group_name,
+                    c.termination_reason,
+                    c.cdr_started_at,
+                    c.cdr_answered_at,
+                    c.cdr_ended_at,
+                    c.call_history_id
                 FROM public.cdroutput AS c
                 WHERE c.destination_entity_type = 'queue'
-                  AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
-                  AND c.cdr_started_at >= :from_date
-                  AND c.cdr_started_at <= :to_date
+                AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated') 
+                AND c.cdr_started_at >= :from_date 
+                AND c.cdr_started_at <= :to_date 
                 ORDER BY c.main_call_history_id DESC, c.cdr_id DESC;
             """), {
                 "from_date": from_date,
