@@ -5,13 +5,14 @@ from models import db, DBConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
+from pytz import timezone, utc
 import csv
 import psutil
 import shutil
 from io import StringIO
 from flask import make_response
 
-BANGKOK_TZ = timezone(timedelta(hours=7))
+BANGKOK_TZ = timezone('Asia/Bangkok')
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -137,19 +138,25 @@ def cdr_data():
 
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
 
     except ValueError:
         error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+        now = BANGKOK_TZ.localize(datetime.now())
+        from_date = (now - timedelta(days=30)).astimezone(utc)
+        to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -158,7 +165,7 @@ def cdr_data():
         with engine.connect() as connection:
             result = connection.execute(text(f"""
                 SELECT * FROM {config.table}
-                WHERE cdr_started_at >= :from_date AND cdr_started_at < :to_date
+                WHERE cdr_started_at >= :from_date AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
@@ -169,7 +176,7 @@ def cdr_data():
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
 
             data = rows
 
