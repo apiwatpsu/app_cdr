@@ -1757,7 +1757,7 @@ def get_dashboard_data(from_date, to_date):
             WHERE source_entity_type = 'extension'
               AND destination_entity_type = 'extension'
               AND cdr_started_at >= :from_date
-              AND cdr_started_at < :to_date
+              AND cdr_started_at <= :to_date
             ORDER BY call_history_id, cdr_started_at DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
@@ -1817,7 +1817,8 @@ def dashboard():
         return render_template("dashboard.html",
             inbound_count=data.get('inbound_count', 0),
             outbound_count=data.get('outbound_count', 0),
-            internal_count=data.get('internal_count', 0)
+            internal_count=data.get('internal_count', 0),
+            abandoned_count=data.get('abandoned_count', 0)
         )
 
     except Exception as e:
