@@ -1733,10 +1733,12 @@ def get_dashboard_data(from_date, to_date):
 
         # Outbound
         outbound_result = connection.execute(text("""
-            SELECT * FROM cdroutput
+            SELECT DISTINCT ON (call_history_id) *
+            FROM cdroutput
             WHERE destination_entity_type = 'external_line'
               AND cdr_started_at >= :from_date
               AND cdr_started_at < :to_date;
+            ORDER BY call_history_id, cdr_started_at DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         outbound_rows = [dict(row) for row in outbound_result]
@@ -1750,12 +1752,13 @@ def get_dashboard_data(from_date, to_date):
 
         # Internal
         internal_result = connection.execute(text("""
-            SELECT * FROM cdroutput
+            SELECT DISTINCT ON (call_history_id) *
+            FROM cdroutput
             WHERE source_entity_type = 'extension'
               AND destination_entity_type = 'extension'
               AND cdr_started_at >= :from_date
               AND cdr_started_at < :to_date
-            ORDER BY cdr_started_at DESC;
+            ORDER BY call_history_id, cdr_started_at DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         internal_rows = [dict(row) for row in internal_result]
@@ -1766,6 +1769,26 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['internal_data'] = internal_rows
         dashboard_data['internal_count'] = len(internal_rows)
+
+        # Abandoned
+        abandoned_result = connection.execute(text("""
+                SELECT c.*
+                FROM public.cdroutput AS c
+                WHERE c.destination_entity_type = 'queue'
+                  AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+                  AND c.cdr_started_at >= :from_date
+                  AND c.cdr_started_at <= :to_date
+                ORDER BY c.main_call_history_id DESC, c.cdr_id DESC;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        abandoned_rows = [dict(row) for row in abandoned_result]
+        for row in abandoned_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['abandoned_data'] = abandoned_rows
+        dashboard_data['abandoned_count'] = len(abandoned_rows)
 
     return dashboard_data
 
