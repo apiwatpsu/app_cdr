@@ -594,7 +594,19 @@ def inbound_calls():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT *
+                SELECT 
+                source_entity_type,
+                source_dn_number,
+                source_dn_name,
+                destination_entity_type,
+                destination_dn_number,
+                destination_dn_name,
+                destination_participant_group_name,
+                termination_reason,
+                cdr_started_at,
+                cdr_answered_at,
+                cdr_ended_at,
+                call_history_id
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
                   AND cdr_started_at >= :from_date
