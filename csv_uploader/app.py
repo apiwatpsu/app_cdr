@@ -118,6 +118,7 @@ def db_config():
 
 @app.route('/cdr_data')
 def cdr_data():
+    page_title="Call Detail Record"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -176,16 +177,18 @@ def cdr_data():
         error = str(e)
 
     return render_template(
-        'cdr_data.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/count_call_by_type')
 def count_call_by_type():
+    page_title="Call Type Report"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -227,7 +230,7 @@ def count_call_by_type():
                 SELECT source_entity_type, COUNT(*) AS count
                 FROM cdroutput
                 WHERE cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 GROUP BY source_entity_type
                 ORDER BY count DESC;
             """), {"from_date": from_date, "to_date": to_date})
@@ -247,10 +250,11 @@ def count_call_by_type():
         error = str(e)
 
     return render_template(
-        'count_call_by_type.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
@@ -258,6 +262,7 @@ def count_call_by_type():
 
 @app.route('/internal_calls')
 def internal_calls():
+    page_title="Internal Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -301,7 +306,7 @@ def internal_calls():
                 WHERE source_entity_type = 'extension'
                   AND destination_entity_type = 'extension'
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
@@ -320,16 +325,18 @@ def internal_calls():
         error = str(e)
 
     return render_template(
-        'cdr_data.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/outbound_calls')
 def outbound_calls():
+    page_title="Outbound Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -373,7 +380,7 @@ def outbound_calls():
                 WHERE source_entity_type = 'extension'
                   AND destination_entity_type = 'outbound_rule'
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
@@ -391,10 +398,11 @@ def outbound_calls():
         error = str(e)
 
     return render_template(
-        'outbound_calls.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
@@ -402,7 +410,7 @@ def outbound_calls():
 
 @app.route('/inbound_calls')
 def inbound_calls():
-    page_title="Inbound Report"
+    page_title="Inbound Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -446,7 +454,7 @@ def inbound_calls():
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
@@ -476,6 +484,7 @@ def inbound_calls():
 
 @app.route('/average_call_handling_by_agent')
 def average_call_handling_by_agent():
+    page_title="AVG Call Handling"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -521,7 +530,7 @@ def average_call_handling_by_agent():
                 WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
-                    AND cdr_answered_at >= :from_date AND cdr_answered_at < :to_date
+                    AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
                 GROUP BY agent_name
                 ORDER BY average_handling_time_seconds;
             """), {"from_date": from_date, "to_date": to_date})
@@ -539,16 +548,18 @@ def average_call_handling_by_agent():
         error = str(e)
 
     return render_template(
-        'average_call_handling_by_agent.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/call_handled_per_agent')
 def call_handled_per_agent():
+    page_title="Agent Call Handled"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -593,7 +604,7 @@ def call_handled_per_agent():
                 FROM cdroutput
                 WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                     AND cdr_answered_at IS NOT NULL
-                    AND cdr_answered_at >= :from_date AND cdr_answered_at < :to_date
+                    AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
                 GROUP BY agent_name
                 ORDER BY calls_handled DESC;
             """), {
@@ -615,16 +626,18 @@ def call_handled_per_agent():
         error = str(e)
 
     return render_template(
-        'call_handled_per_agent.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/agent_utilization_rate')
 def agent_utilization_rate():
+    page_title="Agent Utilization Rate"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -675,7 +688,7 @@ def agent_utilization_rate():
                     FROM cdroutput
                     WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                         AND cdr_started_at >= :from_date
-                        AND cdr_started_at < :to_date
+                        AND cdr_started_at <= :to_date
                 )
                 SELECT
                     agent_name,
@@ -707,16 +720,18 @@ def agent_utilization_rate():
         error = str(e)
 
     return render_template(
-        'agent_utilization_rate.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/list_all_lost_queue_calls')
 def list_all_lost_queue_calls():
+    page_title="Lost Queue Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -781,16 +796,18 @@ def list_all_lost_queue_calls():
         error = str(e)
 
     return render_template(
-        'list_all_lost_queue_calls.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/calls_handled_by_each_queue')
 def calls_handled_by_each_queue():
+    page_title="Queue Call Handled"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -858,16 +875,18 @@ def calls_handled_by_each_queue():
         error = str(e)
 
     return render_template(
-        'calls_handled_by_each_queue.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/average_time_before_agents_answered')
 def average_time_before_agents_answered():
+    page_title="AVG Time Before Answered"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -936,10 +955,11 @@ def average_time_before_agents_answered():
         error = str(e)
 
     return render_template(
-        'average_time_before_agents_answered.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
@@ -947,6 +967,7 @@ def average_time_before_agents_answered():
 
 @app.route('/terminated_before_being_answered')
 def terminated_before_being_answered():
+    page_title="Terminated Before Answered"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1014,10 +1035,11 @@ def terminated_before_being_answered():
         error = str(e)
 
     return render_template(
-        'terminated_before_being_answered.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
@@ -1025,6 +1047,7 @@ def terminated_before_being_answered():
 
 @app.route('/calls_transferred_to_queue')
 def calls_transferred_to_queue():
+    page_title="Call Transfer To Queue"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1074,7 +1097,7 @@ def calls_transferred_to_queue():
                     AND c2.destination_entity_type = 'queue'
                     AND c2.base_cdr_id = c1.cdr_id
                     AND c2.cdr_started_at >= :from_date
-                    AND c2.cdr_started_at < :to_date
+                    AND c2.cdr_started_at <= :to_date
             """), {
                 "from_date": from_date,
                 "to_date": to_date
@@ -1094,10 +1117,11 @@ def calls_transferred_to_queue():
         error = str(e)
 
     return render_template(
-        'calls_transferred_to_queue.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
@@ -1105,6 +1129,7 @@ def calls_transferred_to_queue():
 
 @app.route('/avg_call_duration_answered_external')
 def avg_call_duration_answered_external():
+    page_title="AVG Duration Answered External Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1150,7 +1175,7 @@ def avg_call_duration_answered_external():
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
                     AND cdr_started_at >= :from_date
-                    AND cdr_started_at < :to_date
+                    AND cdr_started_at <= :to_date
             """), {
                 "from_date": from_date,
                 "to_date": to_date
@@ -1170,16 +1195,18 @@ def avg_call_duration_answered_external():
         error = str(e)
 
     return render_template(
-        'avg_call_duration_answered_external.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
 
 @app.route('/longest_internal_calls')
 def longest_internal_calls():
+    page_title="Longest Internal Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1228,7 +1255,7 @@ def longest_internal_calls():
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
                     AND cdr_started_at >= :from_date
-                    AND cdr_started_at < :to_date
+                    AND cdr_started_at <= :to_date
                 ORDER BY duration DESC
                 LIMIT 10;
             """), {
@@ -1250,10 +1277,11 @@ def longest_internal_calls():
         error = str(e)
 
     return render_template(
-        'longest_internal_calls.html',
+        'table_report.html',
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 
@@ -1261,6 +1289,7 @@ def longest_internal_calls():
 
 @app.route('/calls_no_route')
 def calls_no_route():
+    page_title="Outbound Failed"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1308,7 +1337,7 @@ def calls_no_route():
             WHERE 
                 termination_reason_details = 'no_route'
                 AND cdr_started_at >= :from_date
-                AND cdr_started_at < :to_date;
+                AND cdr_started_at <= :to_date;
         """
 
         with engine.connect() as connection:
@@ -1331,11 +1360,12 @@ def calls_no_route():
         error = f"เกิดข้อผิดพลาดในการดึงข้อมูล: {e}"
 
     return render_template(
-        'calls_no_route.html',
+        'table_report.html',
         username=session.get('username'),
         data=data,
         columns=columns,
         error=error,
+        page_title=page_title,
         from_date=from_date.strftime('%Y-%m-%d'),
         to_date=(to_date - timedelta(days=1)).strftime('%Y-%m-%d')
     )
@@ -1343,6 +1373,7 @@ def calls_no_route():
 
 @app.route('/calls_license_limits')
 def calls_license_limits():
+    page_title="Call License Limit"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1383,7 +1414,7 @@ def calls_license_limits():
             FROM cdroutput
             WHERE termination_reason_details = 'license_limit_reached'
               AND cdr_started_at >= :from_date
-              AND cdr_started_at < :to_date;
+              AND cdr_started_at <= :to_date;
         """
 
         with engine.connect() as connection:
@@ -1407,11 +1438,12 @@ def calls_license_limits():
         error = f"เกิดข้อผิดพลาดในการดึงข้อมูล: {e}"
 
     return render_template(
-        'calls_license_limits.html',
+        'table_report.html',
         username=session.get('username'),
         data=data,
         columns=columns,
         error=error,
+        page_title=page_title,
         from_date=from_date.strftime('%Y-%m-%d'),
         to_date=(to_date - timedelta(days=1)).strftime('%Y-%m-%d')
     )
@@ -1448,7 +1480,7 @@ def inject_system_utilization():
             disk_percent=disk_percent
         )
     except:
-        return {}  # fallback กัน error ไม่ให้แครช
+        return {}  
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
@@ -1514,7 +1546,7 @@ def get_dashboard_data(from_date, to_date):
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
         """), {"from_date": from_date, "to_date": to_date}).mappings()
 
@@ -1534,7 +1566,7 @@ def get_dashboard_data(from_date, to_date):
                 FROM cdroutput
                 WHERE destination_entity_type = 'external_line'
                 AND cdr_started_at >= :from_date
-                AND cdr_started_at < :to_date
+                AND cdr_started_at <= :to_date
         """), {"from_date": from_date, "to_date": to_date}).mappings()
 
         outbound_rows = [dict(row) for row in outbound_result]
@@ -1554,7 +1586,7 @@ def get_dashboard_data(from_date, to_date):
                 WHERE source_entity_type = 'extension'
                   AND destination_entity_type = 'extension'
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
         """), {"from_date": from_date, "to_date": to_date}).mappings()
 
