@@ -596,8 +596,8 @@ def inbound_calls():
             result = connection.execute(text("""
                 SELECT 
                 source_entity_type,
-                source_dn_number,
-                source_dn_name,
+                source_participant_phone_number,
+                source_participant_trunk_did,
                 destination_entity_type,
                 destination_dn_number,
                 destination_dn_name,
