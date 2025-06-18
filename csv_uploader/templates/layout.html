@@ -227,19 +227,24 @@
   </button>
     <div class="dropdown-container">
         <a href="{{ url_for('cdr_data') }}">
+          <i data-lucide="dot"></i>
         Call Detail Record
         </a>
         <a href="{{ url_for('count_call_by_type') }}">
+          <i data-lucide="dot"></i>
         Count By Call Type
         </a>
         <a href="{{ url_for('internal_calls') }}">
+          <i data-lucide="dot"></i>
         Internal Calls
         </a>
         </a>
         <a href="{{ url_for('outbound_calls') }}">
+          <i data-lucide="dot"></i>
         Outbound Calls
         </a>
         <a href="{{ url_for('inbound_calls') }}">
+          <i data-lucide="dot"></i>
         Inbound Calls
         </a>
     </div>
@@ -256,11 +261,11 @@
       Avg Call Handling Time
     </a>
     <a href="{{ url_for('call_handled_per_agent') }}">
-      <i data-lucide="circle-small"></i>
+      <i data-lucide="dot"></i>
       Calls Handled
     </a>
     <a href="{{ url_for('agent_utilization_rate') }}">
-      <i data-lucide="circle-small"></i>
+      <i data-lucide="dot"></i>
       Utilization Rate
     </a>
   </div>
@@ -274,24 +279,24 @@
   </button>
   <div class="dropdown-container">
     <a href="{{ url_for('list_all_lost_queue_calls') }}">
-      <!-- <i data-lucide="list-x"></i> -->
+      <i data-lucide="dot"></i>
       List all lost queue calls
     </a>
     <a href="{{ url_for('calls_handled_by_each_queue') }}">
-      <!-- <i data-lucide="list-x"></i> -->
+      <i data-lucide="dot"></i>
       Calls handled by each queue
     </a>
     <a href="{{ url_for('average_time_before_agents_answered') }}">
-      <!-- <i data-lucide="list-x"></i> -->
+      <i data-lucide="dot"></i>
       Average time before answered
     </a>
     <a href="{{ url_for('terminated_before_being_answered') }}">
-      <!-- <i data-lucide="list-x"></i> -->
+      <i data-lucide="dot"></i>
       Terminated before answered (Abandoned)
     </a>
 
     <a href="{{ url_for('calls_transferred_to_queue') }}">
-      <!-- <i data-lucide="list-x"></i> -->
+      <i data-lucide="dot"></i>
       Calls transferred to queue
     </a>
   </div>
@@ -304,9 +309,11 @@
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('avg_call_duration_answered_external') }}">
+          <i data-lucide="dot"></i>
         Average duration external calls
         </a>
         <a href="{{ url_for('longest_internal_calls') }}">
+          <i data-lucide="dot"></i>
         Longest internal calls
         </a>
     </div>
@@ -320,9 +327,11 @@
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('calls_no_route') }}">
+          <i data-lucide="dot"></i>
          List calls failed
         </a>
         <a href="{{ url_for('calls_license_limits') }}">
+          <i data-lucide="dot"></i>
          Calls license limits
         </a>
     </div>
