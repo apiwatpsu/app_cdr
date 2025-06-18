@@ -188,10 +188,17 @@
         <span class="ms-2">{{ username }}</span>
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-        <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+        <li>
+
+        <a class="dropdown-item" href="{{ url_for('logout') }}">
+          <i data-lucide="settings"></i>
+          Settings
+        </a>
+        <a class="dropdown-item" href="{{ url_for('logout') }}">
           <i data-lucide="log-out"></i>
           Logout
         </a>
+
       </li>
     </ul>
     </div>
@@ -310,7 +317,7 @@
     <div class="dropdown-container">
         <a href="{{ url_for('avg_call_duration_answered_external') }}">
           <i data-lucide="dot"></i>
-        Average duration external calls
+        Avg duration external calls
         </a>
         <a href="{{ url_for('longest_internal_calls') }}">
           <i data-lucide="dot"></i>
