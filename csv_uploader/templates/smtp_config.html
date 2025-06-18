@@ -5,6 +5,14 @@
 {% block content %}
   <h2 class="mb-4">🛠 ตั้งค่า Email Server</h2>
 
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
   <form method="POST" class="mb-3">
   <label class="form-label">SMTP Server</label>
   <input type="text" name="smtp_server" class="form-control" value="{{ config.smtp_server if config else '' }}">
