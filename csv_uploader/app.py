@@ -402,6 +402,7 @@ def outbound_calls():
 
 @app.route('/inbound_calls')
 def inbound_calls():
+    page_title="Inbound Report"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -463,10 +464,12 @@ def inbound_calls():
         error = str(e)
 
     return render_template(
-        'inbound_calls.html',
+        'table_report.html',
+        
         username=session['username'],
         data=data,
         columns=columns,
+        page_title=page_title,
         error=error
     )
 

@@ -405,8 +405,13 @@
       lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
       ordering: false,
       dom: "<'d-flex justify-content-between mb-3'B>flrtip",
-      // dom: 'Bflrtip',
-      buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'],
+      columnDefs: [
+        {
+          targets: [0, 1, 2],  // index ของ column ที่ต้องการซ่อน
+          visible: false
+        }
+      ]
     }); 
   });
 </script>
