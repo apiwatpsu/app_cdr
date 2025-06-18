@@ -1735,7 +1735,7 @@ def get_dashboard_data(from_date, to_date):
         outbound_result = connection.execute(text("""
             SELECT DISTINCT ON (call_history_id) *
             FROM cdroutput
-            WHERE destination_entity_type = 'external_line'
+            WHERE destination_entity_type = 'outbound_rule'
               AND cdr_started_at >= :from_date
               AND cdr_started_at <= :to_date
             ORDER BY call_history_id, cdr_started_at DESC;
