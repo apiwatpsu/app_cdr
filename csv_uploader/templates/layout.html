@@ -93,8 +93,9 @@
     .topbar-icon {
     width: 18px !important;
     height: 18px !important;
-    opacity: 0.5 !important;
-    fill: none;                
+    opacity: 0.7 !important;
+    fill: none;
+    margin-right: 8px;                
     }
 
     .dropdown-container {
@@ -202,11 +203,11 @@
         </a>
 
         <a class="dropdown-item" href="{{ url_for('logout') }}">
-          <i data-lucide="settings"></i>
+          <i data-lucide="settings" class="topbar-icon"></i>
           Settings
         </a>
         <a class="dropdown-item" href="{{ url_for('logout') }}">
-          <i data-lucide="log-out"></i>
+          <i data-lucide="log-out" class="topbar-icon"></i>
           Logout
         </a>
 
