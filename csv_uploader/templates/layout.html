@@ -405,7 +405,39 @@
       lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
       ordering: true,
       dom: "<'d-flex justify-content-between mb-3'B>flrtip",
-      buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+      // buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+          buttons: [
+        {
+            extend: 'copy',
+            text: 'Copy',
+            className: 'bg-blue-500 text-white px-3 py-1 rounded shadow-sm'
+        },
+        {
+            extend: 'csv',
+            text: 'CSV',
+            className: 'bg-blue-500 text-white px-3 py-1 rounded shadow-sm'
+        },
+        {
+            extend: 'excel',
+            text: 'Excel',
+            className: 'bg-blue-500 text-white px-3 py-1 rounded shadow-sm'
+        },
+        {
+            extend: 'pdf',
+            text: 'PDF',
+            className: 'bg-blue-500 text-white px-3 py-1 rounded shadow-sm'
+        },
+        {
+            extend: 'print',
+            text: 'Print',
+            className: 'bg-blue-500 text-white px-3 py-1 rounded shadow-sm'
+        },
+        {
+            extend: 'colvis',
+            text: 'Columns',
+            className: 'bg-blue-500 text-white px-3 py-1 rounded shadow-sm'
+        }
+    ]
       // columnDefs: [
       //   {
       //     targets: [0, 1, 2],
