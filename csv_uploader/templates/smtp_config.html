@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}Mail SMTP Config{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">🛠 ตั้งค่า Email Server</h2>
+
+  <form method="POST" class="mb-3">
+  <label class="form-label">SMTP Server</label>
+  <input type="text" name="smtp_server" class="form-control" value="{{ config.smtp_server if config else '' }}">
+
+  <label class="form-label">SMTP Port</label>
+  <input type="number" name="smtp_port" class="form-control" value="{{ config.smtp_port if config else '' }}">
+
+  <label class="form-label">Username</label>
+  <input type="text" name="smtp_user" class="form-control" value="{{ config.smtp_user if config else '' }}">
+
+  <label class="form-label">Password</label>
+  <input type="password" name="smtp_password" class="form-control" value="{{ config.smtp_password if config else '' }}">
+
+  <div class="form-check mt-2">
+    <input type="checkbox" class="form-check-input" name="use_tls" id="use_tls" {% if config and config.use_tls %}checked{% endif %}>
+    <label class="form-check-label" for="use_tls">Use TLS</label>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" name="use_ssl" id="use_ssl" {% if config and config.use_ssl %}checked{% endif %}>
+    <label class="form-check-label" for="use_ssl">Use SSL</label>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-3">Save</button>
+</form>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% endblock %}

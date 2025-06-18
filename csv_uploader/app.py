@@ -117,6 +117,57 @@ def db_config():
     # GET method แสดง config เดิม
     return render_template('db_config.html', username=session['username'], config=config)
 
+@app.route('/smtp_config', methods=['GET', 'POST'])
+def smtp_config():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    error = None
+    config = SMTPConfig.query.first()  # Load existing config if any
+
+    if request.method == 'POST':
+        smtp_server = request.form['smtp_server']
+        smtp_port = int(request.form['smtp_port'])
+        smtp_user = request.form['smtp_user']
+        smtp_password = request.form['smtp_password']
+        use_tls = 'use_tls' in request.form
+        use_ssl = 'use_ssl' in request.form
+
+        if config:
+            config.smtp_server = smtp_server
+            config.smtp_port = smtp_port
+            config.smtp_user = smtp_user
+            config.smtp_password = smtp_password
+            config.use_tls = use_tls
+            config.use_ssl = use_ssl
+        else:
+            config = SMTPConfig(
+                smtp_server=smtp_server,
+                smtp_port=smtp_port,
+                smtp_user=smtp_user,
+                smtp_password=smtp_password,
+                use_tls=use_tls,
+                use_ssl=use_ssl
+            )
+            db.session.add(config)
+        db.session.commit()
+
+        # Optional: Try to test connection
+        try:
+            import smtplib
+            server = smtplib.SMTP(smtp_server, smtp_port, timeout=10)
+            if use_tls:
+                server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.quit()
+        except Exception as e:
+            error = f"SMTP Test Failed: {e}"
+
+        return render_template('smtp_config.html', config=config, username=session['username'], error=error)
+
+    return render_template('smtp_config.html', config=config, username=session['username'])
+
+
 @app.route('/cdr_data')
 def cdr_data():
     page_title="Call Detail Record"

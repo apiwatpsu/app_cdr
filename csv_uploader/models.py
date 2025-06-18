@@ -22,3 +22,12 @@ class DBConfig(db.Model):
     user = db.Column(db.String(100))
     password = db.Column(db.String(100))
     table = db.Column(db.String(100))
+
+class SMTPConfig(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    smtp_server = db.Column(db.String(255), nullable=False)
+    smtp_port = db.Column(db.Integer, nullable=False)
+    smtp_user = db.Column(db.String(255), nullable=False)
+    smtp_password = db.Column(db.String(255), nullable=False)
+    use_tls = db.Column(db.Boolean, default=True)
+    use_ssl = db.Column(db.Boolean, default=False)
