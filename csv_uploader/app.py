@@ -1614,10 +1614,96 @@ def delete_user(user_id):
     flash(f'ลบผู้ใช้ {user.username} แล้ว', 'success')
     return redirect(url_for('manage_users'))
 
+
+# Dashboard
+# def get_dashboard_data(from_date, to_date):
+#     config = DBConfig.query.first()
+#     if not config:
+#         raise Exception("ยังไม่มีการตั้งค่า database")
+
+#     conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+#     engine = create_engine(conn_str)
+#     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+#     dashboard_data = {}
+
+#     with engine.connect() as connection:
+        
+#         inbound_result = connection.execute(text("""
+#                 SELECT *
+#                 FROM cdroutput
+#                 WHERE source_entity_type = 'external_line'
+#                   AND cdr_started_at >= :from_date
+#                   AND cdr_started_at <= :to_date
+#                 ORDER BY cdr_started_at DESC;
+#         """), {"from_date": from_date, "to_date": to_date}).mappings()
+
+#         inbound_rows = [dict(row) for row in inbound_result]
+        
+#         for row in inbound_rows:
+#             for col in date_columns:
+#                 if col in row and isinstance(row[col], datetime):
+#                     row[col] = row[col].astimezone(BANGKOK_TZ)
+
+#         dashboard_data['inbound_data'] = inbound_rows
+#         dashboard_data['inbound_count'] = len(inbound_rows)
+
+        
+#         outbound_result = connection.execute(text("""
+#                 SELECT *
+#                 FROM cdroutput
+#                 WHERE destination_entity_type = 'external_line'
+#                 AND cdr_started_at >= :from_date
+#                 AND cdr_started_at <= :to_date
+#         """), {"from_date": from_date, "to_date": to_date}).mappings()
+
+#         outbound_rows = [dict(row) for row in outbound_result]
+        
+#         for row in outbound_rows:
+#             for col in date_columns:
+#                 if col in row and isinstance(row[col], datetime):
+#                     row[col] = row[col].astimezone(BANGKOK_TZ)
+
+#         dashboard_data['outbound_data'] = inbound_rows
+#         dashboard_data['outbound_count'] = len(outbound_rows)
+
+        
+#         internal_result = connection.execute(text("""
+#                 SELECT *
+#                 FROM cdroutput
+#                 WHERE source_entity_type = 'extension'
+#                   AND destination_entity_type = 'extension'
+#                   AND cdr_started_at >= :from_date
+#                   AND cdr_started_at <= :to_date
+#                 ORDER BY cdr_started_at DESC;
+#         """), {"from_date": from_date, "to_date": to_date}).mappings()
+
+#         internal_rows = [dict(row) for row in internal_result]
+        
+#         for row in internal_rows:
+#             for col in date_columns:
+#                 if col in row and isinstance(row[col], datetime):
+#                     row[col] = row[col].astimezone(BANGKOK_TZ)
+
+#         dashboard_data['internal_data'] = internal_rows
+#         dashboard_data['internal_count'] = len(internal_rows)
+
+#     return dashboard_data
+
+
 def get_dashboard_data(from_date, to_date):
     config = DBConfig.query.first()
     if not config:
         raise Exception("ยังไม่มีการตั้งค่า database")
+
+    # 🔄 แปลง from/to เป็น timezone aware และแปลงเป็น UTC
+    if from_date.tzinfo is None:
+        from_date = BANGKOK_TZ.localize(from_date)
+    if to_date.tzinfo is None:
+        to_date = BANGKOK_TZ.localize(to_date)
+
+    from_date_utc = from_date.astimezone(utc)
+    to_date_utc = to_date.astimezone(utc)
 
     conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
     engine = create_engine(conn_str)
@@ -1626,62 +1712,56 @@ def get_dashboard_data(from_date, to_date):
     dashboard_data = {}
 
     with engine.connect() as connection:
-        #Inbound Calls
+        # Inbound
         inbound_result = connection.execute(text("""
-                SELECT *
-                FROM cdroutput
-                WHERE source_entity_type = 'external_line'
-                  AND cdr_started_at >= :from_date
-                  AND cdr_started_at <= :to_date
-                ORDER BY cdr_started_at DESC;
-        """), {"from_date": from_date, "to_date": to_date}).mappings()
+            SELECT * FROM cdroutput
+            WHERE source_entity_type = 'external_line'
+              AND cdr_started_at >= :from_date
+              AND cdr_started_at < :to_date
+            ORDER BY cdr_started_at DESC;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         inbound_rows = [dict(row) for row in inbound_result]
-        
         for row in inbound_rows:
             for col in date_columns:
                 if col in row and isinstance(row[col], datetime):
-                    row[col] = row[col].astimezone(BANGKOK_TZ)
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
 
         dashboard_data['inbound_data'] = inbound_rows
         dashboard_data['inbound_count'] = len(inbound_rows)
 
-        #Outbound Calls
+        # Outbound
         outbound_result = connection.execute(text("""
-                SELECT *
-                FROM cdroutput
-                WHERE destination_entity_type = 'external_line'
-                AND cdr_started_at >= :from_date
-                AND cdr_started_at <= :to_date
-        """), {"from_date": from_date, "to_date": to_date}).mappings()
+            SELECT * FROM cdroutput
+            WHERE destination_entity_type = 'external_line'
+              AND cdr_started_at >= :from_date
+              AND cdr_started_at < :to_date;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         outbound_rows = [dict(row) for row in outbound_result]
-        
         for row in outbound_rows:
             for col in date_columns:
                 if col in row and isinstance(row[col], datetime):
-                    row[col] = row[col].astimezone(BANGKOK_TZ)
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
 
-        dashboard_data['outbound_data'] = inbound_rows
+        dashboard_data['outbound_data'] = outbound_rows
         dashboard_data['outbound_count'] = len(outbound_rows)
 
-        #Internal Calls
+        # Internal
         internal_result = connection.execute(text("""
-                SELECT *
-                FROM cdroutput
-                WHERE source_entity_type = 'extension'
-                  AND destination_entity_type = 'extension'
-                  AND cdr_started_at >= :from_date
-                  AND cdr_started_at <= :to_date
-                ORDER BY cdr_started_at DESC;
-        """), {"from_date": from_date, "to_date": to_date}).mappings()
+            SELECT * FROM cdroutput
+            WHERE source_entity_type = 'extension'
+              AND destination_entity_type = 'extension'
+              AND cdr_started_at >= :from_date
+              AND cdr_started_at < :to_date
+            ORDER BY cdr_started_at DESC;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         internal_rows = [dict(row) for row in internal_result]
-        
         for row in internal_rows:
             for col in date_columns:
                 if col in row and isinstance(row[col], datetime):
-                    row[col] = row[col].astimezone(BANGKOK_TZ)
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
 
         dashboard_data['internal_data'] = internal_rows
         dashboard_data['internal_count'] = len(internal_rows)
@@ -1690,22 +1770,22 @@ def get_dashboard_data(from_date, to_date):
 
 
 
+
 @app.route('/dashboard')
 def dashboard():
-    from_date = datetime.utcnow() - timedelta(days=30)
-    to_date = datetime.utcnow() + timedelta(days=1)
+    # เวลาประเทศไทย
+    from_date = datetime.now(BANGKOK_TZ) - timedelta(days=30)
+    to_date = datetime.now(BANGKOK_TZ) + timedelta(days=1)
 
     try:
         print("Before get_dashboard_data()")
         data = get_dashboard_data(from_date, to_date)
         print("After get_dashboard_data()")
-        print("Inbound Data Count:", len(data.get('inbound_data', [])))
 
         return render_template("dashboard.html",
             inbound_count=data.get('inbound_count', 0),
             outbound_count=data.get('outbound_count', 0),
-            internal_count=data.get('internal_count', 0),
-            inbound_data=data.get('inbound_data', [])
+            internal_count=data.get('internal_count', 0)
             
         )
     except Exception as e:
