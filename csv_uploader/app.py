@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User
 from models import db, DBConfig
+from models import db, SMTPConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
