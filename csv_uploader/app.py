@@ -177,7 +177,6 @@ def cdr_data():
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
                         row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
-
             data = rows
 
     except Exception as e:
@@ -208,25 +207,30 @@ def count_call_by_type():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าช่วงวันจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -249,8 +253,7 @@ def count_call_by_type():
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -282,25 +285,30 @@ def internal_calls():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -324,8 +332,7 @@ def internal_calls():
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -356,25 +363,30 @@ def outbound_calls():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -394,11 +406,11 @@ def outbound_calls():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -431,25 +443,30 @@ def inbound_calls():
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
     
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
-    
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -468,11 +485,11 @@ def inbound_calls():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -504,25 +521,30 @@ def average_call_handling_by_agent():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าช่วงวันที่จาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -544,11 +566,12 @@ def average_call_handling_by_agent():
 
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
+
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -579,25 +602,30 @@ def call_handled_per_agent():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # อ่านช่วงวันที่จาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -621,12 +649,11 @@ def call_handled_per_agent():
 
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
-
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -657,25 +684,30 @@ def agent_utilization_rate():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าจาก URL parameter
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -716,11 +748,11 @@ def agent_utilization_rate():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -751,25 +783,30 @@ def list_all_lost_queue_calls():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับพารามิเตอร์วันที่จาก URL
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -792,11 +829,11 @@ def list_all_lost_queue_calls():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -827,25 +864,30 @@ def calls_handled_by_each_queue():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับช่วงวันที่จาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -860,7 +902,7 @@ def calls_handled_by_each_queue():
                 WHERE destination_entity_type = 'queue'
                   AND cdr_answered_at IS NOT NULL
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 GROUP BY destination_dn_name
                 ORDER BY calls_handled DESC;
             """), {
@@ -871,11 +913,11 @@ def calls_handled_by_each_queue():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -906,25 +948,30 @@ def average_time_before_agents_answered():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับช่วงวันที่จาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -940,7 +987,7 @@ def average_time_before_agents_answered():
                   AND cdr_answered_at IS NOT NULL
                   AND cdr_ended_at IS NOT NULL
                   AND cdr_started_at >= :from_date
-                  AND cdr_started_at < :to_date
+                  AND cdr_started_at <= :to_date
                 GROUP BY destination_dn_name
                 ORDER BY average_talk_time_seconds DESC;
             """), {
@@ -951,11 +998,11 @@ def average_time_before_agents_answered():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -987,24 +1034,30 @@ def terminated_before_being_answered():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1020,7 +1073,7 @@ def terminated_before_being_answered():
                     AND source_entity_type = 'external_line'
                     AND termination_reason = 'src_participant_terminated'
                     AND cdr_started_at >= :from_date
-                    AND cdr_started_at < :to_date
+                    AND cdr_started_at <= :to_date
                 GROUP BY destination_dn_name
                 ORDER BY abandoned_calls DESC;
             """), {
@@ -1031,11 +1084,11 @@ def terminated_before_being_answered():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -1067,24 +1120,30 @@ def calls_transferred_to_queue():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่า from_date / to_date จาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1113,11 +1172,11 @@ def calls_transferred_to_queue():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -1149,24 +1208,30 @@ def avg_call_duration_answered_external():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าช่วงวันจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1191,11 +1256,11 @@ def avg_call_duration_answered_external():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -1226,24 +1291,30 @@ def longest_internal_calls():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าช่วงวันจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1273,11 +1344,11 @@ def longest_internal_calls():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -1309,24 +1380,30 @@ def calls_no_route():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าช่วงวันจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1356,11 +1433,11 @@ def calls_no_route():
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -1372,9 +1449,7 @@ def calls_no_route():
         data=data,
         columns=columns,
         error=error,
-        page_title=page_title,
-        from_date=from_date.strftime('%Y-%m-%d'),
-        to_date=(to_date - timedelta(days=1)).strftime('%Y-%m-%d')
+        page_title=page_title
     )
 
 
@@ -1393,24 +1468,30 @@ def calls_license_limits():
     error = None
     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
 
-    # รับค่าช่วงวันจาก query string
+    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
-
     try:
         if from_date_str:
-            from_date = datetime.strptime(from_date_str, "%Y-%m-%d")
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.utcnow() - timedelta(days=30)
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
 
         if to_date_str:
-            to_date = datetime.strptime(to_date_str, "%Y-%m-%d") + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
-            to_date = datetime.utcnow() + timedelta(days=1)
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
     except ValueError:
-        error = "Invalid date format"
-        from_date = datetime.utcnow() - timedelta(days=30)
-        to_date = datetime.utcnow() + timedelta(days=1)
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
@@ -1434,11 +1515,11 @@ def calls_license_limits():
             rows = [dict(row._mapping) for row in result]
 
             
+            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].astimezone(BANGKOK_TZ)
-
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
             data = rows
 
     except Exception as e:
@@ -1450,9 +1531,7 @@ def calls_license_limits():
         data=data,
         columns=columns,
         error=error,
-        page_title=page_title,
-        from_date=from_date.strftime('%Y-%m-%d'),
-        to_date=(to_date - timedelta(days=1)).strftime('%Y-%m-%d')
+        page_title=page_title
     )
 
 
