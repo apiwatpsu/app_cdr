@@ -155,26 +155,16 @@ def smtp_config():
             db.session.add(config)
         db.session.commit()
 
-        # Test email if provided
+        # Optional: Try to test connection
         try:
+            import smtplib
             server = smtplib.SMTP(smtp_server, smtp_port, timeout=10)
             if use_tls:
                 server.starttls()
             server.login(smtp_user, smtp_password)
-
-            if test_email_to:
-                msg = MIMEText("✅ This is a test email from SMTP configuration.")
-                msg["Subject"] = "SMTP Test Email"
-                msg["From"] = smtp_user
-                msg["To"] = test_email_to
-
-                server.sendmail(smtp_user, [test_email_to], msg.as_string())
-                success = f"Test email sent to {test_email_to} successfully."
-
             server.quit()
-
         except Exception as e:
-            error = f"SMTP Test Failed: {str(e)}"
+            error = f"SMTP Test Failed: {e}"
 
     return render_template("smtp_config.html", config=config, error=error, success=success, username=session['username'])
 
