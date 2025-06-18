@@ -320,7 +320,7 @@ def internal_calls():
         error = str(e)
 
     return render_template(
-        'internal_calls.html',
+        'cdr_data.html',
         username=session['username'],
         data=data,
         columns=columns,
