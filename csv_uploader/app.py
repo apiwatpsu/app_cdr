@@ -421,8 +421,8 @@ def internal_calls():
                 destination_participant_group_name,
                 termination_reason,
                 cdr_started_at,
-                cdr_ended_at,
                 cdr_answered_at,
+                cdr_ended_at,
                 call_history_id
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
@@ -512,12 +512,12 @@ def outbound_calls():
                 destination_participant_group_name,
                 termination_reason,
                 cdr_started_at,
-                cdr_ended_at,
                 cdr_answered_at,
+                cdr_ended_at,
                 call_history_id
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
-                  AND destination_entity_type = 'outbound_rule'
+                  AND destination_entity_type = 'external_line'
                   AND cdr_started_at >= :from_date
                   AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
