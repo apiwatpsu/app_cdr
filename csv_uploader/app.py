@@ -1714,11 +1714,12 @@ def get_dashboard_data(from_date, to_date):
     with engine.connect() as connection:
         # Inbound
         inbound_result = connection.execute(text("""
-            SELECT * FROM cdroutput
+            SELECT DISTINCT ON (call_history_id) *
+            FROM cdroutput
             WHERE source_entity_type = 'external_line'
-              AND cdr_started_at >= :from_date
-              AND cdr_started_at < :to_date
-            ORDER BY cdr_started_at DESC;
+                AND cdr_started_at >= :from_date
+                AND cdr_started_at <= :to_date
+            ORDER BY call_history_id, cdr_started_at DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         inbound_rows = [dict(row) for row in inbound_result]
@@ -1770,42 +1771,20 @@ def get_dashboard_data(from_date, to_date):
 
 
 
-
-# @app.route('/dashboard')
-# def dashboard():
-    
-#     from_date = datetime.now(BANGKOK_TZ) - timedelta(days=30)
-#     to_date = datetime.now(BANGKOK_TZ) + timedelta(days=1)
-
-#     try:
-#         print("Before get_dashboard_data()")
-#         data = get_dashboard_data(from_date, to_date)
-#         print("After get_dashboard_data()")
-
-#         return render_template("dashboard.html",
-#             inbound_count=data.get('inbound_count', 0),
-#             outbound_count=data.get('outbound_count', 0),
-#             internal_count=data.get('internal_count', 0)
-            
-#         )
-#     except Exception as e:
-#         return render_template("dashboard.html", error=str(e))
-
-
 @app.route('/dashboard')
 def dashboard():
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
 
     try:
-        # ✅ กรณีมีการส่งวันที่เข้ามา
+        
         if from_date_str:
             from_date = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
             from_date = datetime.now(BANGKOK_TZ) - timedelta(days=30)
 
         if to_date_str:
-            # +1 day เพื่อรวมทั้งวัน เช่น 2025-06-17 → ถึง 2025-06-18 00:00
+            
             to_date = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
         else:
             to_date = datetime.now(BANGKOK_TZ) + timedelta(days=1)
