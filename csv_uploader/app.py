@@ -10,8 +10,10 @@ from pytz import timezone, utc
 import csv
 import psutil
 import shutil
+import smtplib
 from io import StringIO
 from flask import make_response
+from email.mime.text import MIMEText
 
 BANGKOK_TZ = timezone('Asia/Bangkok')
 app = Flask(__name__)
@@ -153,20 +155,28 @@ def smtp_config():
             db.session.add(config)
         db.session.commit()
 
-        # Optional: Try to test connection
+        # Test email if provided
         try:
-            import smtplib
             server = smtplib.SMTP(smtp_server, smtp_port, timeout=10)
             if use_tls:
                 server.starttls()
             server.login(smtp_user, smtp_password)
+
+            if test_email_to:
+                msg = MIMEText("✅ This is a test email from SMTP configuration.")
+                msg["Subject"] = "SMTP Test Email"
+                msg["From"] = smtp_user
+                msg["To"] = test_email_to
+
+                server.sendmail(smtp_user, [test_email_to], msg.as_string())
+                success = f"Test email sent to {test_email_to} successfully."
+
             server.quit()
+
         except Exception as e:
-            error = f"SMTP Test Failed: {e}"
+            error = f"SMTP Test Failed: {str(e)}"
 
-        return render_template('smtp_config.html', config=config, username=session['username'], error=error)
-
-    return render_template('smtp_config.html', config=config, username=session['username'])
+    return render_template("smtp_config.html", config=config, error=error, success=success, username=session['username'])
 
 
 @app.route('/cdr_data')
