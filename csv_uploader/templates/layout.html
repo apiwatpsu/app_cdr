@@ -245,10 +245,10 @@
     </div>
 
   <!-- Agent Performance Group -->
-  <div class="sidebar-label text-muted">Agent Performance</div>
-  <button class="dropdown-btn">
-    <i data-lucide="headphones"></i>
-    Agent Reports ▾
+  <!-- <div class="sidebar-label text-muted">Agent Performance</div> -->
+  <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
+      <span><i data-lucide="headphones"></i> Agent Report</span>
+      <i data-lucide="chevron-down"></i>
   </button>
   <div class="dropdown-container">
     <a href="{{ url_for('average_call_handling_by_agent') }}">
