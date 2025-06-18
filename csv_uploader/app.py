@@ -35,7 +35,7 @@ def login():
         if user and check_password_hash(user.password, request.form['password']):
             session['username'] = user.username
             session['role'] = user.role
-            return redirect(url_for('average_call_handling_by_agent'))
+            return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error='Invalid credentials')
     return render_template('login.html')
