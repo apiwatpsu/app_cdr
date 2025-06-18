@@ -1470,8 +1470,11 @@ def longest_internal_calls():
                     call_history_id,
                     source_dn_number,
                     source_dn_name,
+                    source_participant_group_name,
                     destination_dn_number,
                     destination_dn_name,
+                    destination_participant_group_name,
+                    termination_reason,
                     (cdr_ended_at - cdr_answered_at) AS duration
                 FROM cdroutput
                 WHERE source_entity_type != 'external_line'
