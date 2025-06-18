@@ -166,7 +166,9 @@ def smtp_config():
         except Exception as e:
             error = f"SMTP Test Failed: {e}"
 
-    return render_template("smtp_config.html", config=config, error=error, success=success, username=session['username'])
+        return render_template('smtp_config.html', config=config, username=session['username'], error=error)
+
+    return render_template('smtp_config.html', config=config, username=session['username'])
 
 
 @app.route('/cdr_data')
