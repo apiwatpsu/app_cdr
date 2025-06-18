@@ -156,19 +156,55 @@ def smtp_config():
         db.session.commit()
 
         # Optional: Try to test connection
-        try:
-            import smtplib
-            server = smtplib.SMTP(smtp_server, smtp_port, timeout=10)
-            if use_tls:
-                server.starttls()
-            server.login(smtp_user, smtp_password)
-            server.quit()
-        except Exception as e:
-            error = f"SMTP Test Failed: {e}"
+    #     try:
+    #         import smtplib
+    #         server = smtplib.SMTP(smtp_server, smtp_port, timeout=10)
+    #         if use_tls:
+    #             server.starttls()
+    #         server.login(smtp_user, smtp_password)
+    #         server.quit()
+    #     except Exception as e:
+    #         error = f"SMTP Test Failed: {e}"
 
-        return render_template('smtp_config.html', config=config, username=session['username'], error=error)
+    #     return render_template('smtp_config.html', config=config, username=session['username'], error=error)
 
-    return render_template('smtp_config.html', config=config, username=session['username'])
+    # return render_template('smtp_config.html', config=config, username=session['username'])
+
+        # ถ้ากด Save
+        if action == 'save':
+            db.session.commit()
+            success = "✅ Configuration saved."
+
+        # ถ้ากด Test
+        elif action == 'test':
+            ok, message = send_test_email(config, test_email_to)
+            if ok:
+                success = message
+            else:
+                error = f"SMTP Test Failed: {message}"
+
+    return render_template("smtp_config.html", config=config, error=error, success=success, username=session['username'])
+
+
+def send_test_email(config, to_email):
+    try:
+        server = smtplib.SMTP(config.smtp_server, config.smtp_port, timeout=10)
+        if config.use_tls:
+            server.starttls()
+        server.login(config.smtp_user, config.smtp_password)
+
+        msg = MIMEText("✅ This is a test email from your SMTP configuration.")
+        msg["Subject"] = "SMTP Test Email"
+        msg["From"] = config.smtp_user
+        msg["To"] = to_email
+
+        server.sendmail(config.smtp_user, [to_email], msg.as_string())
+        server.quit()
+
+        return True, f"Test email sent successfully to {to_email}"
+
+    except Exception as e:
+        return False, str(e)
 
 
 @app.route('/cdr_data')
