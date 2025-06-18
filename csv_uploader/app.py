@@ -501,7 +501,20 @@ def outbound_calls():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT *
+                SELECT 
+                source_entity_type,
+                source_dn_number,
+                source_dn_name,
+                source_participant_group_name,
+                destination_entity_type,
+                destination_dn_number,
+                destination_dn_name,
+                destination_participant_group_name,
+                termination_reason,
+                cdr_started_at,
+                cdr_ended_at,
+                cdr_answered_at,
+                call_history_id
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
                   AND destination_entity_type = 'outbound_rule'
