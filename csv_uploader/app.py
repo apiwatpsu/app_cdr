@@ -127,6 +127,8 @@ def smtp_config():
 
     error = None
     config = SMTPConfig.query.first()  # Load existing config if any
+    error = None
+    success = None
 
     if request.method == 'POST':
         smtp_server = request.form['smtp_server']
@@ -135,6 +137,8 @@ def smtp_config():
         smtp_password = request.form['smtp_password']
         use_tls = 'use_tls' in request.form
         use_ssl = 'use_ssl' in request.form
+        test_email_to = request.form.get('test_email_to')
+        action = request.form.get('action')
 
         if config:
             config.smtp_server = smtp_server
