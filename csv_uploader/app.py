@@ -1737,7 +1737,7 @@ def get_dashboard_data(from_date, to_date):
             FROM cdroutput
             WHERE destination_entity_type = 'external_line'
               AND cdr_started_at >= :from_date
-              AND cdr_started_at < :to_date;
+              AND cdr_started_at <= :to_date;
             ORDER BY call_history_id, cdr_started_at DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
