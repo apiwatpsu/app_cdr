@@ -20,6 +20,8 @@ from werkzeug.utils import secure_filename
 
 BANGKOK_TZ = timezone('Asia/Bangkok')
 app = Flask(__name__)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 app.secret_key = 'your_secret_key'
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
