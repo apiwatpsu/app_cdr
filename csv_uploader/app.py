@@ -18,27 +18,58 @@ from email.mime.text import MIMEText
 import os
 from werkzeug.utils import secure_filename
 
-BANGKOK_TZ = timezone('Asia/Bangkok')
-app = Flask(__name__)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-app.secret_key = 'your_secret_key'
+# BANGKOK_TZ = timezone('Asia/Bangkok')
+# app = Flask(__name__)
+# db = SQLAlchemy(app)
+# migrate = Migrate(app, db)
+# app.secret_key = 'your_secret_key'
 
-UPLOAD_FOLDER = os.path.join('static', 'uploads')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+# UPLOAD_FOLDER = os.path.join('static', 'uploads')
+# ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# def allowed_file(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # 🔗 เชื่อมต่อ PostgreSQL
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://csvuploader:!Q1q2w3e4r5t@localhost/csvuploader'
 # MySQL or Mariadb (ใช้ pymysql เป็น driver)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db.init_app(app)
+
+# ✨ ตั้ง timezone
+BANGKOK_TZ = timezone('Asia/Bangkok')
+
+# ✨ สร้าง db instance ก่อนสร้าง app
+db = SQLAlchemy()
+migrate = Migrate()
+
+# ✨ ฟังก์ชัน factory สำหรับสร้าง app
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = 'your_secret_key'
+
+    # ✨ ตั้งค่าการอัปโหลด
+    UPLOAD_FOLDER = os.path.join('static', 'uploads')
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    # ✨ ตั้งค่าฐานข้อมูล
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # ✨ เชื่อมต่อ db และ migrate
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    # ✅ คืนค่า app เพื่อให้ Flask CLI ใช้ได้
+    return app
 
 @app.route('/')
 def index():
