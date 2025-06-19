@@ -9,6 +9,13 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False, default='viewer')
 
+
+    name = db.Column(db.String(100))
+    lastname = db.Column(db.String(100))
+    email = db.Column(db.String(120))
+    team = db.Column(db.String(100))
+    profile_image = db.Column(db.String(120))
+
     def __init__(self, username, password, role='viewer'):
         self.username = username
         self.password = generate_password_hash(password)

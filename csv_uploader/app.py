@@ -14,10 +14,20 @@ import smtplib
 from io import StringIO
 from flask import make_response
 from email.mime.text import MIMEText
+import os
+from werkzeug.utils import secure_filename
 
 BANGKOK_TZ = timezone('Asia/Bangkok')
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # 🔗 เชื่อมต่อ PostgreSQL
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://csvuploader:!Q1q2w3e4r5t@localhost/csvuploader'
@@ -1763,81 +1773,37 @@ def delete_user(user_id):
     flash(f'ลบผู้ใช้ {user.username} แล้ว', 'success')
     return redirect(url_for('manage_users'))
 
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
-# Dashboard
-# def get_dashboard_data(from_date, to_date):
-#     config = DBConfig.query.first()
-#     if not config:
-#         raise Exception("ยังไม่มีการตั้งค่า database")
+    user = User.query.filter_by(username=session['username']).first()
+    if not user:
+        return "User not found", 404
 
-#     conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
-#     engine = create_engine(conn_str)
-#     date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+    if request.method == 'POST':
+        user.name = request.form.get('name')
+        user.lastname = request.form.get('lastname')
+        user.email = request.form.get('email')
+        user.team = request.form.get('team')
 
-#     dashboard_data = {}
+        # อัปโหลดรูปภาพ
+        file = request.files.get('profile_image')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            user.profile_image = filename
 
-#     with engine.connect() as connection:
-        
-#         inbound_result = connection.execute(text("""
-#                 SELECT *
-#                 FROM cdroutput
-#                 WHERE source_entity_type = 'external_line'
-#                   AND cdr_started_at >= :from_date
-#                   AND cdr_started_at <= :to_date
-#                 ORDER BY cdr_started_at DESC;
-#         """), {"from_date": from_date, "to_date": to_date}).mappings()
+        db.session.commit()
+        flash("Profile updated successfully.")
+        return redirect(url_for('profile'))
 
-#         inbound_rows = [dict(row) for row in inbound_result]
-        
-#         for row in inbound_rows:
-#             for col in date_columns:
-#                 if col in row and isinstance(row[col], datetime):
-#                     row[col] = row[col].astimezone(BANGKOK_TZ)
+    return render_template('profile.html', user=user)
 
-#         dashboard_data['inbound_data'] = inbound_rows
-#         dashboard_data['inbound_count'] = len(inbound_rows)
 
-        
-#         outbound_result = connection.execute(text("""
-#                 SELECT *
-#                 FROM cdroutput
-#                 WHERE destination_entity_type = 'external_line'
-#                 AND cdr_started_at >= :from_date
-#                 AND cdr_started_at <= :to_date
-#         """), {"from_date": from_date, "to_date": to_date}).mappings()
 
-#         outbound_rows = [dict(row) for row in outbound_result]
-        
-#         for row in outbound_rows:
-#             for col in date_columns:
-#                 if col in row and isinstance(row[col], datetime):
-#                     row[col] = row[col].astimezone(BANGKOK_TZ)
-
-#         dashboard_data['outbound_data'] = inbound_rows
-#         dashboard_data['outbound_count'] = len(outbound_rows)
-
-        
-#         internal_result = connection.execute(text("""
-#                 SELECT *
-#                 FROM cdroutput
-#                 WHERE source_entity_type = 'extension'
-#                   AND destination_entity_type = 'extension'
-#                   AND cdr_started_at >= :from_date
-#                   AND cdr_started_at <= :to_date
-#                 ORDER BY cdr_started_at DESC;
-#         """), {"from_date": from_date, "to_date": to_date}).mappings()
-
-#         internal_rows = [dict(row) for row in internal_result]
-        
-#         for row in internal_rows:
-#             for col in date_columns:
-#                 if col in row and isinstance(row[col], datetime):
-#                     row[col] = row[col].astimezone(BANGKOK_TZ)
-
-#         dashboard_data['internal_data'] = internal_rows
-#         dashboard_data['internal_count'] = len(internal_rows)
-
-#     return dashboard_data
 
 
 def get_dashboard_data(from_date, to_date):
