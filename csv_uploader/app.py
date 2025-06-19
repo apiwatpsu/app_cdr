@@ -44,7 +44,7 @@ from werkzeug.utils import secure_filename
 BANGKOK_TZ = timezone('Asia/Bangkok')
 
 # ✨ สร้าง db instance ก่อนสร้าง app
-db = SQLAlchemy()
+db = SQLAlchemy(app)
 migrate = Migrate()
 
 # ✨ ฟังก์ชัน factory สำหรับสร้าง app
