@@ -43,9 +43,13 @@ from werkzeug.utils import secure_filename
 # ✨ ตั้ง timezone
 BANGKOK_TZ = timezone('Asia/Bangkok')
 
-# ✨ สร้าง db instance ก่อนสร้าง app
-db = SQLAlchemy(app)
+# ✨ สร้าง db instance ก่อนสร้าง app (ไม่ใส่ app ตอนนี้)
+db = SQLAlchemy()
 migrate = Migrate()
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ✨ ฟังก์ชัน factory สำหรับสร้าง app
 def create_app():
@@ -54,22 +58,16 @@ def create_app():
 
     # ✨ ตั้งค่าการอัปโหลด
     UPLOAD_FOLDER = os.path.join('static', 'uploads')
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-    def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     # ✨ ตั้งค่าฐานข้อมูล
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # ✨ เชื่อมต่อ db และ migrate
+    # ✨ เชื่อมต่อ db และ migrate กับ app ที่สร้างขึ้นใหม่
     db.init_app(app)
     migrate.init_app(app, db)
-
-    # ✅ คืนค่า app เพื่อให้ Flask CLI ใช้ได้
-    return app
+    
 
 @app.route('/')
 def index():
@@ -1980,6 +1978,7 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+    return app
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=1881)
 
