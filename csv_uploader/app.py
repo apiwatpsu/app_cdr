@@ -1972,7 +1972,7 @@ def dashboard():
 
     except Exception as e:
         
-        return render_template("dashboard.html", user=user, error=str(e))
+        return render_template("dashboard.html", error=str(e))
 
 
 
