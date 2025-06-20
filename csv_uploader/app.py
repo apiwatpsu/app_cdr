@@ -14,6 +14,7 @@ import psutil
 import shutil
 import smtplib
 import json
+import pyotp
 from io import StringIO
 from flask import make_response
 from email.mime.text import MIMEText
@@ -49,19 +50,69 @@ db.init_app(app)
 def index():
     return redirect(url_for('login'))
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         user = User.query.filter_by(username=request.form['username']).first()
+#         if user and check_password_hash(user.password, request.form['password']):
+#             session['username'] = user.username
+#             session['role'] = user.role
+#             session['menu_permissions'] = user.menu_permissions
+#             return redirect(url_for('dashboard'))
+#         else:
+#             return render_template('login.html', error='Invalid credentials')
+    
+#     return render_template('login.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User.query.filter_by(username=request.form['username']).first()
-        if user and check_password_hash(user.password, request.form['password']):
+        username = request.form['username']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
             session['username'] = user.username
-            session['role'] = user.role
-            session['menu_permissions'] = user.menu_permissions
+
+            if user.mfa_enabled and not user.mfa_secret:
+                return redirect(url_for('setup_mfa'))
+
             return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error='Invalid credentials')
-    
+
     return render_template('login.html')
+
+@app.route('/setup_mfa', methods=['GET', 'POST'])
+def setup_mfa():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+
+    user = User.query.get(user_id)
+    if not user:
+        return redirect(url_for('login'))
+
+    if not user.mfa_secret:
+        secret = pyotp.random_base32()
+        user.mfa_secret = secret
+        db.session.commit()
+    else:
+        secret = user.mfa_secret
+
+    totp = pyotp.TOTP(secret)
+    qr_uri = totp.provisioning_uri(name=user.username, issuer_name="MyApp")
+
+    if request.method == 'POST':
+        token = request.form['token']
+        if totp.verify(token):
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('setup_mfa.html', error="Invalid code", qr_uri=qr_uri)
+
+    return render_template('setup_mfa.html', qr_uri=qr_uri)
+
 
 
 @app.route('/upload', methods=['GET', 'POST'])
