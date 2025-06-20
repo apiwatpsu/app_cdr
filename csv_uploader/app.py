@@ -336,7 +336,7 @@ def count_call_by_type():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                SELECT source_entity_type, COUNT(*) AS count
+                SELECT source_entity_type as Type, COUNT(*) AS Count
                 FROM cdroutput
                 WHERE cdr_started_at >= :from_date
                 AND cdr_started_at <= :to_date
