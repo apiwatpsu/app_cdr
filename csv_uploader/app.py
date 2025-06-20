@@ -65,6 +65,26 @@ def index():
     
 #     return render_template('login.html')
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+
+#         user = User.query.filter_by(username=username).first()
+#         if user and check_password_hash(user.password, password):
+#             session['user_id'] = user.id
+#             session['username'] = user.username
+
+#             if user.mfa_enabled and not user.mfa_secret:
+#                 return redirect(url_for('setup_mfa'))
+
+#             return redirect(url_for('dashboard'))
+#         else:
+#             return render_template('login.html', error='Invalid credentials')
+
+#     return render_template('login.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -73,17 +93,20 @@ def login():
 
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
+            session['pre_mfa_user_id'] = user.id  # ⛔ ยังไม่ login จริง
             session['username'] = user.username
 
-            if user.mfa_enabled and not user.mfa_secret:
-                return redirect(url_for('setup_mfa'))
+            if user.mfa_enabled:
+                return redirect(url_for('verify_mfa'))
 
+            # ถ้ายังไม่เปิด MFA → login ทันที
+            session['user_id'] = user.id
             return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error='Invalid credentials')
 
     return render_template('login.html')
+
 
 @app.route('/setup_mfa', methods=['GET', 'POST'])
 def setup_mfa():
@@ -113,6 +136,29 @@ def setup_mfa():
             return render_template('setup_mfa.html', error="Invalid code", qr_uri=qr_uri)
 
     return render_template('setup_mfa.html', qr_uri=qr_uri)
+
+
+@app.route('/verify_mfa', methods=['GET', 'POST'])
+def verify_mfa():
+    user_id = session.get('pre_mfa_user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+
+    user = User.query.get_or_404(user_id)
+    totp = pyotp.TOTP(user.mfa_secret)
+
+    if request.method == 'POST':
+        token = request.form.get('token')
+        if totp.verify(token):
+            # ✅ ยืนยัน OTP แล้ว ค่อยตั้ง session
+            session['user_id'] = user.id
+            session.pop('pre_mfa_user_id', None)
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('verify_mfa.html', error="Invalid OTP")
+
+    return render_template('verify_mfa.html')
+
 
 
 
