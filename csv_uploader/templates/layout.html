@@ -103,6 +103,10 @@
       font-size: 16px;
     }
 
+    .dropdown-btn span {
+      color: #333333;
+    }
+
     .dropdown-btn.active {
       background-color: #ddd;
     }
@@ -372,7 +376,7 @@
       <i data-lucide="chevron-down"></i>
     </button>
     <div class="dropdown-container">
-        <a href="{{ url_for('avg_call_duration_answered_external') }}" data-menu="avg_call_duration_answered_external>
+        <a href="{{ url_for('avg_call_duration_answered_external') }}" data-menu="avg_call_duration_answered_external">
           <i data-lucide="dot"></i>
         Avg duration external calls
         </a>
