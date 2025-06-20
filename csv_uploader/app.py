@@ -423,7 +423,7 @@ def internal_calls():
                 destination_dn_number AS "To Extension",
                 destination_dn_name AS "To Agent",
                 destination_participant_group_name AS "To Group",
-                termination_reason AS "Terminated By",
+                termination_reason AS "Termination Reason",
                 cdr_started_at AS "Start",
                 cdr_answered_at AS "Answered",
                 cdr_ended_at AS "End",
@@ -506,19 +506,18 @@ def outbound_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT 
-                source_entity_type,
-                source_dn_number,
-                source_dn_name,
-                source_participant_group_name,
-                destination_entity_type,
-                destination_dn_name,
-                destination_participant_phone_number,
-                destination_participant_group_name,
-                termination_reason,
-                cdr_started_at,
-                cdr_answered_at,
-                cdr_ended_at,
-                call_history_id
+                source_entity_type AS "From Type",
+                source_dn_number AS "From Extension",
+                source_dn_name AS "From Agent",
+                source_participant_group_name AS "From Group",
+                destination_entity_type AS "To Type",
+                destination_dn_name AS "Trunk",
+                destination_participant_phone_number AS "To Number",
+                termination_reason AS "Termination Reason",
+                cdr_started_at AS "Start",
+                cdr_answered_at AS "Answered",
+                cdr_ended_at AS "End",
+                call_history_id AS "Call ID"
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
                 AND destination_entity_type = 'external_line'
@@ -599,18 +598,18 @@ def inbound_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT 
-                source_entity_type,
-                source_participant_phone_number,
-                source_participant_trunk_did,
-                destination_entity_type,
-                destination_dn_number,
-                destination_dn_name,
-                destination_participant_group_name,
-                termination_reason,
-                cdr_started_at,
-                cdr_answered_at,
-                cdr_ended_at,
-                call_history_id
+                source_entity_type AS "From Type",
+                source_participant_phone_number AS "From Number",
+                source_participant_trunk_did AS "Trunk DID",
+                destination_entity_type AS "To Type",
+                destination_dn_number AS "To Number",
+                destination_dn_name AS "To Name",
+                destination_participant_group_name AS "To Group",
+                termination_reason AS "Termination Reason",
+                cdr_started_at AS "Start",
+                cdr_answered_at AS "Answered",
+                cdr_ended_at AS "End",
+                call_history_id AS "Call ID"
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
                 AND cdr_started_at >= :from_date
