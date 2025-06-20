@@ -17,14 +17,26 @@
       </select>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">Menu Permissions</label>
-      <select name="menu_permissions" class="form-check" multiple>
-        <option value="dashboard" {% if 'dashboard' in (user.menu_permissions | from_json) %}selected{% endif %}>Dashboard</option>
-        <option value="report" {% if 'report' in (user.menu_permissions | from_json) %}selected{% endif %}>Report</option>
-        <option value="settings" {% if 'settings' in (user.menu_permissions | from_json) %}selected{% endif %}>Settings</option>
-      </select>
+  <div class="mb-3">
+    <label class="form-label">Menu Permissions</label>
+    {% set selected_permissions = user.menu_permissions | from_json %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="dashboard"
+            {% if 'dashboard' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Dashboard</label>
     </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="report"
+            {% if 'report' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Report</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="settings"
+            {% if 'settings' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Settings</label>
+    </div>
+  </div>
+
 
 
     <button type="submit" class="btn btn-success">💾 บันทึก</button>
