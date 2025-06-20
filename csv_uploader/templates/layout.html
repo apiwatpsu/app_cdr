@@ -500,15 +500,6 @@ $(document).ready(function () {
     localStorage.setItem("openDropdown", parentKey);
   });
 
-  // ❹ ถ้าคลิกนอก dropdown ให้ปิด
-  $(document).click(function (e) {
-    if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
-      $(".dropdown-btn").removeClass("active");
-      $(".dropdown-container").slideUp();
-      localStorage.removeItem("openDropdown");
-    }
-  });
-
   // ❺ DataTables config
   const table = $('#myTable').DataTable({
     scrollX: true,
