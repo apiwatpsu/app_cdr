@@ -768,15 +768,31 @@ def average_call_handling_by_agent():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    source_participant_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds"
+                    destination_dn_name AS "Agent",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
+                    'inbound' AS "call_type"
                 FROM cdroutput
-                WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
-                    AND cdr_answered_at IS NOT NULL
-                    AND cdr_ended_at IS NOT NULL
-                    AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY "Agent"
-                ORDER BY "AVG Handling Time Seconds";
+                WHERE source_entity_type = 'external_line'
+                AND destination_entity_type = 'extension'
+                AND cdr_answered_at IS NOT NULL
+                AND cdr_ended_at IS NOT NULL
+                AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
+                GROUP BY destination_dn_name
+
+                UNION ALL
+
+                SELECT
+                    source_participant_name AS "Agent",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
+                    'outbound' AS "call_type"
+                FROM cdroutput
+                WHERE source_entity_type = 'extension'
+                AND destination_entity_type = 'external_line'
+                AND cdr_answered_at IS NOT NULL
+                AND cdr_ended_at IS NOT NULL
+                AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
+                GROUP BY source_participant_name
+                ORDER BY "Agent", "Call Type";
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
@@ -849,32 +865,20 @@ def call_handled_per_agent():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    destination_dn_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
-                    'inbound' AS "call_type"
-                FROM cdroutput
-                WHERE source_entity_type = 'external_line'
-                AND destination_entity_type = 'extension'
-                AND cdr_answered_at IS NOT NULL
-                AND cdr_ended_at IS NOT NULL
-                AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY destination_dn_name
 
-                UNION ALL
-
-                SELECT
                     source_participant_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
-                    'outbound' AS "call_type"
-                FROM cdroutput
-                WHERE source_entity_type = 'extension'
-                AND destination_entity_type = 'external_line'
-                AND cdr_answered_at IS NOT NULL
-                AND cdr_ended_at IS NOT NULL
-                AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY source_participant_name
 
-                ORDER BY "Agent", "call_type";
+                    COUNT(DISTINCT call_history_id) AS "Calls Handled"
+
+                FROM cdroutput
+
+                WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
+
+                    AND cdr_answered_at IS NOT NULL
+
+                GROUP BY "Agent"
+
+                ORDER BY "Calls Handled" DESC;
             """), {
                 "from_date": from_date,
                 "to_date": to_date
