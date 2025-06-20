@@ -516,17 +516,6 @@ $(document).ready(function () {
     $(this).addClass('selected');
   });
 
-  // ❹ ถ้าคลิกนอก dropdown ให้ปิด dropdown และล้างสถานะ
-  $(document).click(function (e) {
-    if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
-      $(".dropdown-btn").removeClass("active");
-      $(".dropdown-container").slideUp();
-      localStorage.removeItem("openDropdown");
-      localStorage.removeItem("selectedMenu");
-      $('.dropdown-container a').removeClass('selected');
-    }
-  });
-
   // ❺ DataTables config
   const table = $('#myTable').DataTable({
     scrollX: true,
