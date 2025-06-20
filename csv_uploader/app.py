@@ -8,6 +8,7 @@ from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
 from pytz import timezone, utc
+from flask import g
 import csv
 import psutil
 import shutil
@@ -1734,19 +1735,14 @@ def inject_system_utilization():
         return {}
 
 @app.before_request
-def load_logged_in_user():
-    from flask import session, g
-    from app.models import User
-
+def load_user():
+    g.user = None
     if 'username' in session:
         g.user = User.query.filter_by(username=session['username']).first()
-    else:
-        g.user = None
 
 @app.context_processor
 def inject_user():
-    from flask import g
-    return dict(user=g.user)
+    return dict(user=g.get('user', None))
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
