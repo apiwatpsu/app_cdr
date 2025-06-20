@@ -287,6 +287,7 @@
 
   
   <!-- <div class="sidebar-label text-muted">Agent Performance</div> -->
+   {% if can_view('agent_report') %}
   <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="headphones"></i> Agent Report</span>
       <i data-lucide="chevron-down"></i>
@@ -305,10 +306,12 @@
       Utilization Rate
     </a>
   </div>
+  {% endif %}
 
 
   
   <!-- <div class="sidebar-label text-muted">Queue Performance</div> -->
+   {% if can_view('queue_report') %}
   <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="list-ordered"></i> Queue Report</span>
       <i data-lucide="chevron-down"></i>
@@ -336,9 +339,11 @@
       Calls transferred to queue
     </a>
   </div>
+  {% endif %}
 
     
     <!-- <div class="sidebar-label text-muted">Call Duration & Analysis</div> -->
+     {% if can_view('call_duration') %}
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="timer"></i> Call Duration & Analysis</span>
       <i data-lucide="chevron-down"></i>
@@ -353,10 +358,12 @@
         Longest internal calls
         </a>
     </div>
+    {% endif %}
 
 
     
     <!-- <div class="sidebar-label text-muted">Error and Failure Analysis</div> -->
+     {% if can_view('error_failure') %}
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="circle-x"></i> Error and Failure</span>
       <i data-lucide="chevron-down"></i>
@@ -371,6 +378,7 @@
          Calls license limits
         </a>
     </div>
+    {% endif %}
 
 
 <div class="sidebar-label text-muted">System Utilization</div>
