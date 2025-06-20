@@ -464,39 +464,66 @@
 
 
 <script>
-  $(document).ready(function() {
+$(document).ready(function () {
+  lucide.createIcons();
 
-    lucide.createIcons();
+  // ❶ เปิด dropdown ตามค่าที่จำไว้
+  const lastOpen = localStorage.getItem('openDropdown');
+  if (lastOpen) {
+    const btn = $(`.dropdown-btn[data-key="${lastOpen}"]`);
+    btn.addClass('active');
+    btn.next('.dropdown-container').show();
+  }
 
+  // ❷ เมื่อคลิก dropdown ปกติ
+  $(".dropdown-btn").click(function (e) {
+    e.stopPropagation();
+    const key = $(this).data("key");
 
-    const dropdowns = document.getElementsByClassName("dropdown-btn");
-    for (let i = 0; i < dropdowns.length; i++) {
-      dropdowns[i].addEventListener("click", function () {
-        this.classList.toggle("active");
-        const content = this.nextElementSibling;
-        content.style.display = content.style.display === "block" ? "none" : "block";
-      });
+    const isActive = $(this).hasClass("active");
+
+    $(".dropdown-btn").removeClass("active");
+    $(".dropdown-container").slideUp();
+
+    if (!isActive) {
+      $(this).addClass("active");
+      $(this).next(".dropdown-container").slideDown();
+      localStorage.setItem("openDropdown", key);
+    } else {
+      localStorage.removeItem("openDropdown");
     }
-
-    $('.dropdown-container a').on('click', function(event) {
-      event.stopPropagation();
-    });
-
-
-  const table = $('#myTable').DataTable({
-      scrollX: true,         
-      scrollY: '400px',      
-      scrollCollapse: true,
-      fixedHeader: true,     
-      pageLength: 10,
-      lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
-      ordering: true,
-      dom: "<'d-flex justify-content-between mb-3'B>flrtip",
-      buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-
-    }); 
   });
+
+  // ❸ เมื่อคลิกลิงก์ใน dropdown → บันทึกว่าเมนูไหนถูกเลือก
+  $(".dropdown-container a").click(function () {
+    const parentKey = $(this).closest(".dropdown-container").prev(".dropdown-btn").data("key");
+    localStorage.setItem("openDropdown", parentKey);
+  });
+
+  // ❹ ถ้าคลิกนอก dropdown ให้ปิด
+  $(document).click(function (e) {
+    if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
+      $(".dropdown-btn").removeClass("active");
+      $(".dropdown-container").slideUp();
+      localStorage.removeItem("openDropdown");
+    }
+  });
+
+  // ❺ DataTables config
+  const table = $('#myTable').DataTable({
+    scrollX: true,
+    scrollY: '400px',
+    scrollCollapse: true,
+    fixedHeader: true,
+    pageLength: 10,
+    lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+    ordering: true,
+    dom: "<'d-flex justify-content-between mb-3'B>flrtip",
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+  });
+});
 </script>
+
 
 
 
