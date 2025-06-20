@@ -851,7 +851,7 @@ def call_handled_per_agent():
                 SELECT
                     destination_dn_name AS "Agent",
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds",
-                    'inbound' AS call_type
+                    'inbound' AS "call_type"
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
                 AND destination_entity_type = 'extension'
@@ -865,7 +865,7 @@ def call_handled_per_agent():
                 SELECT
                     source_participant_name AS "Agent",
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds",
-                    'outbound' AS call_type
+                    'outbound' AS "call_type"
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
                 AND destination_entity_type = 'external_line'
@@ -874,7 +874,7 @@ def call_handled_per_agent():
                 AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
                 GROUP BY source_participant_name
 
-                ORDER BY "Agent", call_type;
+                ORDER BY "Agent", "call_type";
             """), {
                 "from_date": from_date,
                 "to_date": to_date
