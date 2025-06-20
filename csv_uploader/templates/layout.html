@@ -229,7 +229,10 @@
         Dashboard
     </a>
     {% endif %}
+    
+    
     <!-- Settings Group -->
+     {% if 'settings' in permissions %}
     <div class="sidebar-label text-muted">Settings</div>
     <a href="{{ url_for('manage_users') }}">
         <i data-lucide="users"></i>
@@ -243,8 +246,10 @@
         <i data-lucide="send"></i>
         SMTP Settings
     </a>
-
+    {% endif %}
+    
     <!-- CDR Group -->
+     {% if 'report' in permissions %}
     <div class="sidebar-label text-muted">Call Detail Record</div>
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="folder"></i> CDR Reports</span>
@@ -272,6 +277,8 @@
           <i data-lucide="dot"></i>
         Inbound Calls
         </a>
+
+        {% endif %}
     </div>
 
   
