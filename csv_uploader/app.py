@@ -850,7 +850,7 @@ def call_handled_per_agent():
             result = connection.execute(text("""
                 SELECT
                     destination_dn_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
                     'inbound' AS "call_type"
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
@@ -864,7 +864,7 @@ def call_handled_per_agent():
 
                 SELECT
                     source_participant_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
                     'outbound' AS "call_type"
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
