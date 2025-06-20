@@ -1736,7 +1736,7 @@ def inject_system_utilization():
 @app.before_request
 def load_logged_in_user():
     from flask import session, g
-    from yourapp.models import User
+    from app.models import User
 
     if 'username' in session:
         g.user = User.query.filter_by(username=session['username']).first()
