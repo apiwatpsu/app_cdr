@@ -19,6 +19,8 @@ class User(db.Model):
     team = db.Column(db.String(100))
     profile_image = db.Column(db.String(120))
     menu_permissions = db.Column(Text, default='[]')
+    mfa_secret = db.Column(db.String(32), nullable=True)
+    mfa_enabled = db.Column(db.Boolean, default=False)
 
     def __init__(self, username, password, role='viewer'):
         self.username = username

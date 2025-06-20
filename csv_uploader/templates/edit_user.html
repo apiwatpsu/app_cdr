@@ -62,6 +62,12 @@
       <label class="form-check-label">Error And Failure Report</label>
     </div>
 
+    <div class="mb-3 form-check">
+  <input type="checkbox" class="form-check-input" id="mfa_enabled" name="mfa_enabled"
+         {% if user.mfa_enabled %}checked{% endif %}>
+  <label class="form-check-label" for="mfa_enabled">Enable MFA</label>
+    </div>
+
   </div>
 
 

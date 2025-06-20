@@ -7,4 +7,5 @@ SQLAlchemy
 Werkzeug
 psutil
 pytz
+pyotp
 
