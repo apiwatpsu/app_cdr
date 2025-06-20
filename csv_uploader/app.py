@@ -65,25 +65,6 @@ def index():
     
 #     return render_template('login.html')
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-
-#         user = User.query.filter_by(username=username).first()
-#         if user and check_password_hash(user.password, password):
-#             session['user_id'] = user.id
-#             session['username'] = user.username
-
-#             if user.mfa_enabled and not user.mfa_secret:
-#                 return redirect(url_for('setup_mfa'))
-
-#             return redirect(url_for('dashboard'))
-#         else:
-#             return render_template('login.html', error='Invalid credentials')
-
-#     return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -787,14 +768,14 @@ def average_call_handling_by_agent():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    source_participant_name AS agent_name,
+                    source_participant_name AS "Agent",
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_handling_time_seconds
                 FROM cdroutput
                 WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
                     AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY agent_name
+                GROUP BY Agent
                 ORDER BY average_handling_time_seconds;
             """), {"from_date": from_date, "to_date": to_date})
 
