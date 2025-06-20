@@ -770,7 +770,7 @@ def average_call_handling_by_agent():
                 SELECT
                     destination_dn_name AS "Agent",
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
-                    'inbound' AS "call_type"
+                    'inbound' AS "Call Type"
                 FROM cdroutput
                 WHERE source_entity_type = 'external_line'
                 AND destination_entity_type = 'extension'
@@ -784,7 +784,7 @@ def average_call_handling_by_agent():
                 SELECT
                     source_participant_name AS "Agent",
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
-                    'outbound' AS "call_type"
+                    'outbound' AS "Call Type"
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
                 AND destination_entity_type = 'external_line'
