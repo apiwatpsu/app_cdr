@@ -463,21 +463,16 @@
   $(document).ready(function() {
     lucide.createIcons();
 
-    // ✅ Toggle class 'active' เท่านั้น ให้ CSS handle การแสดงเมนู
+    
     $(".dropdown-btn").click(function(e) {
       e.stopPropagation();
       $(this).toggleClass("active");
-      // ลบ $(this).next(".dropdown-container").toggle();
+      
     });
 
-    // ✅ ป้องกันการปิด dropdown เมื่อคลิกลิงก์ข้างใน
+    
     $(".dropdown-container a").click(function(e) {
       e.stopPropagation();
-    });
-
-    // ✅ เมื่อคลิกที่อื่น นอก dropdown ให้ปิด dropdown
-    $(document).click(function() {
-      $(".dropdown-btn").removeClass("active");
     });
 
     // DataTables config
