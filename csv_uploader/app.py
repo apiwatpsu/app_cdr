@@ -341,7 +341,7 @@ def count_call_by_type():
                 WHERE cdr_started_at >= :from_date
                 AND cdr_started_at <= :to_date
                 GROUP BY source_entity_type
-                ORDER BY Count DESC;
+                ORDER BY "Count" DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
