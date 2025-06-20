@@ -19,7 +19,7 @@
 
     <div class="mb-3">
       <label class="form-label">Menu Permissions</label>
-      <select name="menu_permissions" class="form-select" multiple>
+      <select name="menu_permissions" class="form-check" multiple>
         <option value="dashboard" {% if 'dashboard' in (user.menu_permissions | from_json) %}selected{% endif %}>Dashboard</option>
         <option value="report" {% if 'report' in (user.menu_permissions | from_json) %}selected{% endif %}>Report</option>
         <option value="settings" {% if 'settings' in (user.menu_permissions | from_json) %}selected{% endif %}>Settings</option>
