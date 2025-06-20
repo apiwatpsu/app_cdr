@@ -279,7 +279,7 @@
   
     <div class="sidebar-label text-muted">Report</div>
     {% if can_view('cdr_report') %}
-    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
+    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="cdr_report">
       <span><i data-lucide="folder"></i> CDR Reports</span>
       <i data-lucide="chevron-down"></i>
     </button>
@@ -288,19 +288,19 @@
           <i data-lucide="dot"></i>
         Call Detail Record
         </a>
-        <a href="{{ url_for('count_call_by_type') }}">
+        <a href="{{ url_for('count_call_by_type') }}" data-menu="count_call_by_type">
           <i data-lucide="dot"></i>
         Call Type Summary
         </a>
-        <a href="{{ url_for('internal_calls') }}">
+        <a href="{{ url_for('internal_calls') }}" data-menu="internal_calls">
           <i data-lucide="dot"></i>
         Internal Calls
         </a>
-        <a href="{{ url_for('outbound_calls') }}">
+        <a href="{{ url_for('outbound_calls') }}" data-menu="outbound_calls">
           <i data-lucide="dot"></i>
         Outbound Calls
         </a>
-        <a href="{{ url_for('inbound_calls') }}">
+        <a href="{{ url_for('inbound_calls') }}" data-menu="inbound_calls">
           <i data-lucide="dot"></i>
         Inbound Calls
         </a>
@@ -311,20 +311,20 @@
   
   <!-- <div class="sidebar-label text-muted">Agent Performance</div> -->
    {% if can_view('agent_report') %}
-  <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
+  <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="agent_report">
       <span><i data-lucide="headphones"></i> Agent Report</span>
       <i data-lucide="chevron-down"></i>
   </button>
   <div class="dropdown-container">
-    <a href="{{ url_for('average_call_handling_by_agent') }}">
+    <a href="{{ url_for('average_call_handling_by_agent') }}" data-menu="average_call_handling_by_agent">
       <i data-lucide="dot"></i>
       Avg Call Handling Time
     </a>
-    <a href="{{ url_for('call_handled_per_agent') }}">
+    <a href="{{ url_for('call_handled_per_agent') }}" data-menu="call_handled_per_agent">
       <i data-lucide="dot"></i>
       Calls Handled
     </a>
-    <a href="{{ url_for('agent_utilization_rate') }}">
+    <a href="{{ url_for('agent_utilization_rate') }}" data-menu="agent_utilization_rate">
       <i data-lucide="dot"></i>
       Utilization Rate
     </a>
@@ -335,29 +335,29 @@
   
   <!-- <div class="sidebar-label text-muted">Queue Performance</div> -->
    {% if can_view('queue_report') %}
-  <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
+  <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="queue_report">
       <span><i data-lucide="list-ordered"></i> Queue Report</span>
       <i data-lucide="chevron-down"></i>
   </button>
   <div class="dropdown-container">
-    <a href="{{ url_for('list_all_lost_queue_calls') }}">
+    <a href="{{ url_for('list_all_lost_queue_calls') }}" data-menu="list_all_lost_queue_calls">
       <i data-lucide="dot"></i>
       List all lost queue calls
     </a>
-    <a href="{{ url_for('calls_handled_by_each_queue') }}">
+    <a href="{{ url_for('calls_handled_by_each_queue') }}" data-menu="calls_handled_by_each_queue">
       <i data-lucide="dot"></i>
       Calls handled by each queue
     </a>
-    <a href="{{ url_for('average_time_before_agents_answered') }}">
+    <a href="{{ url_for('average_time_before_agents_answered') }}" data-menu="average_time_before_agents_answered">
       <i data-lucide="dot"></i>
       Average time before answered
     </a>
-    <a href="{{ url_for('terminated_before_being_answered') }}">
+    <a href="{{ url_for('terminated_before_being_answered') }}" data-menu="terminated_before_being_answered">
       <i data-lucide="dot"></i>
       Terminated before answered (Abandoned)
     </a>
 
-    <a href="{{ url_for('calls_transferred_to_queue') }}">
+    <a href="{{ url_for('calls_transferred_to_queue') }}" data-menu="calls_transferred_to_queue">
       <i data-lucide="dot"></i>
       Calls transferred to queue
     </a>
@@ -367,16 +367,16 @@
     
     <!-- <div class="sidebar-label text-muted">Call Duration & Analysis</div> -->
      {% if can_view('call_duration') %}
-    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
+    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="call_duration">
       <span><i data-lucide="timer"></i> Call Duration & Analysis</span>
       <i data-lucide="chevron-down"></i>
     </button>
     <div class="dropdown-container">
-        <a href="{{ url_for('avg_call_duration_answered_external') }}">
+        <a href="{{ url_for('avg_call_duration_answered_external') }}" data-menu="avg_call_duration_answered_external>
           <i data-lucide="dot"></i>
         Avg duration external calls
         </a>
-        <a href="{{ url_for('longest_internal_calls') }}">
+        <a href="{{ url_for('longest_internal_calls') }}" data-menu="longest_internal_calls">
           <i data-lucide="dot"></i>
         Longest internal calls
         </a>
@@ -392,11 +392,11 @@
       <i data-lucide="chevron-down"></i>
     </button>
     <div class="dropdown-container">
-        <a href="{{ url_for('calls_no_route') }}" data-menu="calls_failed">
+        <a href="{{ url_for('calls_no_route') }}" data-menu="calls_no_route">
           <i data-lucide="dot"></i>
          List calls failed
         </a>
-        <a href="{{ url_for('calls_license_limits') }}" data-menu="license_limits">
+        <a href="{{ url_for('calls_license_limits') }}" data-menu="calls_license_limits">
           <i data-lucide="dot"></i>
          Calls license limits
         </a>
