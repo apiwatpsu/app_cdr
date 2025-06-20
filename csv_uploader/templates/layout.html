@@ -492,8 +492,8 @@ $(document).ready(function () {
 
   // ❸ เมื่อคลิกลิงก์ใน dropdown → บันทึกว่าเมนูไหนถูกเลือก
   $(".dropdown-container a").click(function () {
-    const menuKey = $(this).data("menu");
-    localStorage.setItem("openDropdown", menuKey);
+  const parentKey = $(this).closest(".dropdown-container").prev(".dropdown-btn").data("key");
+  localStorage.setItem("openDropdown", parentKey);
   });
 
   // ❹ ถ้าคลิกนอก dropdown ให้ปิด
