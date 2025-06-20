@@ -436,12 +436,12 @@
 
 
 
-<script>
+<!-- <script>
   $(document).ready(function() {
-    // Activate Lucide icons
+
     lucide.createIcons();
 
-    // Handle dropdown toggles
+
     const dropdowns = document.getElementsByClassName("dropdown-btn");
     for (let i = 0; i < dropdowns.length; i++) {
       dropdowns[i].addEventListener("click", function () {
@@ -450,31 +450,64 @@
         content.style.display = content.style.display === "block" ? "none" : "block";
       });
     }
-    // Prevent dropdown from closing when clicking links inside dropdown-container
+
     $('.dropdown-container a').on('click', function(event) {
       event.stopPropagation();
     });
 
 
   const table = $('#myTable').DataTable({
-      scrollX: true,         // เปิด scroll แนวนอน
-      scrollY: '400px',      // scroll แนวตั้งถ้าตารางยาว
+      scrollX: true,         
+      scrollY: '400px',      
       scrollCollapse: true,
-      fixedHeader: true,     // ทำให้หัวตารางลอยอยู่
+      fixedHeader: true,     
       pageLength: 10,
       lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
       ordering: true,
       dom: "<'d-flex justify-content-between mb-3'B>flrtip",
       buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-      // columnDefs: [
-      //   {
-      //     targets: [0, 1, 2],
-      //     visible: false
-      //   }
-      // ]
+
     }); 
   });
+</script> -->
+<script>
+  $(document).ready(function() {
+  lucide.createIcons();
+
+  // Toggle dropdown เมื่อคลิกที่ .dropdown-btn
+  $(".dropdown-btn").click(function(e) {
+    e.stopPropagation(); // หยุด event ไว้ไม่ให้ลุกลาม
+    $(this).toggleClass("active");
+    $(this).next(".dropdown-container").toggle();
+  });
+
+  // หยุดไม่ให้ dropdown ปิดเมื่อคลิก link ใน dropdown-container
+  $(".dropdown-container a").click(function(e) {
+    e.stopPropagation();
+    // ลิงก์ยังทำงานปกติ ไม่ต้อง preventDefault
+  });
+
+  // ถ้าคลิกที่อื่นๆ นอก dropdown ให้ปิด dropdown ทั้งหมด
+  $(document).click(function() {
+    $(".dropdown-btn").removeClass("active");
+    $(".dropdown-container").hide();
+  });
+
+  // DataTables config
+  const table = $('#myTable').DataTable({
+    scrollX: true,
+    scrollY: '400px',
+    scrollCollapse: true,
+    fixedHeader: true,
+    pageLength: 10,
+    lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+    ordering: true,
+    dom: "<'d-flex justify-content-between mb-3'B>flrtip",
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+  });
+});
 </script>
+
 
 </body>
 </html>
