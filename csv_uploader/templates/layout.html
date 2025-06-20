@@ -276,12 +276,14 @@
     <div class="sidebar-label text-muted">Settings</div>
 
     <a href="{{ url_for('manage_users') }}"
+      data-menu="manage_users"
       class="{% if request.endpoint == 'manage_users' %}active{% endif %}">
         <i data-lucide="users"></i>
         Manage Users
     </a>
 
     <a href="{{ url_for('db_config') }}"
+      data-menu="db_config"
       class="{% if request.endpoint == 'db_config' %}active{% endif %}">
         <i data-lucide="database"></i>
         Database Settings
