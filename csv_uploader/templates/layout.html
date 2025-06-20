@@ -220,11 +220,15 @@
 
         <!-- Dashboard Group -->
     <div class="sidebar-label text-muted">Dashboard</div>
+
+    {% set permissions = (session['menu_permissions'] | from_json) if session.get('menu_permissions') else [] %}
+    
+    {% if 'dashboard' in permissions %}
     <a href="{{ url_for('dashboard') }}">
         <i data-lucide="layout-dashboard"></i>
         Dashboard
     </a>
-
+    {% endif %}
     <!-- Settings Group -->
     <div class="sidebar-label text-muted">Settings</div>
     <a href="{{ url_for('manage_users') }}">

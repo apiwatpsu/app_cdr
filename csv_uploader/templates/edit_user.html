@@ -16,6 +16,17 @@
         <option value="viewer" {% if user.role == 'viewer' %}selected{% endif %}>viewer</option>
       </select>
     </div>
+
+    <div class="mb-3">
+      <label class="form-label">Menu Permissions</label>
+      <select name="menu_permissions" class="form-select" multiple>
+        <option value="dashboard" {% if 'dashboard' in (user.menu_permissions | from_json) %}selected{% endif %}>Dashboard</option>
+        <option value="report" {% if 'report' in (user.menu_permissions | from_json) %}selected{% endif %}>Report</option>
+        <option value="settings" {% if 'settings' in (user.menu_permissions | from_json) %}selected{% endif %}>Settings</option>
+      </select>
+    </div>
+
+
     <button type="submit" class="btn btn-success">💾 บันทึก</button>
     <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">ย้อนกลับ</a>
   </form>

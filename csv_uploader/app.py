@@ -54,6 +54,7 @@ def login():
         if user and check_password_hash(user.password, request.form['password']):
             session['username'] = user.username
             session['role'] = user.role
+            session['menu_permissions'] = user.menu_permissions
             return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error='Invalid credentials')
@@ -175,21 +176,6 @@ def smtp_config():
             )
             db.session.add(config)
         db.session.commit()
-
-        # Optional: Try to test connection
-    #     try:
-    #         import smtplib
-    #         server = smtplib.SMTP(smtp_server, smtp_port, timeout=10)
-    #         if use_tls:
-    #             server.starttls()
-    #         server.login(smtp_user, smtp_password)
-    #         server.quit()
-    #     except Exception as e:
-    #         error = f"SMTP Test Failed: {e}"
-
-    #     return render_template('smtp_config.html', config=config, username=session['username'], error=error)
-
-    # return render_template('smtp_config.html', config=config, username=session['username'])
 
         # ถ้ากด Save
         if action == 'save':
@@ -1770,6 +1756,11 @@ def edit_user(user_id):
     if request.method == 'POST':
         user.username = request.form['username']
         user.role = request.form['role']
+
+        # ✅ จัดการ menu_permissions
+        permissions = request.form.getlist('menu_permissions')
+        user.menu_permissions = json.dumps(permissions)
+
         db.session.commit()
         return redirect(url_for('manage_users'))
     return render_template('edit_user.html', user=user)

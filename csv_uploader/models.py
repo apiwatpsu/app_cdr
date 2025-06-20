@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+import json
 # from extensions import db
 from werkzeug.security import generate_password_hash
 
@@ -16,6 +17,7 @@ class User(db.Model):
     email = db.Column(db.String(120))
     team = db.Column(db.String(100))
     profile_image = db.Column(db.String(120))
+    menu_permissions = db.Column(Text, default='[]')
 
     def __init__(self, username, password, role='viewer'):
         self.username = username
