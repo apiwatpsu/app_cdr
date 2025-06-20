@@ -1943,6 +1943,7 @@ def dashboard():
         )
 
     except Exception as e:
+        user = User.query.filter_by(username=session['username']).first()
         return render_template("dashboard.html", user=user, error=str(e))
 
 
