@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Text
 import json
 # from extensions import db
 from werkzeug.security import generate_password_hash
