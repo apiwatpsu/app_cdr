@@ -769,14 +769,14 @@ def average_call_handling_by_agent():
             result = connection.execute(text("""
                 SELECT
                     source_participant_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_handling_time_seconds
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds"
                 FROM cdroutput
                 WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
                     AND cdr_answered_at IS NOT NULL
                     AND cdr_ended_at IS NOT NULL
                     AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY Agent
-                ORDER BY average_handling_time_seconds;
+                GROUP BY "Agent"
+                ORDER BY "AVG Handling Time Seconds";
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
