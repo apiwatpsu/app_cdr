@@ -224,7 +224,7 @@
     {% set permissions = (session['menu_permissions'] | from_json) if session.get('menu_permissions') else [] %}
     
     <!-- {% if 'dashboard' in permissions %} -->
-    {% if user and (user.role == 'admin' or 'dashboard' in user.menu_permissions|from_json) %}
+    {% if can_view('dashboard') %}
     <a href="{{ url_for('dashboard') }}">
         <i data-lucide="layout-dashboard"></i>
         Dashboard
@@ -234,7 +234,7 @@
     
     <!-- Settings Group -->
      <!-- {% if 'settings' in permissions %} -->
-     {% if user and (user.role == 'admin' or 'settings' in user.menu_permissions|from_json) %}
+     {% if can_view('settings') %}
     <div class="sidebar-label text-muted">Settings</div>
     <a href="{{ url_for('manage_users') }}">
         <i data-lucide="users"></i>
@@ -252,7 +252,7 @@
     
     <!-- CDR Group -->
      <!-- {% if 'report' in permissions %} -->
-     {% if user and (user.role == 'admin' or 'report' in user.menu_permissions|from_json) %}
+     {% if can_view('report') %}
     <div class="sidebar-label text-muted">Call Detail Record</div>
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="folder"></i> CDR Reports</span>

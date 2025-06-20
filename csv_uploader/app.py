@@ -1727,9 +1727,26 @@ def load_user():
     if 'username' in session:
         g.user = User.query.filter_by(username=session['username']).first()
 
+# @app.context_processor
+# def inject_user():
+#     return dict(user=g.get('user', None))
+
 @app.context_processor
 def inject_user():
-    return dict(user=g.get('user', None))
+    def can_view(menu_key):
+        if not g.user:
+            return False
+        if g.user.role == 'admin':
+            return True
+        try:
+            import json
+            permissions = json.loads(g.user.menu_permissions or '[]')
+            return menu_key in permissions
+        except:
+            return False
+
+    return dict(user=g.get('user', None), can_view=can_view)
+
 
 @app.template_filter('from_json')
 def from_json_filter(s):
