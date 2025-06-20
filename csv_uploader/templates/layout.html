@@ -252,8 +252,9 @@
     
     <!-- CDR Group -->
     
-  {% if can_view('report') %}
+  
     <div class="sidebar-label text-muted">Call Detail Record</div>
+    {% if can_view('cdr_report') %}
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
       <span><i data-lucide="folder"></i> CDR Reports</span>
       <i data-lucide="chevron-down"></i>
@@ -280,9 +281,9 @@
           <i data-lucide="dot"></i>
         Inbound Calls
         </a>
-
-        
     </div>
+    {% endif %}
+
 
   
   <!-- <div class="sidebar-label text-muted">Agent Performance</div> -->
@@ -370,7 +371,7 @@
          Calls license limits
         </a>
     </div>
-{% endif %}
+
 
 <div class="sidebar-label text-muted">System Utilization</div>
   <div class="px-3 py-2 mb-2">

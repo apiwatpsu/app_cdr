@@ -26,15 +26,42 @@
       <label class="form-check-label">Dashboard</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="menu_permissions" value="report"
-            {% if 'report' in selected_permissions %}checked{% endif %}>
-      <label class="form-check-label">Report</label>
-    </div>
-    <div class="form-check">
       <input class="form-check-input" type="checkbox" name="menu_permissions" value="settings"
             {% if 'settings' in selected_permissions %}checked{% endif %}>
       <label class="form-check-label">Settings</label>
     </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="all_report"
+            {% if 'all_report' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">All Report</label>
+    </div>
+      <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="cdr_report"
+            {% if 'cdr_report' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">CDR Report</label>
+    </div>
+      <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="agent_report"
+            {% if 'agent_report' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Agent Report</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="queue_report"
+            {% if 'queue_report' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Queue Report</label>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="call_duration"
+            {% if 'call_duration' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Call Duration Analysis</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="error_failure"
+            {% if 'error_failure' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Error And Failure Report</label>
+    </div>
+
   </div>
 
 
