@@ -13,6 +13,7 @@ import csv
 import psutil
 import shutil
 import smtplib
+import json
 from io import StringIO
 from flask import make_response
 from email.mime.text import MIMEText
@@ -1729,6 +1730,14 @@ def load_user():
 @app.context_processor
 def inject_user():
     return dict(user=g.get('user', None))
+
+@app.template_filter('from_json')
+def from_json_filter(s):
+    import json
+    try:
+        return json.loads(s)
+    except Exception:
+        return []
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
