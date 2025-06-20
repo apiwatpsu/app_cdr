@@ -1004,21 +1004,9 @@ def agent_utilization_rate():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                WITH InboundCallsRaw AS (
-                    SELECT DISTINCT ON (call_history_id)
-                        call_history_id,
-                        destination_dn_name AS agent_name,
-                        cdr_started_at,
-                        cdr_ended_at,
-                        cdr_answered_at
-                    FROM cdroutput
-                    WHERE source_entity_type = 'external_line'
-                    AND destination_entity_type = 'extension'
-                    AND cdr_started_at BETWEEN :from_date AND :to_date
-                ),
-                InboundCalls AS (
+                WITH InboundCalls AS (
                     SELECT
-                        agent_name,
+                        destination_dn_name AS agent_name,
                         COUNT(*) AS total_calls_inbound,
                         SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_inbound,
                         SUM(
@@ -1027,24 +1015,16 @@ def agent_utilization_rate():
                                 ELSE 0
                             END
                         ) AS total_talk_time_inbound
-                    FROM InboundCallsRaw
-                    GROUP BY agent_name
-                ),
-                OutboundCallsRaw AS (
-                    SELECT DISTINCT ON (call_history_id)
-                        call_history_id,
-                        source_participant_name AS agent_name,
-                        cdr_started_at,
-                        cdr_ended_at,
-                        cdr_answered_at
                     FROM cdroutput
-                    WHERE source_entity_type = 'extension'
-                    AND destination_entity_type = 'external_line'
+                    WHERE source_entity_type = 'external_line'
+                    AND destination_entity_type = 'extension'
                     AND cdr_started_at BETWEEN :from_date AND :to_date
+                    AND (termination_reason = 'dst_participant_terminated' OR termination_reason = 'src_participant_terminated')
+                    GROUP BY destination_dn_name
                 ),
                 OutboundCalls AS (
                     SELECT
-                        agent_name,
+                        source_participant_name AS agent_name,
                         COUNT(*) AS total_calls_outbound,
                         SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_outbound,
                         SUM(
@@ -1053,8 +1033,11 @@ def agent_utilization_rate():
                                 ELSE 0
                             END
                         ) AS total_talk_time_outbound
-                    FROM OutboundCallsRaw
-                    GROUP BY agent_name
+                    FROM cdroutput
+                    WHERE source_entity_type = 'extension'
+                    AND destination_entity_type = 'external_line'
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY source_participant_name
                 )
 
                 SELECT
@@ -1082,6 +1065,7 @@ def agent_utilization_rate():
                 FULL OUTER JOIN OutboundCalls o
                     ON i.agent_name = o.agent_name
                 ORDER BY "AGENT";
+
             """), {
                 "from_date": from_date,
                 "to_date": to_date
