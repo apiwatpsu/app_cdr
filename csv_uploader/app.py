@@ -15,6 +15,7 @@ import shutil
 import smtplib
 import json
 import pyotp
+from urllib.parse import quote
 from io import StringIO
 from flask import make_response
 from email.mime.text import MIMEText
@@ -102,7 +103,7 @@ def setup_mfa():
         secret = user.mfa_secret
 
     totp = pyotp.TOTP(secret)
-    qr_uri = totp.provisioning_uri(name=user.username, issuer_name="MyApp")
+    qr_uri = totp.provisioning_uri(name=user.username, issuer_name="CDRPro")
 
     if request.method == 'POST':
         token = request.form['token']

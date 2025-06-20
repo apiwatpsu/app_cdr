@@ -20,7 +20,7 @@
         <p>Scan this QR code with your <strong>Microsoft Authenticator</strong> or compatible app:</p>
 
         <div class="text-center my-3">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ qr_uri | url_encode }}&size=200x200"
+          <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ qr_uri | urlencode }}&size=200x200"
                alt="QR Code" class="border rounded p-2 bg-white">
         </div>
 
