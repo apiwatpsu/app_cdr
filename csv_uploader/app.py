@@ -415,19 +415,19 @@ def internal_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT 
-                source_entity_type as From Type,
-                source_dn_number as From Extension,
-                source_dn_name as From Agent,
-                source_participant_group_name as From Group,
-                destination_entity_type as To Type,
-                destination_dn_number as To Extension,
-                destination_dn_name as To Agent,
-                destination_participant_group_name as To Group,
-                termination_reason Terminated By,
-                cdr_started_at as Start,
-                cdr_answered_at as Answered,
-                cdr_ended_at as End,
-                call_history_id as Call ID
+                source_entity_type AS "From Type",
+                source_dn_number AS "From Extension",
+                source_dn_name AS "From Agent",
+                source_participant_group_name AS "From Group",
+                destination_entity_type AS "To Type",
+                destination_dn_number AS "To Extension",
+                destination_dn_name AS "To Agent",
+                destination_participant_group_name AS "To Group",
+                termination_reason AS "Terminated By",
+                cdr_started_at AS "Start",
+                cdr_answered_at AS "Answered",
+                cdr_ended_at AS "End",
+                call_history_id AS "Call ID"
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
                 AND destination_entity_type = 'extension'
