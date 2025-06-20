@@ -83,6 +83,17 @@
       background-color: #f0f0f0;
     }
 
+    .dropdown-container {
+      display: none;
+      padding-left: 16px; /* กดเข้าไปให้ดูเป็น submenu */
+      background-color: #f9f9f9; /* สีพื้นหลังอ่อนๆ */
+    }
+
+    /* เวลาปุ่ม dropdown เปิด ให้แสดง dropdown-container */
+    .dropdown-btn.active + .dropdown-container {
+      display: block;
+    }
+
     .sidebar svg {
     width: 18px !important;
     height: 18px !important;
