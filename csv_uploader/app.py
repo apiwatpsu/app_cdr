@@ -56,6 +56,7 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error='Invalid credentials')
+    user = User.query.filter_by(username=session['username']).first()
     return render_template('login.html')
 
 
