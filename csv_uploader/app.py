@@ -768,31 +768,38 @@ def average_call_handling_by_agent():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    destination_dn_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
-                    'inbound' AS "Call Type"
-                FROM cdroutput
-                WHERE source_entity_type = 'external_line'
-                AND destination_entity_type = 'extension'
-                AND cdr_answered_at IS NOT NULL
-                AND cdr_ended_at IS NOT NULL
-                AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY destination_dn_name
+                    COALESCE(inb.agent, outb.agent) AS "Agent",
+                    inb.avg_time AS "AVG Time Inbound (s)",
+                    outb.avg_time AS "AVG Time Outbound (s)"
+                FROM
+                    (
+                        SELECT
+                            destination_dn_name AS agent,
+                            AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS avg_time
+                        FROM cdroutput
+                        WHERE source_entity_type = 'external_line'
+                        AND destination_entity_type = 'extension'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                        AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
+                        GROUP BY destination_dn_name
+                    ) AS inb
+                FULL OUTER JOIN
+                    (
+                        SELECT
+                            source_participant_name AS agent,
+                            AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS avg_time
+                        FROM cdroutput
+                        WHERE source_entity_type = 'extension'
+                        AND destination_entity_type = 'external_line'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                        AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
+                        GROUP BY source_participant_name
+                    ) AS outb
+                ON inb.agent = outb.agent
+                ORDER BY "Agent";
 
-                UNION ALL
-
-                SELECT
-                    source_participant_name AS "Agent",
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds22",
-                    'outbound' AS "Call Type"
-                FROM cdroutput
-                WHERE source_entity_type = 'extension'
-                AND destination_entity_type = 'external_line'
-                AND cdr_answered_at IS NOT NULL
-                AND cdr_ended_at IS NOT NULL
-                AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
-                GROUP BY source_participant_name
-                ORDER BY "Agent", "Call Type";
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
