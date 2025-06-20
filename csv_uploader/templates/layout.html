@@ -256,8 +256,8 @@
     
     
     {% if can_view('dashboard') %}
-    <a href="{{ url_for('dashboard') }}">
-        <i data-lucide="layout-dashboard" data-menu="dashboard"></i>
+    <a href="{{ url_for('dashboard') }}" data-menu="dashboard">
+        <i data-lucide="layout-dashboard"></i>
         Dashboard
     </a>
     {% endif %}
