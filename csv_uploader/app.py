@@ -956,92 +956,6 @@ def count_call_handling_by_agent():
         error=error
     )
 
-@app.route('/call_handled_per_agent')
-def call_handled_per_agent():
-    page_title="Agent Call Handled"
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    config = DBConfig.query.first()
-    if not config:
-        return "ยังไม่มีการตั้งค่า database", 400
-
-    data = []
-    columns = []
-    error = None
-    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
-
-    # รับวันจาก query string
-    from_date_str = request.args.get("from_date")
-    to_date_str = request.args.get("to_date")
-    try:
-        if from_date_str:
-            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
-            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
-        else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
-
-        if to_date_str:
-            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
-        else:
-            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
-
-        # แปลงเป็น UTC สำหรับใช้ใน query
-        from_date = from_date_local.astimezone(utc)
-        to_date = to_date_local.astimezone(utc)
-    
-    except ValueError:
-            error = "Invalid date format"
-            now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
-            to_date = (now + timedelta(days=1)).astimezone(utc)
-
-    try:
-        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
-        engine = create_engine(conn_str)
-
-        with engine.connect() as connection:
-            result = connection.execute(text("""
-                SELECT
-
-                    source_participant_name AS "Agent",
-
-                    COUNT(DISTINCT call_history_id) AS "Calls Handled"
-
-                FROM cdroutput
-
-                WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
-
-                    AND cdr_answered_at IS NOT NULL
-
-                GROUP BY "Agent"
-
-                ORDER BY "Calls Handled" DESC;
-            """), {
-                "from_date": from_date,
-                "to_date": to_date
-            })
-
-            columns = result.keys()
-            rows = [dict(row._mapping) for row in result]
-            # Convert datetime fields to Bangkok time
-            for row in rows:
-                for col in date_columns:
-                    if col in row and isinstance(row[col], datetime):
-                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
-            data = rows
-
-    except Exception as e:
-        error = str(e)
-
-    return render_template(
-        'table_report.html',
-        username=session['username'],
-        data=data,
-        columns=columns,
-        page_title=page_title,
-        error=error
-    )
 
 
 @app.route('/agent_utilization_rate')
@@ -1090,9 +1004,21 @@ def agent_utilization_rate():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                WITH InboundCalls AS (
-                    SELECT
+                WITH InboundCallsRaw AS (
+                    SELECT DISTINCT ON (call_history_id)
+                        call_history_id,
                         destination_dn_name AS agent_name,
+                        cdr_started_at,
+                        cdr_ended_at,
+                        cdr_answered_at
+                    FROM cdroutput
+                    WHERE source_entity_type = 'external_line'
+                    AND destination_entity_type = 'extension'
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                ),
+                InboundCalls AS (
+                    SELECT
+                        agent_name,
                         COUNT(*) AS total_calls_inbound,
                         SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_inbound,
                         SUM(
@@ -1101,15 +1027,24 @@ def agent_utilization_rate():
                                 ELSE 0
                             END
                         ) AS total_talk_time_inbound
+                    FROM InboundCallsRaw
+                    GROUP BY agent_name
+                ),
+                OutboundCallsRaw AS (
+                    SELECT DISTINCT ON (call_history_id)
+                        call_history_id,
+                        source_participant_name AS agent_name,
+                        cdr_started_at,
+                        cdr_ended_at,
+                        cdr_answered_at
                     FROM cdroutput
-                    WHERE source_entity_type = 'external_line'
-                    AND destination_entity_type = 'extension'
+                    WHERE source_entity_type = 'extension'
+                    AND destination_entity_type = 'external_line'
                     AND cdr_started_at BETWEEN :from_date AND :to_date
-                    GROUP BY destination_dn_name
                 ),
                 OutboundCalls AS (
                     SELECT
-                        source_participant_name AS agent_name,
+                        agent_name,
                         COUNT(*) AS total_calls_outbound,
                         SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_outbound,
                         SUM(
@@ -1118,11 +1053,8 @@ def agent_utilization_rate():
                                 ELSE 0
                             END
                         ) AS total_talk_time_outbound
-                    FROM cdroutput
-                    WHERE source_entity_type = 'extension'
-                    AND destination_entity_type = 'external_line'
-                    AND cdr_started_at BETWEEN :from_date AND :to_date
-                    GROUP BY source_participant_name
+                    FROM OutboundCallsRaw
+                    GROUP BY agent_name
                 )
 
                 SELECT
@@ -1130,17 +1062,17 @@ def agent_utilization_rate():
 
                     -- Inbound
                     COALESCE(i.total_calls_inbound, 0) AS "Total Calls Inbound",
-                    COALESCE(i.total_call_time_inbound, 0) AS "Call time inbound",
-                    COALESCE(i.total_talk_time_inbound, 0) AS "talk time inbound",
+                    COALESCE(i.total_call_time_inbound, 0) AS "Call Time Inbound",
+                    COALESCE(i.total_talk_time_inbound, 0) AS "Talk Time Inbound",
                     CASE
                         WHEN COALESCE(i.total_call_time_inbound, 0) = 0 THEN 0
                         ELSE COALESCE(i.total_talk_time_inbound, 0) / NULLIF(i.total_call_time_inbound, 0)
                     END AS "Utilization Inbound",
 
                     -- Outbound
-                    COALESCE(o.total_calls_outbound, 0) AS "Total calls outbound",
-                    COALESCE(o.total_call_time_outbound, 0) AS "Call time outbound",
-                    COALESCE(o.total_talk_time_outbound, 0) AS "talk time outbound",
+                    COALESCE(o.total_calls_outbound, 0) AS "Total Calls Outbound",
+                    COALESCE(o.total_call_time_outbound, 0) AS "Call Time Outbound",
+                    COALESCE(o.total_talk_time_outbound, 0) AS "Talk Time Outbound",
                     CASE
                         WHEN COALESCE(o.total_call_time_outbound, 0) = 0 THEN 0
                         ELSE COALESCE(o.total_talk_time_outbound, 0) / NULLIF(o.total_call_time_outbound, 0)
@@ -1149,7 +1081,6 @@ def agent_utilization_rate():
                 FROM InboundCalls i
                 FULL OUTER JOIN OutboundCalls o
                     ON i.agent_name = o.agent_name
-
                 ORDER BY "AGENT";
             """), {
                 "from_date": from_date,
