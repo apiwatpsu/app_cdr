@@ -1129,22 +1129,22 @@ def agent_utilization_rate():
                     COALESCE(i.agent_name, o.agent_name) AS "AGENT",
 
                     -- Inbound
-                    COALESCE(i.total_calls_inbound, 0) AS "TOTAL CALLS INBOUND",
-                    COALESCE(i.total_call_time_inbound, 0) AS "CALL TIME INBOUND",
-                    COALESCE(i.total_talk_time_inbound, 0) AS "TALK TIME INBOUND",
+                    COALESCE(i.total_calls_inbound, 0) AS "Total Calls Inbound",
+                    COALESCE(i.total_call_time_inbound, 0) AS "Call time inbound",
+                    COALESCE(i.total_talk_time_inbound, 0) AS "talk time inbound",
                     CASE
                         WHEN COALESCE(i.total_call_time_inbound, 0) = 0 THEN 0
                         ELSE COALESCE(i.total_talk_time_inbound, 0) / NULLIF(i.total_call_time_inbound, 0)
-                    END AS "UTILIZATION INBOUND",
+                    END AS "Utilization Inbound",
 
                     -- Outbound
-                    COALESCE(o.total_calls_outbound, 0) AS "TOTAL CALLS OUTBOUND",
-                    COALESCE(o.total_call_time_outbound, 0) AS "CALL TIME OUTBOUND",
-                    COALESCE(o.total_talk_time_outbound, 0) AS "TALK TIME OUTBOUND",
+                    COALESCE(o.total_calls_outbound, 0) AS "Total calls outbound",
+                    COALESCE(o.total_call_time_outbound, 0) AS "Call time outbound",
+                    COALESCE(o.total_talk_time_outbound, 0) AS "talk time outbound",
                     CASE
                         WHEN COALESCE(o.total_call_time_outbound, 0) = 0 THEN 0
                         ELSE COALESCE(o.total_talk_time_outbound, 0) / NULLIF(o.total_call_time_outbound, 0)
-                    END AS "UTILIZATION OUTBOUND"
+                    END AS "Utilization Outbound"
 
                 FROM InboundCalls i
                 FULL OUTER JOIN OutboundCalls o
