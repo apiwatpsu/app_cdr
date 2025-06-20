@@ -1090,31 +1090,67 @@ def agent_utilization_rate():
 
         with engine.connect() as connection:
             result = connection.execute(text("""
-                WITH AgentCalls AS (
+                WITH InboundCalls AS (
+                    SELECT
+                        destination_dn_name AS agent_name,
+                        COUNT(*) AS total_calls_inbound,
+                        SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_inbound,
+                        SUM(
+                            CASE
+                                WHEN cdr_answered_at IS NOT NULL THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))
+                                ELSE 0
+                            END
+                        ) AS total_talk_time_inbound
+                    FROM cdroutput
+                    WHERE source_entity_type = 'external_line'
+                    AND destination_entity_type = 'extension'
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY destination_dn_name
+                ),
+                OutboundCalls AS (
                     SELECT
                         source_participant_name AS agent_name,
-                        cdr_started_at,
-                        cdr_ended_at,
-                        cdr_answered_at,
-                        CASE
-                            WHEN cdr_answered_at IS NOT NULL THEN 1 ELSE 0
-                        END AS was_answered
+                        COUNT(*) AS total_calls_outbound,
+                        SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_outbound,
+                        SUM(
+                            CASE
+                                WHEN cdr_answered_at IS NOT NULL THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))
+                                ELSE 0
+                            END
+                        ) AS total_talk_time_outbound
                     FROM cdroutput
-                    WHERE (source_entity_type = 'extension' OR destination_entity_type = 'extension')
-                        AND cdr_started_at >= :from_date
-                        AND cdr_started_at <= :to_date
+                    WHERE source_entity_type = 'extension'
+                    AND destination_entity_type = 'external_line'
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY source_participant_name
                 )
+
                 SELECT
-                    agent_name,
-                    SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))) AS total_call_time_seconds,
-                    SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) AS total_talk_time_seconds,
-                    (
-                        SUM(CASE WHEN was_answered = 1 THEN EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at)) ELSE 0 END) /
-                        NULLIF(SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_started_at))), 0)
-                    ) AS utilization_rate
-                FROM AgentCalls
-                GROUP BY agent_name
-                ORDER BY utilization_rate DESC;
+                    COALESCE(i.agent_name, o.agent_name) AS "AGENT",
+
+                    -- Inbound
+                    COALESCE(i.total_calls_inbound, 0) AS "TOTAL CALLS INBOUND",
+                    COALESCE(i.total_call_time_inbound, 0) AS "CALL TIME INBOUND",
+                    COALESCE(i.total_talk_time_inbound, 0) AS "TALK TIME INBOUND",
+                    CASE
+                        WHEN COALESCE(i.total_call_time_inbound, 0) = 0 THEN 0
+                        ELSE COALESCE(i.total_talk_time_inbound, 0) / NULLIF(i.total_call_time_inbound, 0)
+                    END AS "UTILIZATION INBOUND",
+
+                    -- Outbound
+                    COALESCE(o.total_calls_outbound, 0) AS "TOTAL CALLS OUTBOUND",
+                    COALESCE(o.total_call_time_outbound, 0) AS "CALL TIME OUTBOUND",
+                    COALESCE(o.total_talk_time_outbound, 0) AS "TALK TIME OUTBOUND",
+                    CASE
+                        WHEN COALESCE(o.total_call_time_outbound, 0) = 0 THEN 0
+                        ELSE COALESCE(o.total_talk_time_outbound, 0) / NULLIF(o.total_call_time_outbound, 0)
+                    END AS "UTILIZATION OUTBOUND"
+
+                FROM InboundCalls i
+                FULL OUTER JOIN OutboundCalls o
+                    ON i.agent_name = o.agent_name
+
+                ORDER BY "AGENT";
             """), {
                 "from_date": from_date,
                 "to_date": to_date
