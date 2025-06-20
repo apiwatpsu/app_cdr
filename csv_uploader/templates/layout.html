@@ -86,7 +86,7 @@
     .dropdown-container {
     display: none;
     padding-left: 16px;
-    background-color: #f9f9f9;
+    background-color: #f8f9fa;
     }
 
     .dropdown-btn.active + .dropdown-container {
@@ -387,7 +387,7 @@
     
     <!-- <div class="sidebar-label text-muted">Error and Failure Analysis</div> -->
      {% if can_view('error_failure') %}
-    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
+    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="error_failure">
       <span><i data-lucide="circle-x"></i> Error and Failure</span>
       <i data-lucide="chevron-down"></i>
     </button>
@@ -460,35 +460,53 @@
 
 
 <script>
-  $(document).ready(function() {
-    lucide.createIcons();
+$(document).ready(function () {
+  lucide.createIcons();
 
-    
-    $(".dropdown-btn").click(function(e) {
-      e.stopPropagation();
-      $(this).toggleClass("active");
-      
-    });
+  // ❶ เปิด dropdown ตามค่าที่จำไว้
+  const lastOpen = localStorage.getItem('openDropdown');
+  if (lastOpen) {
+    const btn = $(`.dropdown-btn[data-key="${lastOpen}"]`);
+    btn.addClass('active');
+    btn.next('.dropdown-container').show();
+  }
 
-    
-    $(".dropdown-container a").click(function(e) {
-      e.stopPropagation();
-    });
+  // ❷ เมื่อคลิก dropdown ปกติ
+  $(".dropdown-btn").click(function (e) {
+    e.stopPropagation();
+    const key = $(this).data("key");
 
-    // DataTables config
-    const table = $('#myTable').DataTable({
-      scrollX: true,
-      scrollY: '400px',
-      scrollCollapse: true,
-      fixedHeader: true,
-      pageLength: 10,
-      lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
-      ordering: true,
-      dom: "<'d-flex justify-content-between mb-3'B>flrtip",
-      buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
-    });
+    const isActive = $(this).hasClass("active");
+
+    $(".dropdown-btn").removeClass("active");
+    $(".dropdown-container").slideUp();
+
+    if (!isActive) {
+      $(this).addClass("active");
+      $(this).next(".dropdown-container").slideDown();
+      localStorage.setItem("openDropdown", key);
+    } else {
+      localStorage.removeItem("openDropdown");
+    }
   });
+
+  // ❸ เมื่อคลิกลิงก์ใน dropdown → บันทึกว่าเมนูไหนถูกเลือก
+  $(".dropdown-container a").click(function () {
+    const menuKey = $(this).data("menu");
+    localStorage.setItem("openDropdown", menuKey);
+  });
+
+  // ❹ ถ้าคลิกนอก dropdown ให้ปิด
+  $(document).click(function (e) {
+    if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
+      $(".dropdown-btn").removeClass("active");
+      $(".dropdown-container").slideUp();
+      localStorage.removeItem("openDropdown");
+    }
+  });
+});
 </script>
+
 
 
 
