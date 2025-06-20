@@ -496,8 +496,8 @@ $(document).ready(function () {
 
   // ❸ เมื่อคลิกลิงก์ใน dropdown → บันทึกว่าเมนูไหนถูกเลือก
   $(".dropdown-container a").click(function () {
-  const parentKey = $(this).closest(".dropdown-container").prev(".dropdown-btn").data("key");
-  localStorage.setItem("openDropdown", parentKey);
+    const parentKey = $(this).closest(".dropdown-container").prev(".dropdown-btn").data("key");
+    localStorage.setItem("openDropdown", parentKey);
   });
 
   // ❹ ถ้าคลิกนอก dropdown ให้ปิด
@@ -508,8 +508,22 @@ $(document).ready(function () {
       localStorage.removeItem("openDropdown");
     }
   });
+
+  // ❺ DataTables config
+  const table = $('#myTable').DataTable({
+    scrollX: true,
+    scrollY: '400px',
+    scrollCollapse: true,
+    fixedHeader: true,
+    pageLength: 10,
+    lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+    ordering: true,
+    dom: "<'d-flex justify-content-between mb-3'B>flrtip",
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
+  });
 });
 </script>
+
 
 
 
