@@ -1781,6 +1781,11 @@ def edit_user(user_id):
     if request.method == 'POST':
         user.username = request.form['username']
         user.role = request.form['role']
+        user.mfa_enabled = 'mfa_enabled' in request.form
+
+        password = request.form.get('password')
+        if password:
+            user.password = generate_password_hash(password)
 
         # ✅ จัดการ menu_permissions
         permissions = request.form.getlist('menu_permissions')
