@@ -768,9 +768,10 @@ def average_call_handling_by_agent():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    COALESCE(inb.agent, outb.agent) AS "Agent",
+                    COALESCE(inb.agent, outb.agent, intl.agent) AS "Agent",
                     inb.avg_time AS "AVG Time Inbound (s)",
-                    outb.avg_time AS "AVG Time Outbound (s)"
+                    outb.avg_time AS "AVG Time Outbound (s)",
+                    intl.avg_time AS "AVG Time Internal (s)"
                 FROM
                     (
                         SELECT
@@ -798,8 +799,21 @@ def average_call_handling_by_agent():
                         GROUP BY source_participant_name
                     ) AS outb
                 ON inb.agent = outb.agent
+                FULL OUTER JOIN
+                    (
+                        SELECT
+                            source_participant_name AS agent,
+                            AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS avg_time
+                        FROM cdroutput
+                        WHERE source_entity_type = 'extension'
+                        AND destination_entity_type = 'extension'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                        AND cdr_answered_at >= :from_date AND cdr_answered_at <= :to_date
+                        GROUP BY source_participant_name
+                    ) AS intl
+                ON COALESCE(inb.agent, outb.agent) = intl.agent
                 ORDER BY "Agent";
-
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
