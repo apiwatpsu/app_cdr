@@ -193,9 +193,9 @@
     <!-- User Dropdown -->
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://i.pravatar.cc/32" alt="avatar" class="rounded-circle" width="32" height="32">
-         <!-- <img src="{{ url_for('static', filename='uploads/' ~ user.profile_image) if user.profile_image else url_for('static', filename='uploads/default.jpg') }}" 
-          alt="avatar" class="rounded-circle" width="32" height="32"> -->
+        <!-- <img src="https://i.pravatar.cc/32" alt="avatar" class="rounded-circle" width="32" height="32"> -->
+         <img src="{{ url_for('static', filename='uploads/' ~ user.profile_image) if user.profile_image else url_for('static', filename='uploads/default.jpg') }}" 
+          alt="avatar" class="rounded-circle" width="32" height="32">
         <span class="ms-2">{{ username }}</span>
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -223,7 +223,7 @@
 
     {% set permissions = (session['menu_permissions'] | from_json) if session.get('menu_permissions') else [] %}
     
-    <!-- {% if 'dashboard' in permissions %} -->
+    
     {% if can_view('dashboard') %}
     <a href="{{ url_for('dashboard') }}">
         <i data-lucide="layout-dashboard"></i>
@@ -233,7 +233,7 @@
     
     
     <!-- Settings Group -->
-     <!-- {% if 'settings' in permissions %} -->
+     
      {% if can_view('settings') %}
     <div class="sidebar-label text-muted">Settings</div>
     <a href="{{ url_for('manage_users') }}">
@@ -251,7 +251,7 @@
     {% endif %}
     
     <!-- CDR Group -->
-     <!-- {% if 'report' in permissions %} -->
+    
   {% if can_view('report') %}
     <div class="sidebar-label text-muted">Call Detail Record</div>
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100">
