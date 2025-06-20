@@ -260,8 +260,17 @@
     {% set permissions = (session['menu_permissions'] | from_json) if session.get('menu_permissions') else [] %}
     
     
-    {% if can_view('dashboard') %}
+    <!-- {% if can_view('dashboard') %}
     <a href="{{ url_for('dashboard') }}" data-menu="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        Dashboard
+    </a>
+    {% endif %} -->
+
+    {% if can_view('dashboard') %}
+    <a href="{{ url_for('dashboard') }}" 
+      data-menu="dashboard"
+      class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
         <i data-lucide="layout-dashboard"></i>
         Dashboard
     </a>
