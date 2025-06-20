@@ -1731,7 +1731,22 @@ def inject_system_utilization():
             disk_percent=disk_percent
         )
     except:
-        return {}  
+        return {}
+
+@app.before_request
+def load_logged_in_user():
+    from flask import session, g
+    from yourapp.models import User
+
+    if 'username' in session:
+        g.user = User.query.filter_by(username=session['username']).first()
+    else:
+        g.user = None
+
+@app.context_processor
+def inject_user():
+    from flask import g
+    return dict(user=g.user)
 
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
@@ -1943,7 +1958,7 @@ def dashboard():
         )
 
     except Exception as e:
-        user = User.query.filter_by(username=session['username']).first()
+        
         return render_template("dashboard.html", user=user, error=str(e))
 
 
