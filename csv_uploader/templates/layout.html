@@ -193,9 +193,9 @@
     <!-- User Dropdown -->
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <!-- <img src="https://i.pravatar.cc/32" alt="avatar" class="rounded-circle" width="32" height="32"> -->
-         <img src="{{ url_for('static', filename='uploads/' ~ user.profile_image) if user.profile_image else url_for('static', filename='uploads/default.jpg') }}" 
-          alt="avatar" class="rounded-circle" width="32" height="32">
+        <img src="https://i.pravatar.cc/32" alt="avatar" class="rounded-circle" width="32" height="32">
+         <!-- <img src="{{ url_for('static', filename='uploads/' ~ user.profile_image) if user.profile_image else url_for('static', filename='uploads/default.jpg') }}" 
+          alt="avatar" class="rounded-circle" width="32" height="32"> -->
         <span class="ms-2">{{ username }}</span>
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
