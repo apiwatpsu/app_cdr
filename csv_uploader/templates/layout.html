@@ -466,17 +466,23 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 
-
 <script>
 $(document).ready(function () {
   lucide.createIcons();
 
   // ❶ เปิด dropdown ตามค่าที่จำไว้
   const lastOpen = localStorage.getItem('openDropdown');
+  const lastSelectedMenu = localStorage.getItem('selectedMenu');
+
   if (lastOpen) {
     const btn = $(`.dropdown-btn[data-key="${lastOpen}"]`);
     btn.addClass('active');
     btn.next('.dropdown-container').show();
+  }
+
+  if (lastSelectedMenu) {
+    $('.dropdown-container a').removeClass('selected'); // ลบ selected ทุกตัวก่อน
+    $(`.dropdown-container a[data-menu="${lastSelectedMenu}"]`).addClass('selected'); // เพิ่ม selected เมนูที่จำ
   }
 
   // ❷ เมื่อคลิก dropdown ปกติ
@@ -498,11 +504,28 @@ $(document).ready(function () {
     }
   });
 
-  // ❸ เมื่อคลิกลิงก์ใน dropdown → บันทึกว่าเมนูไหนถูกเลือก
+  // ❸ เมื่อคลิกลิงก์ใน dropdown → บันทึกว่าเมนูไหนถูกเลือกและเปลี่ยนสี
   $(".dropdown-container a").click(function () {
     const parentKey = $(this).closest(".dropdown-container").prev(".dropdown-btn").data("key");
+    const menuKey = $(this).data("menu");
+
     localStorage.setItem("openDropdown", parentKey);
-    
+    localStorage.setItem("selectedMenu", menuKey);
+
+    // เปลี่ยนสี selected
+    $('.dropdown-container a').removeClass('selected');
+    $(this).addClass('selected');
+  });
+
+  // ❹ ถ้าคลิกนอก dropdown ให้ปิด dropdown และล้างสถานะ
+  $(document).click(function (e) {
+    if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
+      $(".dropdown-btn").removeClass("active");
+      $(".dropdown-container").slideUp();
+      localStorage.removeItem("openDropdown");
+      localStorage.removeItem("selectedMenu");
+      $('.dropdown-container a').removeClass('selected');
+    }
   });
 
   // ❺ DataTables config
