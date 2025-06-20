@@ -88,6 +88,10 @@
     padding-left: 16px;
     background-color: #ffffff;
     }
+    .dropdown-container a.selected {
+      background-color: #333;
+      color: white;
+    }
 
     .dropdown-btn.active + .dropdown-container {
       display: block;
@@ -498,6 +502,7 @@ $(document).ready(function () {
   $(".dropdown-container a").click(function () {
     const parentKey = $(this).closest(".dropdown-container").prev(".dropdown-btn").data("key");
     localStorage.setItem("openDropdown", parentKey);
+    
   });
 
   // ❺ DataTables config
