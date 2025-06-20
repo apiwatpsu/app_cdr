@@ -883,6 +883,172 @@ def call_handled_per_agent():
         error=error
     )
 
+@app.route('/avg_handled_call_inbound')
+def avg_handled_call_inbound():
+    page_title="Average Handling Time – Inbound"
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+    try:
+        if from_date_str:
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
+        else:
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+
+        if to_date_str:
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
+        else:
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
+    except ValueError:
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT
+                    destination_dn_name AS "Agent",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds"
+                FROM cdroutput
+                WHERE source_entity_type = 'external_line'
+                AND destination_entity_type = 'extension'
+                AND cdr_answered_at IS NOT NULL
+                AND cdr_ended_at IS NOT NULL
+                AND cdr_answered_at BETWEEN :from_date AND :to_date
+                GROUP BY "Agent"
+                ORDER BY "AVG Handling Time Seconds";
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
+
+            columns = result.keys()
+            rows = [dict(row._mapping) for row in result]
+            # Convert datetime fields to Bangkok time
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+            data = rows
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'table_report.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        page_title=page_title,
+        error=error
+    )
+
+
+@app.route('/avg_handled_call_outbound')
+def avg_handled_call_outbound():
+    page_title="Average Handling Time – Outbound"
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    config = DBConfig.query.first()
+    if not config:
+        return "ยังไม่มีการตั้งค่า database", 400
+
+    data = []
+    columns = []
+    error = None
+    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+
+    # รับวันจาก query string
+    from_date_str = request.args.get("from_date")
+    to_date_str = request.args.get("to_date")
+    try:
+        if from_date_str:
+            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
+            from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
+        else:
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+
+        if to_date_str:
+            to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
+        else:
+            to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
+
+        # แปลงเป็น UTC สำหรับใช้ใน query
+        from_date = from_date_local.astimezone(utc)
+        to_date = to_date_local.astimezone(utc)
+    
+    except ValueError:
+            error = "Invalid date format"
+            now = BANGKOK_TZ.localize(datetime.now())
+            from_date = (now - timedelta(days=30)).astimezone(utc)
+            to_date = (now + timedelta(days=1)).astimezone(utc)
+
+    try:
+        conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
+        engine = create_engine(conn_str)
+
+        with engine.connect() as connection:
+            result = connection.execute(text("""
+                SELECT
+                    source_participant_name AS "Agent",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Handling Time Seconds"
+                FROM cdroutput
+                WHERE source_entity_type = 'extension'
+                AND destination_entity_type = 'external_line'
+                AND cdr_answered_at IS NOT NULL
+                AND cdr_ended_at IS NOT NULL
+                AND cdr_answered_at BETWEEN :from_date AND :to_date
+                GROUP BY "Agent"
+                ORDER BY "AVG Handling Time Seconds";
+            """), {
+                "from_date": from_date,
+                "to_date": to_date
+            })
+
+            columns = result.keys()
+            rows = [dict(row._mapping) for row in result]
+            # Convert datetime fields to Bangkok time
+            for row in rows:
+                for col in date_columns:
+                    if col in row and isinstance(row[col], datetime):
+                        row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+            data = rows
+
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        'table_report.html',
+        username=session['username'],
+        data=data,
+        columns=columns,
+        page_title=page_title,
+        error=error
+    )
 
 @app.route('/agent_utilization_rate')
 def agent_utilization_rate():
