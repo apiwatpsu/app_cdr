@@ -118,7 +118,7 @@ def login():
 
 @app.route('/setup_mfa', methods=['GET', 'POST'])
 def setup_mfa():
-    user_id = session.get('user_id')
+    user_id = session.get('pre_mfa_user_id')
     if not user_id:
         return redirect(url_for('login'))
 
