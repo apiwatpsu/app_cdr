@@ -255,3 +255,6 @@
     background-color: #212631 !important;
     color: #f1f1f1;
   }
+    body.dark-mode .shadow-sm {
+    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+  }
