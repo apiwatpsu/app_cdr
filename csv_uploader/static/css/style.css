@@ -246,3 +246,7 @@
       background-color: #1d222b;
       color: #eaeaea;
     }
+
+    body.dark-mode .my-muted {
+      color: #f1f1f1 !important; 
+    }
