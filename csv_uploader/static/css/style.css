@@ -207,6 +207,9 @@
     body.dark-mode .sidebar-label {
       color: #ccc;
     }
+    body.dark-mode .sidebar-label .text-mute {
+      color: #ccc !important;
+    }
 
     body.dark-mode .sidebar a {
       color: #ddd;
