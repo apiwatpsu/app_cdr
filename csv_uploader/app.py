@@ -176,6 +176,7 @@ def manage_users():
 
     for user in users:
         if user.last_login:
+            user.last_login = utc.localize(user.last_login)
             user.last_login_local = user.last_login.astimezone(BANGKOK_TZ)
         else:
             user.last_login_local = None
