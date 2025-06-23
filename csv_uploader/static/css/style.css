@@ -250,3 +250,8 @@
     body.dark-mode .my-muted {
       color: #f1f1f1 !important; 
     }
+
+    body.dark-mode .bg-white {
+    background-color: #212631 !important;
+    color: #f1f1f1;
+  }
