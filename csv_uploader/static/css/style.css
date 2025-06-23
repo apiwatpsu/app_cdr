@@ -295,15 +295,7 @@
     body.dark-mode .sidebar::-webkit-scrollbar {
       display: none;
     }
-    body.dark-mode .dt-button {
-      background-color: #1f2937;
-      color: #f1f1f1 !important;
-      border: 1px solid #374151;
-    }
 
-    body.dark-mode .dt-button:hover {
-      background-color: #374151;
-    }
 
 
 
