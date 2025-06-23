@@ -255,22 +255,11 @@
     background-color: #212631 !important;
     color: #f1f1f1;
     border: 1px solid #444 !important;
-  }
-  /* body.dark-mode #myTable td,
-  body.dark-mode #myTable th, a {
-    background-color: #323a49;
-    color: #f1f1f1;             
-    border: none !important;    
-  } */
-
-  body.dark-mode #myTable th {
-  background-color: #323a49;
-  color: #f1f1f1;
-  border: none !important;
-  }
-
-  body.dark-mode #myTable td {
-    background-color: inherit;
-    color: #f1f1f1;
-    border: none !important;
-  }
+    }
+    
+    body.dark-mode #myTable td,
+    body.dark-mode #myTable th {
+      background-color: #323a49;
+      color: #f1f1f1;             
+      border: none !important;    
+    }
