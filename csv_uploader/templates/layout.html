@@ -496,6 +496,18 @@
 $(document).ready(function () {
   lucide.createIcons();
 
+  if (localStorage.getItem("theme") === "dark") {
+    $("body").addClass("dark-mode");
+  }
+
+  $("#theme-toggle").click(function () {
+    $("body").toggleClass("dark-mode");
+    const newTheme = $("body").hasClass("dark-mode") ? "dark" : "light";
+    localStorage.setItem("theme", newTheme);
+  });
+  
+  
+  
   // ❶ เปิด dropdown ตามค่าที่จำไว้
   const lastOpen = localStorage.getItem('openDropdown');
   const lastSelectedMenu = localStorage.getItem('selectedMenu');
@@ -555,18 +567,6 @@ $(document).ready(function () {
     dom: "<'d-flex justify-content-between mb-3'B>flrtip",
     buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
   });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const currentTheme = localStorage.getItem("theme");
-    if (currentTheme === "dark") {
-      document.body.classList.add("dark-mode");
-    }
-
-    document.getElementById("theme-toggle").addEventListener("click", function () {
-      document.body.classList.toggle("dark-mode");
-      localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
-    });
-    });
 });
 </script>
 
