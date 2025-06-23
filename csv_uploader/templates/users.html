@@ -45,9 +45,9 @@
                   <td>{{ user.role }}</td>
                   <td>
                     {% if user.mfa_enabled and user.mfa_secret %}
-                      <span class="badge bg-success">✅ Setup</span>
+                      <span class="badge bg-success">Success</span>
                     {% elif user.mfa_enabled %}
-                      <span class="badge bg-warning text-dark">⚠️ Not Setup</span>
+                      <span class="badge bg-warning text-dark">Pending</span>
                     {% else %}
                       <span class="badge bg-secondary">Off</span>
                     {% endif %}
