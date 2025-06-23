@@ -89,7 +89,7 @@
     <!-- Settings Group -->
      
     {% if can_view('settings') %}
-    <div class="sidebar-label text-muted">Settings</div>
+    <div class="sidebar-label">Settings</div>
 
     <a href="{{ url_for('manage_users') }}"
       data-menu="manage_users"
@@ -116,7 +116,7 @@
     <!-- CDR Group -->
     
   
-    <div class="sidebar-label text-muted">Report</div>
+    <div class="sidebar-label">Report</div>
     {% if can_view('cdr_report') %}
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="cdr_report">
       <span><i data-lucide="folder"></i> CDR Reports</span>
@@ -243,7 +243,7 @@
     {% endif %}
 
 
-<div class="sidebar-label text-muted">System Utilization</div>
+<div class="sidebar-label">System Utilization</div>
   <div class="px-3 py-2 mb-2">
     <div class="small text-muted mb-1">CPU USAGE</div>
     <div class="progress" style="height: 5px;">
