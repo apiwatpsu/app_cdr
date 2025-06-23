@@ -137,7 +137,10 @@
     }
 
     
-    #myTable td,
+    #myTable td {
+      border: none !important;
+      color: #333;
+    }
     #myTable th {
       border: none !important;
       color: #333;
