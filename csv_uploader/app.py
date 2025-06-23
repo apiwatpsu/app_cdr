@@ -292,7 +292,7 @@ def send_test_email(config, to_email):
         server.login(config.smtp_user, config.smtp_password)
 
         msg = MIMEText("✅ This is a test email from your SMTP configuration.")
-        msg["Subject"] = "SMTP Test Email"
+        msg["Subject"] = "CDRPro SMTP Test Email"
         msg["From"] = config.smtp_user
         msg["To"] = to_email
 
