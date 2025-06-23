@@ -272,7 +272,7 @@
       color: #f1f1f1;
       border: none;
     }
-    body.dark-mode .dataTables_paginate a {
+    body.dark-mode .paginate_button {
       color: #f1f1f1;
     }
 
