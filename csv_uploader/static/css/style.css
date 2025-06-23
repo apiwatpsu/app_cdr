@@ -261,7 +261,7 @@
 
   body.dark-mode #myTable td,
   body.dark-mode #myTable th {
-    background-color: #212631;  /* สีพื้นหลังเซลล์ */
+    background-color: #323a49;  /* สีพื้นหลังเซลล์ */
     color: #f1f1f1;             /* สีตัวหนังสือ */
     border: 2px;    /* ยังคงไม่ให้มีเส้นขอบ */
   }
