@@ -140,6 +140,7 @@
     #myTable td,
     #myTable th {
       border: none !important;
+      color: #333;
     }
 
     .table-responsive {
