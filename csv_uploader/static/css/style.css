@@ -188,8 +188,7 @@
       max-height: 300px;
     }
     .my-muted {
-      color: #333 !important; /* Or any color you want */
-      opacity: 0.8; /* Optional */
+      color: #333 !important; 
     }
 
 
