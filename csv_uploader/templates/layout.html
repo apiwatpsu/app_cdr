@@ -245,11 +245,11 @@
 
 <div class="sidebar-label">System Utilization</div>
   <div class="px-3 py-2 mb-2">
-    <div class="small text-muted mb-1">CPU USAGE</div>
+    <div class="small text-muted mb-1 my-muted">CPU USAGE</div>
     <div class="progress" style="height: 5px;">
       <div class="progress-bar bg-primary" style="width: {{ cpu_usage }}%;"></div>
     </div>
-    <div class="small text-muted mt-1">{{ cpu_processes }} processes. {{ (cpu_cores // 4) or 1 }}/{{ cpu_cores }} cores</div>
+    <div class="small text-muted mt-1 my-muted">{{ cpu_processes }} processes. {{ (cpu_cores // 4) or 1 }}/{{ cpu_cores }} cores</div>
   </div>
 
  
