@@ -210,7 +210,6 @@
     body.dark-mode .sidebar {
       background-color: #212631;
       border-right: 1px solid #333;
-      overflow-y: scroll;
     }
 
     body.dark-mode .sidebar-label {
@@ -276,7 +275,14 @@
     body.dark-mode .paginate_button {
       color: #f1f1f1;
     }
-    body.dark-mode .sidebar::-webkit-scrollbar-track {
-    background: #2a2f3a;
-  }
+    body.dark-mode .sidebar {
+      overflow: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    body.dark-mode .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
 
