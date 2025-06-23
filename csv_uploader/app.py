@@ -65,30 +65,6 @@ def index():
     
 #     return render_template('login.html')
 
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-
-#         user = User.query.filter_by(username=username).first()
-#         if user and check_password_hash(user.password, password):
-#             session['pre_mfa_user_id'] = user.id  
-#             session['username'] = user.username
-
-#             if user.mfa_enabled:
-#                 return redirect(url_for('verify_mfa'))
-
-            
-#             session['user_id'] = user.id
-#             return redirect(url_for('dashboard'))
-#         else:
-#             return render_template('login.html', error='Invalid credentials')
-
-#     return render_template('login.html')
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -105,7 +81,8 @@ def login():
                     return redirect(url_for('setup_mfa'))
                 else:
                     return redirect(url_for('verify_mfa'))
-
+            user.last_login = datetime.utcnow()
+            db.session.commit()
             # ถ้ายังไม่เปิด MFA → login ทันที
             session['user_id'] = user.id
             return redirect(url_for('dashboard'))
