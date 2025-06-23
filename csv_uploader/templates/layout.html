@@ -307,12 +307,14 @@ $(document).ready(function () {
 
   if (localStorage.getItem("theme") === "dark") {
     $("body").addClass("dark-mode");
+    $("#theme-toggle").prop("checked", true);
   }
 
-  $("#theme-toggle").click(function () {
-    $("body").toggleClass("dark-mode");
-    const newTheme = $("body").hasClass("dark-mode") ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
+  // เมื่อกด toggle
+  $("#theme-toggle").on("change", function () {
+    const isDark = $(this).is(":checked");
+    $("body").toggleClass("dark-mode", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   });
   
   
