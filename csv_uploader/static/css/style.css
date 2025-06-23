@@ -298,6 +298,7 @@
     body.dark-mode .dt-button,
     body.dark-mode .dt-button.btn,
     body.dark-mode .buttons-html5,
+    body.dark-mode .buttons-colvis,
     body.dark-mode .buttons-print {
       background-color: #1f2937 !important;
       color: #f1f1f1 !important;
