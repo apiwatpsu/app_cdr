@@ -39,18 +39,18 @@
     }
 
     .sidebar {
-      overflow-y: scroll;  /* หรือ auto ถ้าต้องการให้แสดง scrollbar เมื่อจำเป็น */
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none;  /* IE 10+ */
+      overflow-y: scroll;  
+      scrollbar-width: none; 
+      -ms-overflow-style: none;  
     }
 
     .sidebar::-webkit-scrollbar {
-      display: none; /* Chrome, Safari */
+      display: none; 
     }
 
 
     .sidebar-label {
-    padding: 12px 16px; /* เท่ากับเมนู */
+    padding: 12px 16px; 
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -295,5 +295,15 @@
     body.dark-mode .sidebar::-webkit-scrollbar {
       display: none;
     }
+    body.dark-mode .dt-button {
+      background-color: #1f2937;
+      color: #f1f1f1 !important;
+      border: 1px solid #374151;
+    }
+
+    body.dark-mode .dt-button:hover {
+      background-color: #374151;
+    }
+
 
 
