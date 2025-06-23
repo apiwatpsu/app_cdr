@@ -71,7 +71,7 @@
     <div class="sidebar">
 
         <!-- Dashboard Group -->
-    <div class="sidebar-label text-muted">Dashboard</div>
+    <div class="sidebar-label">Dashboard</div>
 
     {% set permissions = (session['menu_permissions'] | from_json) if session.get('menu_permissions') else [] %}
     
