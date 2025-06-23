@@ -144,7 +144,9 @@
     #myTable th {
       color: #333;
     }
-
+    .dataTables_filter {
+      background: 333;
+    }
     .table-responsive {
       max-height: 600px !important;;
       overflow: auto !important;;
