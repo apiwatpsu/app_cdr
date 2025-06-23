@@ -295,6 +295,19 @@
     body.dark-mode .sidebar::-webkit-scrollbar {
       display: none;
     }
+    body.dark-mode .dt-button,
+    body.dark-mode .dt-button.btn,
+    body.dark-mode .buttons-html5,
+    body.dark-mode .buttons-print {
+      background-color: #1f2937 !important;
+      color: #f1f1f1 !important;
+      border: 1px solid #374151 !important;
+    }
+
+    body.dark-mode .dt-button:hover,
+    body.dark-mode .dt-button.btn:hover {
+      background-color: #374151 !important;
+    }
 
 
 
