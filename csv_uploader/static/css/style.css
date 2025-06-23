@@ -145,7 +145,7 @@
       color: #333;
     }
     .dataTables_filter {
-      background: 333;
+      background: #333 !important;
     }
     .table-responsive {
       max-height: 600px !important;;
