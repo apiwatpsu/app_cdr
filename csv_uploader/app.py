@@ -173,6 +173,12 @@ def manage_users():
     if 'username' not in session:
         return redirect(url_for('login'))
     users = User.query.all()
+
+    for user in users:
+        if user.last_login:
+            user.last_login_local = user.last_login.astimezone(bangkok_tz)
+        else:
+            user.last_login_local = None
     return render_template('users.html', users=users)
 
 

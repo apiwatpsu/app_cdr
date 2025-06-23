@@ -45,7 +45,8 @@
                         </button>
                       </form>
                   </td>
-                  <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else '-' }}</td>
+                  <!-- <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else '-' }}</td> -->
+                  <td>{{ user.last_login_local.strftime('%Y-%m-%d %H:%M:%S') if user.last_login_local else '-' }}</td>
               </tr>
               {% endfor %}
           </tbody>
