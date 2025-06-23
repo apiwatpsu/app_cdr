@@ -203,6 +203,15 @@
       overflow: auto !important;
       max-height: 300px;
     }
+
+    body.dark-mode {
+      background-color: #1d222b;
+      color: #e2e2d8;
+      font-family: -apple-system, system-ui, "Segoe UI", Arial, sans-serif;
+    }
+    body.dark-mode .sidebar {
+      background-color: #212631;
+    }
   </style>
 </head>
 <body>
@@ -225,6 +234,8 @@
       
     <i class="bi bi-bell-fill fs-5"></i>
     <i class="bi bi-envelope-fill fs-5"></i>
+    <button id="theme-toggle" class="btn btn-sm btn-light">🌓 Toggle Theme</button>
+
 
     <!-- User Dropdown -->
     <div class="dropdown">
@@ -544,6 +555,18 @@ $(document).ready(function () {
     dom: "<'d-flex justify-content-between mb-3'B>flrtip",
     buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis']
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentTheme = localStorage.getItem("theme");
+    if (currentTheme === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+
+    document.getElementById("theme-toggle").addEventListener("click", function () {
+      document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+    });
+    });
 });
 </script>
 
