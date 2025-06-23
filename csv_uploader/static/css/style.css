@@ -185,3 +185,59 @@
       overflow: auto !important;
       max-height: 300px;
     }
+
+
+    /* Dark Mode */
+
+    body.dark-mode {
+      background-color: #1d222b;
+      color: #e2e2e4;
+    }
+
+    body.dark-mode .topbar input::placeholder {
+      color: #ffffff;
+      opacity: 0.5;
+    }
+
+    body.dark-mode .sidebar {
+      background-color: #212631;
+      border-right: 1px solid #333;
+    }
+
+    body.dark-mode .sidebar-label {
+      color: #ccc;
+    }
+
+    body.dark-mode .sidebar a {
+      color: #ddd;
+    }
+
+    body.dark-mode .sidebar a:hover,
+    body.dark-mode .sidebar a.active,
+    body.dark-mode .dropdown-container a:hover,
+    body.dark-mode .dropdown-container a.selected {
+      background-color: #1d222b;
+    }
+
+    body.dark-mode .dropdown-btn {
+      background-color: #1d222b;
+      color: #f1f1f1;
+    }
+
+    body.dark-mode .dropdown-container {
+      background-color: #1d222b;
+    }
+
+    body.dark-mode .dropdown-btn span {
+      color: #f1f1f1;
+    }
+
+    body.dark-mode .sidebar svg,
+    body.dark-mode .topbar-icon {
+      opacity: 0.6 !important;
+    }
+
+    body.dark-mode .main-content {
+      background-color: #1d222b;
+      color: #eaeaea;
+    }
