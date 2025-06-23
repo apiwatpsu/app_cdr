@@ -38,6 +38,17 @@
       overflow-y: auto;
     }
 
+    .sidebar {
+      overflow-y: scroll;  /* หรือ auto ถ้าต้องการให้แสดง scrollbar เมื่อจำเป็น */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE 10+ */
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none; /* Chrome, Safari */
+    }
+
+
     .sidebar-label {
     padding: 12px 16px; /* เท่ากับเมนู */
     font-size: 13px;
