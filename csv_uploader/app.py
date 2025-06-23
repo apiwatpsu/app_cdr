@@ -1051,7 +1051,7 @@ def agent_utilization_rate():
                 )
 
                 SELECT
-                    COALESCE(i.agent_name, o.agent_name) AS "AGENT",
+                    COALESCE(i.agent_name, o.agent_name) AS "Agent",
 
                     -- Inbound
                     COALESCE(i.total_calls_inbound, 0) AS "Total Calls Inbound",
@@ -1074,7 +1074,7 @@ def agent_utilization_rate():
                 FROM InboundCalls i
                 FULL OUTER JOIN OutboundCalls o
                     ON i.agent_name = o.agent_name
-                ORDER BY "AGENT";
+                ORDER BY "Agent";
 
             """), {
                 "from_date": from_date,
