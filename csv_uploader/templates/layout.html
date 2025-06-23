@@ -254,20 +254,20 @@
 
  
   <div class="px-3 py-2 mb-2">
-    <div class="small text-muted mb-1">MEMORY USAGE</div>
+    <div class="small text-muted mb-1 my-muted">MEMORY USAGE</div>
     <div class="progress" style="height: 5px;">
       <div class="progress-bar bg-warning" style="width: {{ mem_percent }}%;"></div>
     </div>
-    <div class="small text-muted mt-1">{{ mem_used }}MB / {{ mem_total }}MB</div>
+    <div class="small text-muted mt-1 my-muted">{{ mem_used }}MB / {{ mem_total }}MB</div>
   </div>
 
 
   <div class="px-3 py-2 mb-2">
-    <div class="small text-muted mb-1">SSD USAGE</div>
+    <div class="small text-muted mb-1 my-muted">SSD USAGE</div>
     <div class="progress" style="height: 5px;">
       <div class="progress-bar bg-danger" style="width: {{ disk_percent | safe }}%;"></div>
     </div>
-    <div class="small text-muted mt-1">{{ disk_used }}GB / {{ disk_total }}GB</div>
+    <div class="small text-muted mt-1 my-muted">{{ disk_used }}GB / {{ disk_total }}GB</div>
   </div>
 </div>
 
