@@ -256,5 +256,12 @@
     color: #f1f1f1;
   }
     body.dark-mode .shadow-sm {
-    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 6px rgba(97, 96, 96, 0.05);
+  }
+
+  body.dark-mode #myTable td,
+  body.dark-mode #myTable th {
+    background-color: #212631;  /* สีพื้นหลังเซลล์ */
+    color: #f1f1f1;             /* สีตัวหนังสือ */
+    border: none !important;    /* ยังคงไม่ให้มีเส้นขอบ */
   }
