@@ -1262,7 +1262,7 @@ def calls_handled_by_each_queue():
                 AND cdr_started_at >= :from_date
                 AND cdr_started_at <= :to_date
                 GROUP BY destination_dn_name
-                ORDER BY calls_handled DESC;
+                ORDER BY "Calls Handled" DESC;
             """), {
                 "from_date": from_date,
                 "to_date": to_date
@@ -1347,7 +1347,7 @@ def average_time_before_agents_answered():
                 AND cdr_started_at >= :from_date
                 AND cdr_started_at <= :to_date
                 GROUP BY destination_dn_name
-                ORDER BY average_talk_time_seconds DESC;
+                ORDER BY "AVG Wait Time Seconds" DESC;
             """), {
                 "from_date": from_date,
                 "to_date": to_date
