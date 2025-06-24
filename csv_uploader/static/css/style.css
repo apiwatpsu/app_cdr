@@ -278,15 +278,16 @@
       border: none !important;    
     }
 
-    body.dark-mode .dataTables_scrollHead th,
-    .dataTables_length select {
+    body.dark-mode .dataTables_scrollHead th{
       background-color: #323a49;
       color: #f1f1f1;
       border: none;
     }
+    
     body.dark-mode .paginate_button {
       color: #f1f1f1;
     }
+    
     body.dark-mode .sidebar {
       overflow: auto;
       scrollbar-width: none;
