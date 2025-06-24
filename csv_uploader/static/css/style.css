@@ -307,7 +307,9 @@
 
     body.dark-mode .dt-button:hover,
     body.dark-mode .dt-button.btn:hover,
-    body.dark-mode .buttons-html5:hover {
+    body.dark-mode .buttons-html5:hover,
+    body.dark-mode .buttons-colvis:hover
+    body.dark-mode .buttons-print:hover {
       background-color: #363e4e !important;
     }
 
