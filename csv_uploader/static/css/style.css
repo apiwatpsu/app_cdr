@@ -293,6 +293,12 @@
     body.dark-mode .paginate_button {
       color: #f1f1f1;
     }
+
+    .dataTables_filter {
+      background-color: #323a49;
+      padding: 8px;
+      border-radius: 4px;
+    }
     
     body.dark-mode .sidebar {
       overflow: auto;
