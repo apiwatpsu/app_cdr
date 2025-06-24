@@ -283,6 +283,12 @@
       color: #f1f1f1;
       border: none;
     }
+
+    body.dark-mode .dataTables_length select {
+      background-color: #1f2937;
+      color: #f1f1f1;            
+      border: 1px solid #374151;
+    }
     
     body.dark-mode .paginate_button {
       color: #f1f1f1;
