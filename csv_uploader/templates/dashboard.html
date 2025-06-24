@@ -121,6 +121,32 @@
     </div>
     </div>
 
+    <div class="col-md-3">
+    <div class="card p-3 border-0 shadow-sm rounded bg-white dark-mode-card">
+        <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <div class="small">Avg Intbound Duration</div>
+            <div class="h4 fw-bold">
+              {% if avg_dur_inbound_calls_data and avg_dur_inbound_calls_data[0]["Average Duration Seconds"] %}
+                {% set seconds = avg_dur_inbound_calls_data[0]["Average Duration Seconds"] | int %}
+                {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+            {% else %}
+                N/A
+            {% endif %}
+            </div>
+            <div class="text-muted small">
+            <!-- Optional: เปอร์เซ็นต์การเปลี่ยนแปลง -->
+            <span class="text-success">(+0.0%)</span>
+            <i data-lucide="clock" class="lucide" style="width: 14px; height: 14px;"></i>
+            </div>
+        </div>
+        <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+            <i data-lucide="clock" class="lucide text-warning" style="width: 20px; height: 20px;"></i>
+        </div>
+        </div>
+    </div>
+    </div>
+
 
 
 </div>

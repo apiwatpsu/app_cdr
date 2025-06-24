@@ -2154,7 +2154,7 @@ def get_dashboard_data(from_date, to_date):
         dashboard_data['abandoned_data'] = abandoned_rows
         dashboard_data['abandoned_count'] = len(abandoned_rows)
         
-        #Avg Duration External Call
+        #Avg Duration outbound Call
         avg_dur_outbound_calls = connection.execute(text("""
                 SELECT 
                     AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "Average Duration Seconds"
@@ -2174,6 +2174,27 @@ def get_dashboard_data(from_date, to_date):
                     row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
 
         dashboard_data['avg_dur_outbound_calls_data'] = avg_dur_outbound_calls_rows
+
+        #Avg Duration inbound Call
+        avg_dur_inbound_calls = connection.execute(text("""
+                SELECT 
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "Average Duration Seconds"
+                FROM cdroutput
+                WHERE source_entity_type = 'external_line'
+                    AND destination_entity_type = 'extension'
+                    AND cdr_answered_at IS NOT NULL
+                    AND cdr_ended_at IS NOT NULL
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at <= :to_date
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        avg_dur_inbound_calls_rows = [dict(row) for row in avg_dur_inbound_calls]
+        for row in avg_dur_inbound_calls_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['avg_dur_inbound_calls_data'] = avg_dur_inbound_calls_rows
 
     return dashboard_data
 
@@ -2204,7 +2225,8 @@ def dashboard():
             outbound_count=data.get('outbound_count', 0),
             internal_count=data.get('internal_count', 0),
             abandoned_count=data.get('abandoned_count', 0),
-            avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0)
+            avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0),
+            avg_dur_inbound_calls_data=data.get('avg_dur_inbound_calls_data', 0)
         )
 
     except Exception as e:
