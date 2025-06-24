@@ -1254,8 +1254,8 @@ def calls_handled_by_each_queue():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    destination_dn_name AS queue_name,
-                    COUNT(DISTINCT call_history_id) AS calls_handled
+                    destination_dn_name AS "Queue Name",
+                    COUNT(DISTINCT call_history_id) AS "Calls Handled"
                 FROM cdroutput
                 WHERE destination_entity_type = 'queue'
                 AND cdr_answered_at IS NOT NULL
@@ -1338,8 +1338,8 @@ def average_time_before_agents_answered():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    destination_dn_name AS queue_name,
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_talk_time_seconds
+                    destination_dn_name AS "Queue Name",
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "AVG Wait Time Seconds"
                 FROM cdroutput
                 WHERE destination_entity_type = 'queue'
                 AND cdr_answered_at IS NOT NULL
@@ -1424,8 +1424,8 @@ def terminated_before_being_answered():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    destination_dn_name AS queue_name,
-                    COUNT(DISTINCT call_history_id) AS abandoned_calls
+                    destination_dn_name AS "Queue Name",
+                    COUNT(DISTINCT call_history_id) AS "Abandoned Calls"
                 FROM cdroutput
                 WHERE destination_entity_type = 'queue'
                     AND source_entity_type = 'external_line'
@@ -1433,7 +1433,7 @@ def terminated_before_being_answered():
                     AND cdr_started_at >= :from_date
                     AND cdr_started_at <= :to_date
                 GROUP BY destination_dn_name
-                ORDER BY abandoned_calls DESC;
+                ORDER BY "Abandoned Calls" DESC;
             """), {
                 "from_date": from_date,
                 "to_date": to_date
