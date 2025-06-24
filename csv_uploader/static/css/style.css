@@ -294,7 +294,7 @@
       color: #f1f1f1;
     }
 
-    .dataTables_filter {
+    body.dark-mode .dataTables_filter input {
       background-color: #323a49;
       padding: 8px;
       border-radius: 4px;
