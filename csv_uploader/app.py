@@ -92,36 +92,6 @@ def login():
     return render_template('login.html')
 
 
-
-# @app.route('/setup_mfa', methods=['GET', 'POST'])
-# def setup_mfa():
-#     user_id = session.get('pre_mfa_user_id')
-#     if not user_id:
-#         return redirect(url_for('login'))
-
-#     user = User.query.get(user_id)
-#     if not user:
-#         return redirect(url_for('login'))
-
-#     if not user.mfa_secret:
-#         secret = pyotp.random_base32()
-#         user.mfa_secret = secret
-#         db.session.commit()
-#     else:
-#         secret = user.mfa_secret
-
-#     totp = pyotp.TOTP(secret)
-#     qr_uri = totp.provisioning_uri(name=user.username, issuer_name="CDRPro")
-
-#     if request.method == 'POST':
-#         token = request.form['token']
-#         if totp.verify(token):
-#             return redirect(url_for('dashboard'))
-#         else:
-#             return render_template('setup_mfa.html', error="Invalid code", qr_uri=qr_uri)
-
-#     return render_template('setup_mfa.html', qr_uri=qr_uri)
-
 @app.route('/setup_mfa', methods=['GET', 'POST'])
 def setup_mfa():
     user_id = session.get('pre_mfa_user_id')
@@ -368,7 +338,7 @@ def cdr_data():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -382,7 +352,7 @@ def cdr_data():
     except ValueError:
         error = "Invalid date format"
         now = BANGKOK_TZ.localize(datetime.now())
-        from_date = (now - timedelta(days=30)).astimezone(utc)
+        from_date = (now - timedelta(days=7)).astimezone(utc)
         to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -442,7 +412,7 @@ def count_call_by_type():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -456,7 +426,7 @@ def count_call_by_type():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -520,7 +490,7 @@ def internal_calls():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -534,7 +504,7 @@ def internal_calls():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -611,7 +581,7 @@ def outbound_calls():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -625,7 +595,7 @@ def outbound_calls():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -703,7 +673,7 @@ def inbound_calls():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -717,7 +687,7 @@ def inbound_calls():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -793,7 +763,7 @@ def average_call_handling_by_agent():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -807,7 +777,7 @@ def average_call_handling_by_agent():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -910,7 +880,7 @@ def count_call_handling_by_agent():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -924,7 +894,7 @@ def count_call_handling_by_agent():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1030,7 +1000,7 @@ def agent_utilization_rate():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1044,7 +1014,7 @@ def agent_utilization_rate():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1166,7 +1136,7 @@ def list_all_lost_queue_calls():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1180,7 +1150,7 @@ def list_all_lost_queue_calls():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1259,7 +1229,7 @@ def calls_handled_by_each_queue():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1273,7 +1243,7 @@ def calls_handled_by_each_queue():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1343,7 +1313,7 @@ def average_time_before_agents_answered():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1357,7 +1327,7 @@ def average_time_before_agents_answered():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1429,7 +1399,7 @@ def terminated_before_being_answered():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1443,7 +1413,7 @@ def terminated_before_being_answered():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1515,7 +1485,7 @@ def calls_transferred_to_queue():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1529,7 +1499,7 @@ def calls_transferred_to_queue():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1603,7 +1573,7 @@ def avg_call_duration_answered_external():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1617,7 +1587,7 @@ def avg_call_duration_answered_external():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1686,7 +1656,7 @@ def longest_internal_calls():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1700,7 +1670,7 @@ def longest_internal_calls():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1780,7 +1750,7 @@ def calls_no_route():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1794,7 +1764,7 @@ def calls_no_route():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -1868,7 +1838,7 @@ def calls_license_limits():
             # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=30))
+            from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
 
         if to_date_str:
             to_date_local = BANGKOK_TZ.localize(datetime.strptime(to_date_str, "%Y-%m-%d")) + timedelta(days=1)
@@ -1882,7 +1852,7 @@ def calls_license_limits():
     except ValueError:
             error = "Invalid date format"
             now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=30)).astimezone(utc)
+            from_date = (now - timedelta(days=7)).astimezone(utc)
             to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
@@ -2197,7 +2167,7 @@ def dashboard():
         if from_date_str:
             from_date = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
-            from_date = datetime.now(BANGKOK_TZ) - timedelta(days=30)
+            from_date = datetime.now(BANGKOK_TZ) - timedelta(days=7)
 
         if to_date_str:
             
