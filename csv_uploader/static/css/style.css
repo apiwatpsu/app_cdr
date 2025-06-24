@@ -23,6 +23,10 @@
       background-color: #146c43 !important;
     }
 
+    .form-control {
+      background-color: #f0f0f0; 
+    }
+
     .topbar {
       height: 65px;
       background-color: #4f46e5;
