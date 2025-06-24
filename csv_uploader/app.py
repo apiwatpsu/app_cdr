@@ -1681,14 +1681,14 @@ def longest_internal_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    call_history_id,
-                    source_dn_number,
-                    source_dn_name,
-                    source_participant_group_name,
-                    destination_dn_number,
-                    destination_dn_name,
-                    destination_participant_group_name,
-                    termination_reason,
+                    call_history_id as "Call ID",
+                    source_dn_number as "From Extension",
+                    source_dn_name as "From Name",
+                    source_participant_group_name as "From Group",
+                    destination_dn_number as "To Extension",
+                    destination_dn_name as "To Name",
+                    destination_participant_group_name as "To Group",
+                    termination_reason as "Termination Reason",
                     (cdr_ended_at - cdr_answered_at) AS duration
                 FROM cdroutput
                 WHERE source_entity_type != 'external_line'
@@ -1775,10 +1775,10 @@ def calls_no_route():
         # ใช้เวลาเทียบกับฟิลด์ cdr_started_at หรือฟิลด์อื่นที่เหมาะสม
         query = """
             SELECT 
-                call_history_id, 
-                source_participant_name, 
-                destination_participant_phone_number, 
-                termination_reason_details
+                call_history_id as "Call ID", 
+                source_participant_name as "Agent" , 
+                destination_participant_phone_number as "To Number", 
+                termination_reason_details as "Termination Reason"
             FROM 
                 cdroutput
             WHERE 
@@ -1818,7 +1818,7 @@ def calls_no_route():
 
 @app.route('/calls_license_limits')
 def calls_license_limits():
-    page_title="Call License Limit"
+    page_title="Call License Limit Terminations"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1861,7 +1861,7 @@ def calls_license_limits():
         engine = create_engine(conn_str)
 
         query = """
-            SELECT COUNT(*) AS license_limit_terminations
+            SELECT COUNT(*) AS "License Limit Terminations"
             FROM cdroutput
             WHERE termination_reason_details = 'license_limit_reached'
             AND cdr_started_at >= :from_date
