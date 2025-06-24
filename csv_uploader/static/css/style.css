@@ -5,6 +5,24 @@
       background-color: #f8f9fa;
     }
 
+    .dt-button,
+    .dt-button.btn,
+    .buttons-html5,
+    .buttons-colvis,
+    .buttons-print {
+      background-color: #198754 !important;
+      color: #f1f1f1 !important;
+      border: none !important;
+    }
+
+    .dt-button:hover,
+    .dt-button.btn:hover,
+    .buttons-html5:hover,
+    .buttons-colvis:hover,
+    .buttons-print:hover {
+      background-color: #146c43 !important;
+    }
+
     .topbar {
       height: 65px;
       background-color: #4f46e5;
