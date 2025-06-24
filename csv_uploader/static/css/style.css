@@ -321,6 +321,12 @@
       background-color: #363e4e !important;
     }
 
+    body.dark-mode .form-control {
+    background-color: #1f2937; 
+    color: #f1f1f1;            
+    border: 1px solid #374151;
+}
+
 
 
 
