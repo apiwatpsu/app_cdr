@@ -1293,7 +1293,7 @@ def calls_handled_by_each_queue():
 
 @app.route('/average_time_before_agents_answered')
 def average_time_before_agents_answered():
-    page_title="AVG Time Before Answered"
+    page_title="Average Time Before Answered"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1510,10 +1510,10 @@ def calls_transferred_to_queue():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    c2.call_history_id,
-                    c1.source_participant_name AS original_caller,
-                    c1.destination_participant_name AS original_destination,
-                    c2.destination_dn_name AS transferred_queue
+                    c2.call_history_id as "Call ID",
+                    c1.source_participant_name AS "Original Caller",
+                    c1.destination_participant_name AS "Original Destination",
+                    c2.destination_dn_name AS "Transferred Queue"
                 FROM cdroutput c1
                 JOIN cdroutput c2 ON c1.call_history_id = c2.call_history_id
                 WHERE c1.creation_method IN ('call_init', 'route_to')
