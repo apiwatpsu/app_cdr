@@ -235,7 +235,7 @@
     body.dark-mode .sidebar a.active,
     body.dark-mode .dropdown-container a:hover,
     body.dark-mode .dropdown-container a.selected {
-      background-color: #1d222b;
+      background-color: #363e4e;
     }
 
     body.dark-mode .dropdown-btn {
