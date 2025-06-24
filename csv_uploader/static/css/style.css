@@ -278,7 +278,8 @@
       border: none !important;    
     }
 
-    body.dark-mode .dataTables_scrollHead th {
+    body.dark-mode .dataTables_scrollHead th,
+    .dataTables_length select {
       background-color: #323a49;
       color: #f1f1f1;
       border: none;
