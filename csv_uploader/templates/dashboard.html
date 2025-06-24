@@ -93,6 +93,18 @@
     </div>
     </div>
     </div>
+
+
+    <div class="card p-3 shadow-sm mb-3">
+        <h5 class="mb-1">📞 Avg Duration Outbound Calls</h5>
+        {% if avg_dur_outbound_calls_data and avg_dur_outbound_calls_data[0]["Average Duration Seconds"] %}
+            <p class="mb-0">
+            {{ "%.2f"|format(avg_dur_outbound_calls_data[0]["Average Duration Seconds"]) }} seconds
+            </p>
+        {% else %}
+            <p class="text-muted mb-0">No data available</p>
+        {% endif %}
+    </div>
 </div>
 
 

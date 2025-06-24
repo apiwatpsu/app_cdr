@@ -742,7 +742,7 @@ def inbound_calls():
 
 @app.route('/average_call_handling_by_agent')
 def average_call_handling_by_agent():
-    page_title="AVG Call Handling"
+    page_title="Average Call Handling By Agent"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1553,7 +1553,7 @@ def calls_transferred_to_queue():
 
 @app.route('/avg_call_duration_answered_external')
 def avg_call_duration_answered_external():
-    page_title="AVG Duration Answered External Call"
+    page_title="Average Duration of Answered External Outbound Calls"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -1598,7 +1598,7 @@ def avg_call_duration_answered_external():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT 
-                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS average_duration_seconds
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "Average Duration Seconds"
                 FROM cdroutput
                 WHERE source_entity_type != 'external_line'
                     AND destination_entity_type = 'external_line'
@@ -2153,6 +2153,27 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['abandoned_data'] = abandoned_rows
         dashboard_data['abandoned_count'] = len(abandoned_rows)
+        
+        #Avg Duration External Call
+        avg_dur_outbound_calls = connection.execute(text("""
+                SELECT 
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "Average Duration Seconds"
+                FROM cdroutput
+                WHERE source_entity_type != 'external_line'
+                    AND destination_entity_type = 'external_line'
+                    AND cdr_answered_at IS NOT NULL
+                    AND cdr_ended_at IS NOT NULL
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at <= :to_date
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        avg_dur_outbound_calls_rows = [dict(row) for row in avg_dur_outbound_calls]
+        for row in avg_dur_outbound_calls_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['avg_dur_outbound_calls_data'] = avg_dur_outbound_calls_rows
 
     return dashboard_data
 
@@ -2182,7 +2203,8 @@ def dashboard():
             inbound_count=data.get('inbound_count', 0),
             outbound_count=data.get('outbound_count', 0),
             internal_count=data.get('internal_count', 0),
-            abandoned_count=data.get('abandoned_count', 0)
+            abandoned_count=data.get('abandoned_count', 0),
+            avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0)
         )
 
     except Exception as e:
