@@ -310,7 +310,6 @@
     body.dark-mode .buttons-print {
       background-color: #198754 !important;
       color: #f1f1f1 !important;
-      border: 1px solid #374151 !important;
     }
 
     body.dark-mode .dt-button:hover,
@@ -318,7 +317,7 @@
     body.dark-mode .buttons-html5:hover,
     body.dark-mode .buttons-colvis:hover,
     body.dark-mode .buttons-print:hover {
-      background-color: #363e4e !important;
+      background-color: #717b8f !important;
     }
 
     body.dark-mode .form-control {
