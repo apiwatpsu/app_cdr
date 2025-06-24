@@ -1172,7 +1172,7 @@ def list_all_lost_queue_calls():
                     c.cdr_answered_at as "Answered",
                     c.cdr_ended_at as "End",
                     c.call_history_id as "Call ID",
-                    (c.cdr_ended_at - c.cdr_answered_at) as "Waiting Time(s)
+                    (c.cdr_ended_at - c.cdr_answered_at) as "Waiting Time(s)"
                 FROM public.cdroutput AS c
                 WHERE c.destination_entity_type = 'queue'
                 AND c.termination_reason IN ('src_participant_terminated', 'dst_participant_terminated') 
