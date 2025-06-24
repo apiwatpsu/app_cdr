@@ -175,6 +175,7 @@ def verify_mfa():
             session['user_id'] = user.id
             session.pop('pre_mfa_user_id', None)
             user.last_login = datetime.utcnow()
+            db.session.commit()
             return redirect(url_for('dashboard'))
         else:
             return render_template('verify_mfa.html', error="Invalid OTP")
