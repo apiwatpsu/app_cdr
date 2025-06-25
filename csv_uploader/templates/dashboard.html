@@ -74,29 +74,49 @@
             </div>
           </div>
         </div>
-      </div> <!-- /row inside external card -->
-    </div> <!-- /external card -->
+      </div> 
+    </div> 
   </div>
 
-  <!-- Internal Calls กล่องเดียว (ครึ่งหน้าจอ) -->
+   <!-- Duration กล่องใหญ่ (ครึ่งหน้าจอ) -->
   <div class="col-12 col-md-6">
     <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">Internal Calls</h5>
-      <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <div class="small">Internal</div>
-            <div class="h4 fw-bold">{{ internal_count }}</div>
-            <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
-          </div>
-          <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-            <i data-lucide="phone" class="text-warning"></i>
+      <h5 class="mb-3">External Calls</h5>
+      <div class="row g-3">
+        <!-- Inbound -->
+        <div class="col-12 col-sm-4">
+          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="small">Inbound</div>
+                <div class="h4 fw-bold">{{ inbound_count }}</div>
+                <div class="text-danger small">(-12.4%) <i data-lucide="arrow-down-right"></i></div>
+              </div>
+              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i data-lucide="phone-incoming" class="text-success"></i>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+        <!-- Outbound -->
+        <div class="col-12 col-sm-4">
+          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="small">Outbound</div>
+                <div class="h4 fw-bold">{{ outbound_count }}</div>
+                <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
+              </div>
+              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i data-lucide="phone-outgoing" class="text-primary"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> 
+    </div> 
   </div>
-</div>
 
 <!-- Row 2: Performance Metrics -->
 
