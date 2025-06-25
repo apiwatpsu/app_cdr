@@ -5,16 +5,16 @@
 {% block content %}
 <h2>Dashboard</h2>
 
-<!-- Filter Form -->
-<form method="get" class="d-flex gap-2 mb-3">
+<!-- Filter -->
+<form method="get" class="d-flex flex-wrap gap-2 mb-4">
   <div>
-    <label for="fromDate" class="form-label mb-0">From:</label>
-    <input type="date" id="fromDate" name="from_date" class="form-control form-control-sm"
+    <label class="form-label mb-0">From:</label>
+    <input type="date" name="from_date" class="form-control form-control-sm"
            value="{{ request.args.get('from_date', '') }}">
   </div>
   <div>
-    <label for="toDate" class="form-label mb-0">To:</label>
-    <input type="date" id="toDate" name="to_date" class="form-control form-control-sm"
+    <label class="form-label mb-0">To:</label>
+    <input type="date" name="to_date" class="form-control form-control-sm"
            value="{{ request.args.get('to_date', '') }}">
   </div>
   <div class="align-self-end">
@@ -22,16 +22,15 @@
   </div>
 </form>
 
-<!-- Row 1: Total External (ซ้าย) + Internal (ขวา) -->
+<!-- Row 1: Total External + Internal -->
 <div class="row g-4 mb-4">
-  <!-- Total External Calls -->
+  <!-- Total External -->
   <div class="col-12 col-md-6">
-    <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">Total External Calls</h5>
+    <div class="card p-4 bg-white rounded shadow-sm h-100">
+      <h5>Total External Calls</h5>
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          {% set total_external = inbound_count + outbound_count %}
-          <div class="h4 fw-bold">{{ total_external }}</div>
+          <div class="h4 fw-bold">{{ inbound_count + outbound_count }}</div>
           <div class="text-success small">(+0%) <i data-lucide="arrow-up-right"></i></div>
         </div>
         <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center"
@@ -44,8 +43,8 @@
 
   <!-- Internal Calls -->
   <div class="col-12 col-md-6">
-    <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">Internal Calls</h5>
+    <div class="card p-4 bg-white rounded shadow-sm h-100">
+      <h5>Internal Calls</h5>
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <div class="h4 fw-bold">{{ internal_count }}</div>
@@ -60,23 +59,23 @@
   </div>
 </div>
 
-<!-- Row 2: External Details (Inbound, Outbound, Abandoned) + Duration (Avg + Total) -->
+<!-- Row 2: External Detail + Duration Group -->
 <div class="row g-4 mb-4">
-  <!-- External Detail -->
-  <div class="col-12 col-md-6">
-    <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">External Call Details</h5>
+  <!-- External Detail: Inbound + Outbound + Abandoned -->
+  <div class="col-12 col-lg-6">
+    <div class="card p-4 bg-white rounded shadow-sm h-100">
+      <h5>External Call Breakdown</h5>
       <div class="row g-3">
         <!-- Inbound -->
-        <div class="col-6">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+        <div class="col-12 col-sm-6 col-xl-4">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <div class="small">Inbound</div>
                 <div class="h4 fw-bold">{{ inbound_count }}</div>
                 <div class="text-danger small">(-12.4%) <i data-lucide="arrow-down-right"></i></div>
               </div>
-              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center"
+              <div class="rounded bg-primary-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="phone-incoming" class="text-success"></i>
               </div>
@@ -85,15 +84,15 @@
         </div>
 
         <!-- Outbound -->
-        <div class="col-6">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+        <div class="col-12 col-sm-6 col-xl-4">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <div class="small">Outbound</div>
                 <div class="h4 fw-bold">{{ outbound_count }}</div>
                 <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
               </div>
-              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center"
+              <div class="rounded bg-primary-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="phone-outgoing" class="text-primary"></i>
               </div>
@@ -102,44 +101,45 @@
         </div>
 
         <!-- Abandoned -->
-        <div class="col-12">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+        <div class="col-12 col-xl-4">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <div class="small">Abandoned</div>
                 <div class="h4 fw-bold">{{ abandoned_count }}</div>
                 <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
               </div>
-              <div class="rounded bg-danger-subtle d-flex align-items-center justify-content-center"
+              <div class="rounded bg-danger-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="phone-off" class="text-danger"></i>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
   <!-- Duration Panel -->
-  <div class="col-12 col-md-6">
-    <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">Call Duration</h5>
+  <div class="col-12 col-lg-6">
+    <div class="card p-4 bg-white rounded shadow-sm h-100">
+      <h5>Call Duration</h5>
       <div class="row g-3">
         <!-- Avg Outbound -->
-        <div class="col-6">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+        <div class="col-12 col-md-6">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <div class="small">Avg Outbound</div>
                 <div class="h4 fw-bold">
                   {% if avg_dur_outbound_calls_data and avg_dur_outbound_calls_data[0]["Average Duration Seconds"] %}
-                    {% set seconds = avg_dur_outbound_calls_data[0]["Average Duration Seconds"] | int %}
-                    {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+                    {% set sec = avg_dur_outbound_calls_data[0]["Average Duration Seconds"] | int %}
+                    {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
                   {% else %} N/A {% endif %}
                 </div>
               </div>
-              <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
+              <div class="rounded bg-warning-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="clock" class="text-warning"></i>
               </div>
@@ -148,19 +148,19 @@
         </div>
 
         <!-- Avg Inbound -->
-        <div class="col-6">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+        <div class="col-12 col-md-6">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <div class="small">Avg Inbound</div>
                 <div class="h4 fw-bold">
                   {% if avg_dur_inbound_calls_data and avg_dur_inbound_calls_data[0]["Average Duration Seconds"] %}
-                    {% set seconds = avg_dur_inbound_calls_data[0]["Average Duration Seconds"] | int %}
-                    {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+                    {% set sec = avg_dur_inbound_calls_data[0]["Average Duration Seconds"] | int %}
+                    {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
                   {% else %} N/A {% endif %}
                 </div>
               </div>
-              <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
+              <div class="rounded bg-warning-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="clock" class="text-warning"></i>
               </div>
@@ -170,18 +170,18 @@
 
         <!-- Total Duration -->
         <div class="col-12">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <div class="small">Total Duration</div>
                 <div class="h4 fw-bold">
                   {% if total_duration_seconds %}
-                    {% set seconds = total_duration_seconds | int %}
-                    {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+                    {% set sec = total_duration_seconds | int %}
+                    {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
                   {% else %} N/A {% endif %}
                 </div>
               </div>
-              <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center"
+              <div class="rounded bg-info-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="timer" class="text-info"></i>
               </div>
@@ -193,4 +193,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
