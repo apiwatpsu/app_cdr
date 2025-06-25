@@ -22,14 +22,51 @@
   </div>
 </form>
 
-<!-- Row 1: External (ซ้าย) + Duration (ขวา) -->
+<!-- Row 1: Total External (ซ้าย) + Internal (ขวา) -->
 <div class="row g-4 mb-4">
-  <!-- External Calls -->
+  <!-- Total External Calls -->
   <div class="col-12 col-md-6">
     <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">External Calls</h5>
+      <h5 class="mb-3">Total External Calls</h5>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          {% set total_external = inbound_count + outbound_count %}
+          <div class="h4 fw-bold">{{ total_external }}</div>
+          <div class="text-success small">(+0%) <i data-lucide="arrow-up-right"></i></div>
+        </div>
+        <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center"
+             style="width: 40px; height: 40px;">
+          <i data-lucide="phone" class="text-success"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Internal Calls -->
+  <div class="col-12 col-md-6">
+    <div class="card bg-white rounded shadow-sm p-4 h-100">
+      <h5 class="mb-3">Internal Calls</h5>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div class="h4 fw-bold">{{ internal_count }}</div>
+          <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
+        </div>
+        <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
+             style="width: 40px; height: 40px;">
+          <i data-lucide="phone" class="text-warning"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 2: External Details (Inbound, Outbound, Abandoned) + Duration (Avg + Total) -->
+<div class="row g-4 mb-4">
+  <!-- External Detail -->
+  <div class="col-12 col-md-6">
+    <div class="card bg-white rounded shadow-sm p-4 h-100">
+      <h5 class="mb-3">External Call Details</h5>
       <div class="row g-3">
-        {% set total_external = inbound_count + outbound_count %}
         <!-- Inbound -->
         <div class="col-6">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
@@ -65,7 +102,7 @@
         </div>
 
         <!-- Abandoned -->
-        <div class="col-6">
+        <div class="col-12">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
@@ -76,23 +113,6 @@
               <div class="rounded bg-danger-subtle d-flex align-items-center justify-content-center"
                    style="width: 40px; height: 40px;">
                 <i data-lucide="phone-off" class="text-danger"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Total External -->
-        <div class="col-6">
-          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <div class="small">Total External</div>
-                <div class="h4 fw-bold">{{ total_external }}</div>
-                <div class="text-success small">(+0%) <i data-lucide="arrow-up-right"></i></div>
-              </div>
-              <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center"
-                   style="width: 40px; height: 40px;">
-                <i data-lucide="phone" class="text-success"></i>
               </div>
             </div>
           </div>
@@ -169,28 +189,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Row 2: Internal Calls เต็มแถว -->
-<div class="row g-4">
-  <div class="col-12">
-    <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">Internal Calls</h5>
-      <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <div class="small">Internal</div>
-            <div class="h4 fw-bold">{{ internal_count }}</div>
-            <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
-          </div>
-          <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
-               style="width: 40px; height: 40px;">
-            <i data-lucide="phone" class="text-warning"></i>
-          </div>
-        </div>
       </div>
     </div>
   </div>
