@@ -22,15 +22,16 @@
   </div>
 </form>
 
-<!-- Row 1: External Calls -->
+<!-- Row 1: External (ซ้าย) + Duration (ขวา) -->
 <div class="row g-4 mb-4">
-  <!-- External Calls กล่องใหญ่ (ครึ่งหน้าจอ) -->
+  <!-- External Calls -->
   <div class="col-12 col-md-6">
     <div class="card bg-white rounded shadow-sm p-4 h-100">
       <h5 class="mb-3">External Calls</h5>
       <div class="row g-3">
+        {% set total_external = inbound_count + outbound_count %}
         <!-- Inbound -->
-        <div class="col-12 col-sm-4">
+        <div class="col-6">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
@@ -38,14 +39,16 @@
                 <div class="h4 fw-bold">{{ inbound_count }}</div>
                 <div class="text-danger small">(-12.4%) <i data-lucide="arrow-down-right"></i></div>
               </div>
-              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
                 <i data-lucide="phone-incoming" class="text-success"></i>
               </div>
             </div>
           </div>
         </div>
+
         <!-- Outbound -->
-        <div class="col-12 col-sm-4">
+        <div class="col-6">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
@@ -53,93 +56,127 @@
                 <div class="h4 fw-bold">{{ outbound_count }}</div>
                 <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
               </div>
-              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
                 <i data-lucide="phone-outgoing" class="text-primary"></i>
               </div>
             </div>
           </div>
         </div>
-        <!-- Total External -->
-        <div class="col-12 col-sm-4">
+
+        <!-- Abandoned -->
+        <div class="col-6">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <div class="small">Total External Calls</div>
-                <div class="h4 fw-bold">{{ inbound_count + outbound_count }}</div>
+                <div class="small">Abandoned</div>
+                <div class="h4 fw-bold">{{ abandoned_count }}</div>
+                <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
+              </div>
+              <div class="rounded bg-danger-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
+                <i data-lucide="phone-off" class="text-danger"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total External -->
+        <div class="col-6">
+          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="small">Total External</div>
+                <div class="h4 fw-bold">{{ total_external }}</div>
                 <div class="text-success small">(+0%) <i data-lucide="arrow-up-right"></i></div>
               </div>
-              <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
                 <i data-lucide="phone" class="text-success"></i>
               </div>
             </div>
           </div>
         </div>
-      </div> 
-    </div> 
+      </div>
+    </div>
   </div>
 
-   <!-- Duration กล่องใหญ่ (ครึ่งหน้าจอ) -->
+  <!-- Duration Panel -->
   <div class="col-12 col-md-6">
     <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">Duration</h5>
+      <h5 class="mb-3">Call Duration</h5>
       <div class="row g-3">
-        
-        <div class="col-12 col-sm-4">
+        <!-- Avg Outbound -->
+        <div class="col-6">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="small">Avg Outbound Duration</div>
-                    <div class="h4 fw-bold">
-                        {% if avg_dur_outbound_calls_data and avg_dur_outbound_calls_data[0]["Average Duration Seconds"] %}
-                        {% set seconds = avg_dur_outbound_calls_data[0]["Average Duration Seconds"] | int %}
-                        {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
-                        {% else %}
-                        N/A
-                        {% endif %}
-                    </div>
-                    <div class="text-muted small">
-                        <span class="text-success">(+0.0%)</span> <i data-lucide="clock"></i>
-                    </div>
-                    </div>
-                    <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                    <i data-lucide="clock" class="text-warning"></i>
-                    </div>
+              <div>
+                <div class="small">Avg Outbound</div>
+                <div class="h4 fw-bold">
+                  {% if avg_dur_outbound_calls_data and avg_dur_outbound_calls_data[0]["Average Duration Seconds"] %}
+                    {% set seconds = avg_dur_outbound_calls_data[0]["Average Duration Seconds"] | int %}
+                    {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+                  {% else %} N/A {% endif %}
                 </div>
+              </div>
+              <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
+                <i data-lucide="clock" class="text-warning"></i>
+              </div>
             </div>
           </div>
         </div>
-        
-        <div class="col-12 col-sm-4">
+
+        <!-- Avg Inbound -->
+        <div class="col-6">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
-               <div>
-                <div class="small">Avg Inbound Duration</div>
+              <div>
+                <div class="small">Avg Inbound</div>
                 <div class="h4 fw-bold">
-                    {% if avg_dur_inbound_calls_data and avg_dur_inbound_calls_data[0]["Average Duration Seconds"] %}
+                  {% if avg_dur_inbound_calls_data and avg_dur_inbound_calls_data[0]["Average Duration Seconds"] %}
                     {% set seconds = avg_dur_inbound_calls_data[0]["Average Duration Seconds"] | int %}
                     {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
-                    {% else %}
-                    N/A
-                    {% endif %}
+                  {% else %} N/A {% endif %}
                 </div>
-                <div class="text-muted small">
-                    <span class="text-success">(+0.0%)</span> <i data-lucide="clock"></i>
-                </div>
-                </div>
-                <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+              </div>
+              <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
                 <i data-lucide="clock" class="text-warning"></i>
-                </div>
+              </div>
             </div>
           </div>
         </div>
 
-      </div> 
-    </div> 
+        <!-- Total Duration -->
+        <div class="col-12">
+          <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="small">Total Duration</div>
+                <div class="h4 fw-bold">
+                  {% if total_duration_seconds %}
+                    {% set seconds = total_duration_seconds | int %}
+                    {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+                  {% else %} N/A {% endif %}
+                </div>
+              </div>
+              <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center"
+                   style="width: 40px; height: 40px;">
+                <i data-lucide="timer" class="text-info"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
+</div>
 
-<!-- Row 2: Performance Metrics -->
-
-  <div class="col-12 col-md-6">
+<!-- Row 2: Internal Calls เต็มแถว -->
+<div class="row g-4">
+  <div class="col-12">
     <div class="card bg-white rounded shadow-sm p-4 h-100">
       <h5 class="mb-3">Internal Calls</h5>
       <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
@@ -149,54 +186,10 @@
             <div class="h4 fw-bold">{{ internal_count }}</div>
             <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
           </div>
-          <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+          <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
+               style="width: 40px; height: 40px;">
             <i data-lucide="phone" class="text-warning"></i>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row g-4">
-  <!-- Abandoned -->
-  <div class="col-12 col-md-3">
-    <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="small">Abandoned</div>
-          <div class="h4 fw-bold">{{ abandoned_count }}</div>
-          <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div>
-        </div>
-        <div class="rounded bg-danger-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-          <i data-lucide="phone-off" class="text-danger"></i>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-  <!-- Total Duration (เพิ่มเข้ามา) -->
-  <div class="col-12 col-md-3">
-    <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="small">Total Duration</div>
-          <div class="h4 fw-bold">
-            {% if total_duration_seconds %}
-              {% set seconds = total_duration_seconds | int %}
-              {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
-            {% else %}
-              N/A
-            {% endif %}
-          </div>
-          <div class="text-muted small">
-            <!-- ใส่ % เปลี่ยนแปลงถ้ามี -->
-          </div>
-        </div>
-        <div class="rounded bg-info-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-          <i data-lucide="timer" class="text-info"></i>
         </div>
       </div>
     </div>
