@@ -22,7 +22,7 @@
   </div>
 </form>
 
-<!-- Row 1: External Calls + Internal Calls -->
+<!-- Row 1: External Calls -->
 <div class="row g-4 mb-4">
   <!-- External Calls กล่องใหญ่ (ครึ่งหน้าจอ) -->
   <div class="col-12 col-md-6">
@@ -81,20 +81,30 @@
    <!-- Duration กล่องใหญ่ (ครึ่งหน้าจอ) -->
   <div class="col-12 col-md-6">
     <div class="card bg-white rounded shadow-sm p-4 h-100">
-      <h5 class="mb-3">External Calls</h5>
+      <h5 class="mb-3">Duration</h5>
       <div class="row g-3">
         <!-- Inbound -->
         <div class="col-12 col-sm-4">
           <div class="card p-3 border-0 shadow-sm rounded bg-white h-100">
             <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <div class="small">Inbound</div>
-                <div class="h4 fw-bold">{{ inbound_count }}</div>
-                <div class="text-danger small">(-12.4%) <i data-lucide="arrow-down-right"></i></div>
-              </div>
-              <div class="rounded bg-primary-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                <i data-lucide="phone-incoming" class="text-success"></i>
-              </div>
+                <div>
+                    <div class="small">Avg Outbound Duration</div>
+                    <div class="h4 fw-bold">
+                        {% if avg_dur_outbound_calls_data and avg_dur_outbound_calls_data[0]["Average Duration Seconds"] %}
+                        {% set seconds = avg_dur_outbound_calls_data[0]["Average Duration Seconds"] | int %}
+                        {{ "%02d:%02d:%02d" | format(seconds // 3600, (seconds % 3600) // 60, seconds % 60) }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </div>
+                    <div class="text-muted small">
+                        <span class="text-success">(+0.0%)</span> <i data-lucide="clock"></i>
+                    </div>
+                    </div>
+                    <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <i data-lucide="clock" class="text-warning"></i>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
