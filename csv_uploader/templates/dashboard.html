@@ -320,22 +320,51 @@
               {% for row in agent_call_stats_data %}
               <tr>
                 <td>{{ row["Agent"] }}</td>
-                <td class="text-center">
-                  <span class="badge bg-success">{{ row["Inbound Calls"] }}</span>
+
+                <!-- Inbound -->
+                <td>
+                  <div class="d-flex flex-column align-items-center">
+                    <small>{{ row["Inbound Calls"] }}</small>
+                    <div class="progress w-100" style="height: 8px;">
+                      <div class="progress-bar bg-success" role="progressbar"
+                          style="width: {{ (row['Inbound Calls'] / row['Total Calls']) * 100 if row['Total Calls'] else 0 }}%;">
+                      </div>
+                    </div>
+                  </div>
                 </td>
-                <td class="text-center">
-                  <span class="badge bg-primary">{{ row["Outbound Calls"] }}</span>
+
+                <!-- Outbound -->
+                <td>
+                  <div class="d-flex flex-column align-items-center">
+                    <small>{{ row["Outbound Calls"] }}</small>
+                    <div class="progress w-100" style="height: 8px;">
+                      <div class="progress-bar bg-primary" role="progressbar"
+                          style="width: {{ (row['Outbound Calls'] / row['Total Calls']) * 100 if row['Total Calls'] else 0 }}%;">
+                      </div>
+                    </div>
+                  </div>
                 </td>
-                <td class="text-center">
-                  <span class="badge bg-warning text-dark">{{ row["Internal Calls"] }}</span>
+
+                <!-- Internal -->
+                <td>
+                  <div class="d-flex flex-column align-items-center">
+                    <small>{{ row["Internal Calls"] }}</small>
+                    <div class="progress w-100" style="height: 8px;">
+                      <div class="progress-bar bg-warning" role="progressbar"
+                          style="width: {{ (row['Internal Calls'] / row['Total Calls']) * 100 if row['Total Calls'] else 0 }}%;">
+                      </div>
+                    </div>
+                  </div>
                 </td>
+
+                <!-- Total -->
                 <td class="text-center fw-bold">
-                  <!-- {{ row["Inbound Calls"] + row["Outbound Calls"] + row["Internal Calls"] }} -->
                   <span class="badge bg-info text-dark">{{ row["Total Calls"] }}</span>
                 </td>
               </tr>
               {% endfor %}
             </tbody>
+
           </table>
         </div>
       </div>
