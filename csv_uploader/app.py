@@ -1254,15 +1254,40 @@ def calls_handled_by_each_queue():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT
-                    destination_dn_name AS "Queue Name",
-                    COUNT(DISTINCT call_history_id) AS "Calls Handled"
-                FROM cdroutput
-                WHERE destination_entity_type = 'queue'
-                AND cdr_answered_at IS NOT NULL
-                AND cdr_started_at >= :from_date
-                AND cdr_started_at <= :to_date
-                GROUP BY destination_dn_name
-                ORDER BY "Calls Handled" DESC;
+                    COALESCE(queue_name, 'Unknown') AS "Queue Name",
+                    SUM(calls_handled) AS "Service Calls",
+                    SUM(abandoned_calls) AS "Abandoned Calls",
+                    SUM(calls_handled) + SUM(abandoned_calls) AS "Total Calls"
+                FROM (
+                    -- Service Calls
+                    SELECT
+                        destination_dn_name AS queue_name,
+                        COUNT(DISTINCT call_history_id) AS calls_handled,
+                        0 AS abandoned_calls
+                    FROM cdroutput
+                    WHERE destination_entity_type = 'queue'
+                    AND termination_reason NOT IN ('src_participant_terminated', 'dst_participant_terminated')
+                    AND cdr_answered_at IS NOT NULL
+                    AND destination_dn_name IS NOT NULL
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY destination_dn_name
+
+                    UNION ALL
+
+                    -- Abandoned Calls
+                    SELECT
+                        destination_dn_name AS queue_name,
+                        0 AS calls_handled,
+                        COUNT(DISTINCT call_history_id) AS abandoned_calls
+                    FROM cdroutput
+                    WHERE destination_entity_type = 'queue'
+                    AND termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+                    AND destination_dn_name IS NOT NULL
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY destination_dn_name
+                ) AS combined
+                GROUP BY queue_name
+                ORDER BY "Total Calls" DESC NULLS LAST;
             """), {
                 "from_date": from_date,
                 "to_date": to_date
