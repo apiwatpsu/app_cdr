@@ -227,7 +227,7 @@ def db_config():
             conn_str = f'postgresql://{user}:{password}@{host}:{port}/{dbname}'
             engine = create_engine(conn_str)
             with engine.connect() as connection:
-                result = connection.execute(text(f"SELECT * FROM {table} ORDER BY cdr_started_at DESC LIMIT 10"))
+                result = connection.execute(text(f"SELECT * FROM {table} LIMIT 10"))
                 columns = result.keys()
                 data = [dict(row._mapping) for row in result]
         except Exception as e:
