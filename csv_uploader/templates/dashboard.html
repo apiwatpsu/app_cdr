@@ -386,30 +386,12 @@
             <tbody>
               {% for row in queue_call_stats_data %}
               <tr>
-                <td>{{ row["Queue Name"] }}</td>
-
-                <!-- handlig -->
-                <td>
-                  <div class="d-flex flex-column align-items-center">
-                    <small>{{ row["Calls Handled"] }}</small>
-                    <div class="progress w-100" style="height: 8px;">
-                      <div class="progress-bar bg-success" role="progressbar"
-                          style="width: {{ (row['Abandoned Calls'] / row['Calls Handled']) * 100 if row['Calls Handled'] else 0 }}%;">
-                      </div>
-                    </div>
-                  </div>
+                <td>{{ row["Agent"] }}</td>
+                <td class="text-center">
+                  <span class="badge bg-success">{{ row["Calls Handled"] }}</span>
                 </td>
-
-                <!-- Abandoned Calls -->
-                <td>
-                  <div class="d-flex flex-column align-items-center">
-                    <small>{{ row["Abandoned Calls"] }}</small>
-                    <div class="progress w-100" style="height: 8px;">
-                      <div class="progress-bar bg-primary" role="progressbar"
-                          style="width: {{ (row['Abandoned Calls'] / row['Calls Handled']) * 100 if row['Calls Handled'] else 0 }}%;">
-                      </div>
-                    </div>
-                  </div>
+                <td class="text-center">
+                  <span class="badge bg-primary">{{ row["Abandoned Calls"] }}</span>
                 </td>
               </tr>
               {% endfor %}

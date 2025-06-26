@@ -2338,7 +2338,7 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['agent_call_stats_data'] = agent_call_stats_rows
 
-                #agent_call_stats
+        #queue_call_stats
         queue_call_stats = connection.execute(text("""
                 SELECT
                     COALESCE(h.queue_name, a.queue_name) AS "Queue Name",
@@ -2363,7 +2363,7 @@ def get_dashboard_data(from_date, to_date):
                         FROM cdroutput
                         WHERE destination_entity_type = 'queue'
                         AND termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
-                        AND cdr_answered_at IS NULL  -- สำคัญ: เป็นสายที่ยังไม่ได้รับ
+                        AND cdr_answered_at IS NULL
                         AND cdr_started_at BETWEEN :from_date AND :to_date
                         GROUP BY destination_dn_name
                     ) AS a
