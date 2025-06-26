@@ -386,12 +386,12 @@
             <tbody>
               {% for row in queue_call_stats_data %}
               <tr>
-                <td>{{ row["Agent"] }}</td>
+                <td>{{ row["Queue Name"] }}</td>
                 <td class="text-center">
                   <span class="badge bg-success">{{ row["Calls Handled"] }}</span>
                 </td>
                 <td class="text-center">
-                  <span class="badge bg-primary">{{ row["Abandoned Calls"] }}</span>
+                  <span class="badge bg-danger">{{ row["Abandoned Calls"] }}</span>
                 </td>
               </tr>
               {% endfor %}
