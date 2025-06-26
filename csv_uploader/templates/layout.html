@@ -365,6 +365,16 @@ $(document).ready(function () {
     localStorage.setItem("openDropdown", parentKey);
     localStorage.setItem("selectedMenu", menuKey);
 
+    // ❹ เมื่อคลิกนอก dropdown → ปิด dropdown
+  $(document).click(function (e) {
+    // ถ้าไม่ได้คลิกภายใน dropdown หรือปุ่ม
+    if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
+      $(".dropdown-btn").removeClass("active");
+      $(".dropdown-container").slideUp();
+      localStorage.removeItem("openDropdown");
+    }
+  });
+
     // เปลี่ยนสี selected
     $('.dropdown-container a').removeClass('selected');
     $(this).addClass('selected');
