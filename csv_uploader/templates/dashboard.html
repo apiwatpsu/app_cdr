@@ -370,6 +370,57 @@
       </div>
       </div>
 
+
+      <div class="col-12 col-lg-6">
+      <div class="card p-4 bg-white rounded shadow-sm h-100">
+        <div style="overflow-x: auto; max-height: 300px;">
+          <h5>Queue Call Stats</h5>
+          <table id="DashTable" class="table table-hover table-striped align-middle nowrap" style="width:100%; border-collapse: collapse;">
+            <thead class="table-light">
+              <tr>
+                <th>Agent</th>
+                <th class="text-center">Queue Name</th>
+                <th class="text-center">Calls Handled</th>
+                <th class="text-center">Abandoned Calls</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in agent_call_stats_data %}
+              <tr>
+                <td>{{ row["Queue Name"] }}</td>
+
+                <!-- handlig -->
+                <td>
+                  <div class="d-flex flex-column align-items-center">
+                    <small>{{ row["Calls Handled"] }}</small>
+                    <div class="progress w-100" style="height: 8px;">
+                      <div class="progress-bar bg-success" role="progressbar"
+                          style="width: {{ (row['Abandoned Calls'] / row['Calls Handled']) * 100 if row['Calls Handled'] else 0 }}%;">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Abandoned Calls -->
+                <td>
+                  <div class="d-flex flex-column align-items-center">
+                    <small>{{ row["Abandoned Calls"] }}</small>
+                    <div class="progress w-100" style="height: 8px;">
+                      <div class="progress-bar bg-primary" role="progressbar"
+                          style="width: {{ (row['Abandoned Calls'] / row['Calls Handled']) * 100 if row['Calls Handled'] else 0 }}%;">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+      </div>
+
     
     
     

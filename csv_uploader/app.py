@@ -2338,6 +2338,47 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['agent_call_stats_data'] = agent_call_stats_rows
 
+                #agent_call_stats
+        queue_call_stats = connection.execute(text("""
+                SELECT
+                    COALESCE(h.queue_name, a.queue_name) AS "Queue Name",
+                    COALESCE(h.calls_handled, 0) AS "Calls Handled",
+                    COALESCE(a.abandoned_calls, 0) AS "Abandoned Calls"
+                FROM
+                    (
+                        SELECT
+                            destination_dn_name AS queue_name,
+                            COUNT(DISTINCT call_history_id) AS calls_handled
+                        FROM cdroutput
+                        WHERE destination_entity_type = 'queue'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_started_at BETWEEN :from_date AND :to_date
+                        GROUP BY destination_dn_name
+                    ) AS h
+                FULL OUTER JOIN
+                    (
+                        SELECT
+                            destination_dn_name AS queue_name,
+                            COUNT(DISTINCT call_history_id) AS abandoned_calls
+                        FROM cdroutput
+                        WHERE destination_entity_type = 'queue'
+                        AND termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+                        AND cdr_answered_at IS NULL  -- สำคัญ: เป็นสายที่ยังไม่ได้รับ
+                        AND cdr_started_at BETWEEN :from_date AND :to_date
+                        GROUP BY destination_dn_name
+                    ) AS a
+                    ON h.queue_name = a.queue_name
+                ORDER BY "Calls Handled" DESC NULLS LAST;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        queue_call_stats_rows = [dict(row) for row in queue_call_stats]
+        for row in queue_call_stats_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['queue_call_stats_data'] = queue_call_stats_rows
+
     return dashboard_data
 
 
@@ -2373,7 +2414,8 @@ def dashboard():
             avg_waiting_time_data=data.get('avg_waiting_time_data', 0),
             max_waiting_time_data=data.get('max_waiting_time_data', 0),
             total_outbound_time_data=data.get('total_outbound_time_data', 0),
-            agent_call_stats_data=data.get('agent_call_stats_data', 0)
+            agent_call_stats_data=data.get('agent_call_stats_data', 0),
+            queue_call_stats_data=data.get('queue_call_stats_data', 0)
         )
 
     except Exception as e:
