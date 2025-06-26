@@ -238,7 +238,7 @@
           <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <div class="small">AVG waiting Time</div>
+                <div class="small">AVG Q Waiting Time</div>
                 <div class="h4 fw-bold">
                   {% if avg_waiting_time_data and avg_waiting_time_data[0]["AVG Wait Time All Queues"] %}
                     {% set sec = avg_waiting_time_data[0]["AVG Wait Time All Queues"] | int %}
@@ -259,7 +259,7 @@
           <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <div class="small">Max waiting Time</div>
+                <div class="small">Max Q Waiting Time</div>
                 <div class="h4 fw-bold">
                   {% if max_waiting_time_data and max_waiting_time_data[0]["Max Wait Time All Queues"] %}
                     {% set sec = max_waiting_time_data[0]["Max Wait Time All Queues"] | int %}
