@@ -59,9 +59,9 @@
   </div>
 </div>
 
-<!-- Row 2: External Detail + Duration Group -->
+
 <div class="row g-4 mb-4">
-  <!-- External Detail: Inbound + Outbound + Abandoned -->
+
   <div class="col-12 col-lg-6">
     <div class="card p-4 bg-white rounded shadow-sm h-100">
       <h5>External Call Breakdown</h5>
@@ -300,42 +300,42 @@
       </div>
     </div>
   
-    <div class="bg-white p-4 rounded shadow-sm">
-      <div style="overflow-x: auto;">
-        <table id="agentCallStatsTable"
-              class="table table-hover table-striped align-middle nowrap"
-              style="width:100%; border-collapse: collapse;">
-          <thead class="table-light">
-            <tr>
-              <th>Agent</th>
-              <th class="text-center">Inbound Calls</th>
-              <th class="text-center">Outbound Calls</th>
-              <th class="text-center">Internal Calls</th>
-              <th class="text-center">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for row in agent_call_stats_data %}
-            <tr>
-              <td>{{ row["Agent"] }}</td>
-              <td class="text-center">
-                <span class="badge bg-success">{{ row["Inbound Calls"] }}</span>
-              </td>
-              <td class="text-center">
-                <span class="badge bg-primary">{{ row["Outbound Calls"] }}</span>
-              </td>
-              <td class="text-center">
-                <span class="badge bg-warning text-dark">{{ row["Internal Calls"] }}</span>
-              </td>
-              <td class="text-center fw-bold">
-                {{ row["Inbound Calls"] + row["Outbound Calls"] + row["Internal Calls"] }}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+    <div class="mt-4">
+        <div style="overflow-x: auto;">
+          <table id="agentCallStatsTable"
+                 class="table table-hover table-striped align-middle nowrap"
+                 style="width:100%; border-collapse: collapse;">
+            <thead class="table-light">
+              <tr>
+                <th>Agent</th>
+                <th class="text-center">Inbound</th>
+                <th class="text-center">Outbound</th>
+                <th class="text-center">Internal</th>
+                <th class="text-center">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in agent_call_stats_data %}
+              <tr>
+                <td>{{ row["Agent"] }}</td>
+                <td class="text-center">
+                  <span class="badge bg-success">{{ row["Inbound Calls"] }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-primary">{{ row["Outbound Calls"] }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-warning text-dark">{{ row["Internal Calls"] }}</span>
+                </td>
+                <td class="text-center fw-bold">
+                  {{ row["Inbound Calls"] + row["Outbound Calls"] + row["Internal Calls"] }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
       
     </div>
