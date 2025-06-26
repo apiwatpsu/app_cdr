@@ -2095,6 +2095,26 @@ def get_dashboard_data(from_date, to_date):
         dashboard_data['inbound_data'] = inbound_rows
         dashboard_data['inbound_count'] = len(inbound_rows)
 
+        service_call_result = connection.execute(text("""
+            SELECT DISTINCT ON (call_history_id) *
+            FROM cdroutput
+            WHERE source_entity_type = 'external_line'
+                AND destination_entity_type = 'extension'
+                AND cdr_answered_at IS NOT NULL
+                AND cdr_started_at >= :from_date
+                AND cdr_started_at <= :to_date
+            ORDER BY call_history_id, cdr_started_at DESC;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        service_call_rows = [dict(row) for row in service_call_result]
+        for row in service_call_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['service_call_data'] = service_call_rows
+        dashboard_data['service_call_count'] = len(service_call_rows)
+
         # Outbound
         outbound_result = connection.execute(text("""
             SELECT DISTINCT ON (call_history_id) *
@@ -2225,6 +2245,7 @@ def dashboard():
             outbound_count=data.get('outbound_count', 0),
             internal_count=data.get('internal_count', 0),
             abandoned_count=data.get('abandoned_count', 0),
+            service_call_count=data.get('service_call_count', 0),
             avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0),
             avg_dur_inbound_calls_data=data.get('avg_dur_inbound_calls_data', 0)
         )
