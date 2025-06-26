@@ -2342,10 +2342,11 @@ def get_dashboard_data(from_date, to_date):
         queue_call_stats = connection.execute(text("""
                 SELECT
                     COALESCE(queue_name, 'Unknown') AS "Queue Name",
-                    SUM(calls_handled) AS "Calls Handled",
-                    SUM(abandoned_calls) AS "Abandoned Calls"
+                    SUM(calls_handled) AS "Service Calls",
+                    SUM(abandoned_calls) AS "Abandoned Calls",
+                    SUM(calls_handled) + SUM(abandoned_calls) AS "Total Calls"
                 FROM (
-                    -- Calls Handled
+                    -- Service Calls
                     SELECT
                         destination_dn_name AS queue_name,
                         COUNT(DISTINCT call_history_id) AS calls_handled,
@@ -2373,7 +2374,7 @@ def get_dashboard_data(from_date, to_date):
                     GROUP BY destination_dn_name
                 ) AS combined
                 GROUP BY queue_name
-                ORDER BY "Calls Handled" DESC NULLS LAST;
+                ORDER BY "Total Calls" DESC NULLS LAST;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         queue_call_stats_rows = [dict(row) for row in queue_call_stats]
