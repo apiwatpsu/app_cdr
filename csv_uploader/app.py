@@ -2341,7 +2341,7 @@ def get_dashboard_data(from_date, to_date):
         #queue_call_stats
         queue_call_stats = connection.execute(text("""
                 SELECT
-                    queue_name AS "Queue Name",
+                    COALESCE(queue_name, 'Unknown') AS "Queue Name",
                     SUM(calls_handled) AS "Calls Handled",
                     SUM(abandoned_calls) AS "Abandoned Calls"
                 FROM (
@@ -2353,6 +2353,7 @@ def get_dashboard_data(from_date, to_date):
                     FROM cdroutput
                     WHERE destination_entity_type = 'queue'
                     AND cdr_answered_at IS NOT NULL
+                    AND destination_dn_name IS NOT NULL
                     AND cdr_started_at BETWEEN :from_date AND :to_date
                     GROUP BY destination_dn_name
 
@@ -2367,11 +2368,12 @@ def get_dashboard_data(from_date, to_date):
                     WHERE destination_entity_type = 'queue'
                     AND cdr_answered_at IS NULL
                     AND termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+                    AND destination_dn_name IS NOT NULL
                     AND cdr_started_at BETWEEN :from_date AND :to_date
                     GROUP BY destination_dn_name
                 ) AS combined
                 GROUP BY queue_name
-                ORDER BY "Calls Handled" DESC;
+                ORDER BY "Calls Handled" DESC NULLS LAST;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         queue_call_stats_rows = [dict(row) for row in queue_call_stats]
