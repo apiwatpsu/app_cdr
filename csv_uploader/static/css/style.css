@@ -179,6 +179,7 @@
     }
 
     #DashTable td {
+      border: none !important;
       color: #333;
     }
     #DashTable th {
