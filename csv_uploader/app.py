@@ -2278,6 +2278,65 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['total_outbound_time_data'] = total_outbound_time_rows
 
+        #agent_call_stats
+        agent_call_stats = connection.execute(text("""
+                SELECT
+                    COALESCE(inb.agent, outb.agent, intl.agent) AS "Agent",
+                    COALESCE(inb.call_count, 0) AS "Inbound Calls",
+                    COALESCE(outb.call_count, 0) AS "Outbound Calls",
+                    COALESCE(intl.call_count, 0) AS "Internal Calls"
+                FROM
+                    (
+                        SELECT
+                            destination_dn_name AS agent,
+                            COUNT(*) AS call_count
+                        FROM cdroutput
+                        WHERE source_entity_type = 'external_line'
+                        AND destination_entity_type = 'extension'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                        AND cdr_answered_at BETWEEN :from_date AND :to_date
+                        GROUP BY destination_dn_name
+                    ) AS inb
+                FULL OUTER JOIN
+                    (
+                        SELECT
+                            source_participant_name AS agent,
+                            COUNT(*) AS call_count
+                        FROM cdroutput
+                        WHERE source_entity_type = 'extension'
+                        AND destination_entity_type = 'external_line'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                        AND cdr_answered_at BETWEEN :from_date AND :to_date
+                        GROUP BY source_participant_name
+                    ) AS outb
+                ON inb.agent = outb.agent
+                FULL OUTER JOIN
+                    (
+                        SELECT
+                            source_participant_name AS agent,
+                            COUNT(*) AS call_count
+                        FROM cdroutput
+                        WHERE source_entity_type = 'extension'
+                        AND destination_entity_type = 'extension'
+                        AND cdr_answered_at IS NOT NULL
+                        AND cdr_ended_at IS NOT NULL
+                        AND cdr_answered_at BETWEEN :from_date AND :to_date
+                        GROUP BY source_participant_name
+                    ) AS intl
+                ON COALESCE(inb.agent, outb.agent) = intl.agent
+                ORDER BY "Agent";
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        agent_call_stats_rows = [dict(row) for row in agent_call_stats]
+        for row in agent_call_stats_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['agent_call_stats_data'] = agent_call_stats_rows
+
     return dashboard_data
 
 
@@ -2312,7 +2371,8 @@ def dashboard():
             avg_dur_inbound_calls_data=data.get('avg_dur_inbound_calls_data', 0),
             avg_waiting_time_data=data.get('avg_waiting_time_data', 0),
             max_waiting_time_data=data.get('max_waiting_time_data', 0),
-            total_outbound_time_data=data.get('total_outbound_time_data', 0)
+            total_outbound_time_data=data.get('total_outbound_time_data', 0),
+            agent_call_stats_data=data.get('agent_call_stats_data', 0)
         )
 
     except Exception as e:

@@ -296,6 +296,40 @@
           </div>
         </div>
 
+        <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Agent</th>
+              <th class="text-center">Inbound Calls</th>
+              <th class="text-center">Outbound Calls</th>
+              <th class="text-center">Internal Calls</th>
+              <th class="text-center">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in agent_call_stats_data %}
+            <tr>
+              <td>{{ row["Agent"] }}</td>
+              <td class="text-center">
+                <span class="badge bg-success">{{ row["Inbound Calls"] }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-primary">{{ row["Outbound Calls"] }}</span>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-warning text-dark">{{ row["Internal Calls"] }}</span>
+              </td>
+              <td class="text-center fw-bold">
+                {{ row["Inbound Calls"] + row["Outbound Calls"] + row["Internal Calls"] }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+
       </div>
     </div>
   </div>
