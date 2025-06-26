@@ -300,9 +300,12 @@
       </div>
     </div>
   
-        <div class="table-responsive">
-        <table class="table bg-white p-4 rounded shadow-sm table-hover align-middle">
-          <thead>
+    <div class="bg-white p-4 rounded shadow-sm">
+      <div style="overflow-x: auto;">
+        <table id="agentCallStatsTable"
+              class="table table-hover table-striped align-middle nowrap"
+              style="width:100%; border-collapse: collapse;">
+          <thead class="table-light">
             <tr>
               <th>Agent</th>
               <th class="text-center">Inbound Calls</th>
@@ -332,6 +335,8 @@
           </tbody>
         </table>
       </div>
+    </div>
+
       
     </div>
     </div>
