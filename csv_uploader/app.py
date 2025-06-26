@@ -2368,7 +2368,7 @@ def get_dashboard_data(from_date, to_date):
                         GROUP BY destination_dn_name
                     ) AS a
                     ON h.queue_name = a.queue_name
-                ORDER BY "Calls Handled" DESC NULLS LAST;
+                ORDER BY "Calls Handled" DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         queue_call_stats_rows = [dict(row) for row in queue_call_stats]
