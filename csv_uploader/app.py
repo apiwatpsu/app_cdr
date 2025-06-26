@@ -2352,6 +2352,7 @@ def get_dashboard_data(from_date, to_date):
                         0 AS abandoned_calls
                     FROM cdroutput
                     WHERE destination_entity_type = 'queue'
+                    AND termination_reason NOT IN ('src_participant_terminated', 'dst_participant_terminated')
                     AND cdr_answered_at IS NOT NULL
                     AND destination_dn_name IS NOT NULL
                     AND cdr_started_at BETWEEN :from_date AND :to_date
