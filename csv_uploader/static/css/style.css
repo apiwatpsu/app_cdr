@@ -310,7 +310,7 @@
 
     body.dark-mode #DashTable td,
     body.dark-mode #DashTable th {
-      background-color: #323a49;
+      background-color: #212631;
       color: #f1f1f1;             
       border: none !important;    
     }
