@@ -2341,33 +2341,36 @@ def get_dashboard_data(from_date, to_date):
         #queue_call_stats
         queue_call_stats = connection.execute(text("""
                 SELECT
-                    COALESCE(h.queue_name, a.queue_name) AS "Queue Name",
-                    COALESCE(h.calls_handled, 0) AS "Calls Handled",
-                    COALESCE(a.abandoned_calls, 0) AS "Abandoned Calls"
-                FROM
-                    (
-                        SELECT
-                            destination_dn_name AS queue_name,
-                            COUNT(DISTINCT call_history_id) AS calls_handled
-                        FROM cdroutput
-                        WHERE destination_entity_type = 'queue'
-                        AND cdr_answered_at IS NOT NULL
-                        AND cdr_started_at BETWEEN :from_date AND :to_date
-                        GROUP BY destination_dn_name
-                    ) AS h
-                FULL OUTER JOIN
-                    (
-                        SELECT
-                            destination_dn_name AS queue_name,
-                            COUNT(DISTINCT call_history_id) AS abandoned_calls
-                        FROM cdroutput
-                        WHERE destination_entity_type = 'queue'
-                        AND termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
-                        AND cdr_answered_at IS NULL
-                        AND cdr_started_at BETWEEN :from_date AND :to_date
-                        GROUP BY destination_dn_name
-                    ) AS a
-                    ON h.queue_name = a.queue_name
+                    queue_name AS "Queue Name",
+                    SUM(calls_handled) AS "Calls Handled",
+                    SUM(abandoned_calls) AS "Abandoned Calls"
+                FROM (
+                    -- Calls Handled
+                    SELECT
+                        destination_dn_name AS queue_name,
+                        COUNT(DISTINCT call_history_id) AS calls_handled,
+                        0 AS abandoned_calls
+                    FROM cdroutput
+                    WHERE destination_entity_type = 'queue'
+                    AND cdr_answered_at IS NOT NULL
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY destination_dn_name
+
+                    UNION ALL
+
+                    -- Abandoned Calls
+                    SELECT
+                        destination_dn_name AS queue_name,
+                        0 AS calls_handled,
+                        COUNT(DISTINCT call_history_id) AS abandoned_calls
+                    FROM cdroutput
+                    WHERE destination_entity_type = 'queue'
+                    AND cdr_answered_at IS NULL
+                    AND termination_reason IN ('src_participant_terminated', 'dst_participant_terminated')
+                    AND cdr_started_at BETWEEN :from_date AND :to_date
+                    GROUP BY destination_dn_name
+                ) AS combined
+                GROUP BY queue_name
                 ORDER BY "Calls Handled" DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
