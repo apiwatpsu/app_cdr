@@ -2327,7 +2327,7 @@ def get_dashboard_data(from_date, to_date):
                         GROUP BY source_participant_name
                     ) AS intl
                 ON COALESCE(inb.agent, outb.agent) = intl.agent
-                ORDER BY "Total Calls";
+                ORDER BY "Total Calls" DESC;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         agent_call_stats_rows = [dict(row) for row in agent_call_stats]
