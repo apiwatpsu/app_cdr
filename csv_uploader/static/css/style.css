@@ -178,6 +178,14 @@
       color: #333;
     }
 
+    #DashTable td {
+      border: none !important;
+      color: #333;
+    }
+    #DashTable th {
+      color: #333;
+    }
+
     .table-responsive {
       max-height: 600px !important;;
       overflow: auto !important;;
