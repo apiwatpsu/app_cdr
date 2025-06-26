@@ -381,6 +381,7 @@
                 <th>Queue Name</th>
                 <th class="text-center">Service Calls</th>
                 <th class="text-center">Abandoned Calls</th>
+                <th class="text-center">Total Calls</th>
               </tr>
             </thead>
             <tbody>
@@ -392,6 +393,9 @@
                 </td>
                 <td class="text-center">
                   <span class="badge bg-danger">{{ row["Abandoned Calls"] }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-primary">{{ row["Total Calls"] }}</span>
                 </td>
               </tr>
               {% endfor %}
