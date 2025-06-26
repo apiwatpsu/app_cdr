@@ -232,17 +232,18 @@
           </div>
         </div>
 
-        <!-- Total Duration -->
+
+        <!-- avg waiting time -->
         <div class="col-12">
           <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <div class="small">Total Duration</div>
+                <div class="small">Average waiting Time</div>
                 <div class="h4 fw-bold">
-                  {% if total_duration_seconds %}
-                    {% set sec = total_duration_seconds | int %}
+                  {% if avg_waiting_time_data and avg_waiting_time_data[0]["AVG Wait Time All Queues"] %}
+                    {% set sec = avg_waiting_time_data[0]["AVG Wait Time All Queues"] | int %}
                     {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
-                  {% else %} N/A {% endif %}
+                  {% else %} 00:00:00 {% endif %}
                 </div>
               </div>
               <div class="rounded bg-info-subtle d-flex justify-content-center align-items-center"
