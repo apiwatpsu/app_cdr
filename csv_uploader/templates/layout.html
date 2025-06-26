@@ -365,6 +365,11 @@ $(document).ready(function () {
     localStorage.setItem("openDropdown", parentKey);
     localStorage.setItem("selectedMenu", menuKey);
 
+    // เปลี่ยนสี selected
+    $('.dropdown-container a').removeClass('selected');
+    $(this).addClass('selected');
+  });
+
     // ❹ เมื่อคลิกนอก dropdown → ปิด dropdown
   $(document).click(function (e) {
     // ถ้าไม่ได้คลิกภายใน dropdown หรือปุ่ม
@@ -373,11 +378,6 @@ $(document).ready(function () {
       $(".dropdown-container").slideUp();
       localStorage.removeItem("openDropdown");
     }
-  });
-
-    // เปลี่ยนสี selected
-    $('.dropdown-container a').removeClass('selected');
-    $(this).addClass('selected');
   });
 
   // ❺ DataTables config
