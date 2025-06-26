@@ -2285,6 +2285,7 @@ def get_dashboard_data(from_date, to_date):
                     COALESCE(inb.call_count, 0) AS "Inbound Calls",
                     COALESCE(outb.call_count, 0) AS "Outbound Calls",
                     COALESCE(intl.call_count, 0) AS "Internal Calls"
+                    COALESCE(inb.call_count, 0) + COALESCE(outb.call_count, 0) + COALESCE(intl.call_count, 0) AS "Total Calls"
                 FROM
                     (
                         SELECT
@@ -2326,7 +2327,7 @@ def get_dashboard_data(from_date, to_date):
                         GROUP BY source_participant_name
                     ) AS intl
                 ON COALESCE(inb.agent, outb.agent) = intl.agent
-                ORDER BY "Agent";
+                ORDER BY "Total Calls";
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
         agent_call_stats_rows = [dict(row) for row in agent_call_stats]
