@@ -308,6 +308,13 @@
       border: none !important;    
     }
 
+    body.dark-mode #DashTable td,
+    body.dark-mode #DashTable th {
+      background-color: #323a49;
+      color: #f1f1f1;             
+      border: none !important;    
+    }
+
     body.dark-mode .dataTables_scrollHead th{
       background-color: #323a49;
       color: #f1f1f1;
