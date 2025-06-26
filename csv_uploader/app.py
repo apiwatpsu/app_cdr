@@ -2284,7 +2284,7 @@ def get_dashboard_data(from_date, to_date):
                     COALESCE(inb.agent, outb.agent, intl.agent) AS "Agent",
                     COALESCE(inb.call_count, 0) AS "Inbound Calls",
                     COALESCE(outb.call_count, 0) AS "Outbound Calls",
-                    COALESCE(intl.call_count, 0) AS "Internal Calls"
+                    COALESCE(intl.call_count, 0) AS "Internal Calls",
                     COALESCE(inb.call_count, 0) + COALESCE(outb.call_count, 0) + COALESCE(intl.call_count, 0) AS "Total Calls"
                 FROM
                     (
