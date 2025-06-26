@@ -188,14 +188,14 @@
   <!-- Duration Panel -->
   <div class="col-12 col-lg-6">
     <div class="card p-4 bg-white rounded shadow-sm h-100">
-      <h5>Average Talking Time</h5>
+      <h5>Duration</h5>
       <div class="row g-3">
         <!-- Avg Outbound -->
         <div class="col-12 col-md-6">
           <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <div class="small">Avg Outbound</div>
+                <div class="small">Average Outbound Talk Time</div>
                 <div class="h4 fw-bold">
                   {% if avg_dur_outbound_calls_data and avg_dur_outbound_calls_data[0]["Average Duration Seconds"] %}
                     {% set sec = avg_dur_outbound_calls_data[0]["Average Duration Seconds"] | int %}
@@ -216,7 +216,7 @@
           <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <div class="small">Avg Inbound</div>
+                <div class="small">Average Inbound Talk Time</div>
                 <div class="h4 fw-bold">
                   {% if avg_dur_inbound_calls_data and avg_dur_inbound_calls_data[0]["Average Duration Seconds"] %}
                     {% set sec = avg_dur_inbound_calls_data[0]["Average Duration Seconds"] | int %}
