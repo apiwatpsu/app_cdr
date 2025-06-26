@@ -2256,6 +2256,28 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['max_waiting_time_data'] = max_waiting_time_rows
 
+
+        #total outbound time
+        total_outbound_time = connection.execute(text("""
+                SELECT 
+                    SUM(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "Total Outbound Seconds"
+                FROM cdroutput
+                WHERE source_entity_type != 'external_line'
+                    AND destination_entity_type = 'external_line'
+                    AND cdr_answered_at IS NOT NULL
+                    AND cdr_ended_at IS NOT NULL
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at <= :to_date;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        total_outbound_time_rows = [dict(row) for row in total_outbound_time]
+        for row in total_outbound_time_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['total_outbound_time_data'] = total_outbound_time_rows
+
     return dashboard_data
 
 
@@ -2289,7 +2311,8 @@ def dashboard():
             avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0),
             avg_dur_inbound_calls_data=data.get('avg_dur_inbound_calls_data', 0),
             avg_waiting_time_data=data.get('avg_waiting_time_data', 0),
-            max_waiting_time_data=data.get('max_waiting_time_data', 0)
+            max_waiting_time_data=data.get('max_waiting_time_data', 0),
+            total_outbound_time_data=data.get('total_outbound_time_data', 0)
         )
 
     except Exception as e:

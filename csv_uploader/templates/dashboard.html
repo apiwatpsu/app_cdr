@@ -275,6 +275,27 @@
           </div>
         </div>
 
+        <!-- Total Outbound time -->
+        <div class="col-12 col-xl-4" >
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="small">Total Outbound Time</div>
+                <div class="h4 fw-bold">
+                  {% if total_outbound_time_data and total_outbound_time_data[0]["Total Outbound Seconds"] %}
+                    {% set sec = total_outbound_time_data[0]["Total Outbound Seconds"] | int %}
+                    {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
+                  {% else %} 00:00:00 {% endif %}
+                </div>
+              </div>
+              <div class="rounded bg-info-subtle d-flex justify-content-center align-items-center"
+                   style="width: 40px; height: 40px;">
+                <i data-lucide="timer" class="text-info"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
