@@ -88,6 +88,14 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <div class="h4 fw-bold">{{ abandoned_count }}</div>
+
+              <div class="h4 fw-bold">
+                  {% if service_call_count > 0 %}
+                    {{ '%.1f' % ((abandoned_count / inbound_count) * 100) }}%
+                  {% else %}
+                    0%
+                  {% endif %}
+              </div>
           
         </div>
         <div class="rounded bg-danger-subtle d-flex align-items-center justify-content-center"
