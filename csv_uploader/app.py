@@ -2142,6 +2142,27 @@ def get_dashboard_data(from_date, to_date):
         dashboard_data['outbound_data'] = outbound_rows
         dashboard_data['outbound_count'] = len(outbound_rows)
 
+        # Outbound Reject
+        outbound_reject_result = connection.execute(text("""
+            SELECT DISTINCT ON (call_history_id) *
+            FROM cdroutput
+            WHERE source_entity_type = 'extension'
+            AND destination_entity_type = 'external_line'
+            AND termination_reason = 'rejected'
+            AND cdr_started_at >= :from_date
+            AND cdr_started_at <= :to_date
+            ORDER BY call_history_id, cdr_started_at DESC;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        outbound_reject_rows = [dict(row) for row in outbound_reject_result]
+        for row in outbound_reject_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['outbound_reject_data'] = outbound_reject_rows
+        dashboard_data['outbound_reject_count'] = len(outbound_reject_rows)
+
         # Internal
         internal_result = connection.execute(text("""
             SELECT DISTINCT ON (call_history_id) *
@@ -2443,6 +2464,7 @@ def dashboard():
             internal_count=data.get('internal_count', 0),
             abandoned_count=data.get('abandoned_count', 0),
             service_call_count=data.get('service_call_count', 0),
+            outbound_reject_count=data.get('outbound_reject_count', 0),
             avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0),
             avg_dur_inbound_calls_data=data.get('avg_dur_inbound_calls_data', 0),
             avg_internal_call_time_data=data.get('avg_internal_call_time_data', 0),
