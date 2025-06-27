@@ -42,13 +42,13 @@
           <div class="h4 fw-bold">
             {% set total = inbound_count + outbound_count %}
             {% if total > 0 %}
-              <span class="text-success">
+              <span class="fw-normal text-success">
                 <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i>
                 {{ '%.1f' % ((inbound_count / total) * 100) }}%
               </span>
             {% else %}
               <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i>
-              <span class="text-success">0%</span>
+              <span class="fw-normal text-success">0%</span>
             {% endif %}
           </div>
         </div>
@@ -120,9 +120,9 @@
             {{ abandoned_count }}
 
             {% if inbound_count > 0 %}
-              <span class="text-danger">( {{ '%.1f' % ((abandoned_count / inbound_count) * 100) }}%)</span>
+              <span class="fw-normal text-danger">( {{ '%.1f' % ((abandoned_count / inbound_count) * 100) }}%)</span>
             {% else %}
-              <span class="text-danger">( 0% )</span>
+              <span class="fw-normal text-danger">( 0% )</span>
             {% endif %}
 
           </div>
