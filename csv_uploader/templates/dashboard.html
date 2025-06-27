@@ -35,9 +35,9 @@
     <div class="card p-4 bg-white rounded shadow-sm h-100">
       <h5>External Calls</h5>
       <div class="d-flex justify-content-between align-items-center">
-        <!-- <div>
+        <div>
           <div class="h4 fw-bold">{{ inbound_count + outbound_count }}</div>
-        </div> -->
+        </div>
         
         <div>
           <div class="h4 fw-bold">
@@ -124,9 +124,6 @@
     <div class="card p-4 bg-white rounded shadow-sm h-100">
       <h5>Abandoned Calls</h5>
       <div class="d-flex justify-content-between align-items-center">
-        <!-- <div>
-          <div class="h4 fw-bold">{{ abandoned_count }}</div>          
-        </div> -->
         
         <div>
           <div class="h4 fw-bold">
@@ -332,7 +329,7 @@
                 <div class="small">AVG Internal Talk Time</div>
                 <div class="h4 fw-bold">
                   {% if avg_internal_call_time_data and avg_internal_call_time_data[0]["avg_internal_duration"] %}
-                    {% set sec = avg_internal_call_time_data[0]["Average Duration Seconds"] | int %}
+                    {% set sec = avg_internal_call_time_data[0]["avg_internal_duration"] | int %}
                     {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
                   {% else %} 00:00:00 {% endif %}
                 </div>
