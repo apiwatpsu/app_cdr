@@ -3,6 +3,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+
 <div class="d-flex justify-content-between align-items-center mb-2">
   <h2 class="mb-0">Dashboard</h2>
   <div id="current-time" style="font-size: 1.5rem; color: #198754;" class="fw-medium"></div>
@@ -30,7 +31,7 @@
 <!-- Row 1: Total External + Internal -->
 <div class="row g-4 mb-4">
   <!-- Total External -->
-  <div class="col-12 col-md-6">
+  <div class="col-12 col-sm-6 col-md-3">
     <div class="card p-4 bg-white rounded shadow-sm h-100">
       <h5>External Calls</h5>
       <div class="d-flex justify-content-between align-items-center">
@@ -47,23 +48,7 @@
   </div>
 
   <!-- Internal Calls -->
-  <div class="col-12 col-md-6">
-    <div class="card p-4 bg-white rounded shadow-sm h-100">
-      <h5>Internal Calls</h5>
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="h4 fw-bold">{{ internal_count }}</div>
-          <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div> -->
-        </div>
-        <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
-             style="width: 40px; height: 40px;">
-          <i data-lucide="phone" class="text-warning"></i>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <div class="col-12 col-md-6">
+  <div class="col-12 col-sm-6 col-md-3">
     <div class="card p-4 bg-white rounded shadow-sm h-100">
       <h5>Internal Calls</h5>
       <div class="d-flex justify-content-between align-items-center">
