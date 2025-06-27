@@ -279,7 +279,7 @@
   <!-- Duration Panel -->
   <div class="col-12 col-lg-6">
     <div class="card p-4 bg-white rounded shadow-sm h-100">
-      <h5>Duration</h5>
+      <h5>Duration Panel</h5>
       <div class="row g-3">
         <!-- Avg Outbound -->
         <div class="col-12 col-xl-4">
@@ -318,6 +318,28 @@
               <div class="rounded bg-success-subtle d-flex justify-content-center align-items-center"
                    style="width: 35px; height: 35px;">
                 <i data-lucide="mic" class="text-success"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Avg Internal -->
+        <div class="col-12 col-xl-4">
+          <div class="card p-3 bg-white border-0 shadow-sm rounded h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="small">AVG Internal Talk Time</div>
+                <div class="h4 fw-bold">
+                  {% if avg_internal_call_time_data and avg_internal_call_time_data[0]["avg_internal_duration"] %}
+                    {% set sec = avg_internal_call_time_data[0]["Average Duration Seconds"] | int %}
+                    {{ "%02d:%02d:%02d" | format(sec // 3600, (sec % 3600) // 60, sec % 60) }}
+                  {% else %} 00:00:00 {% endif %}
+                </div>
+              </div>
+              <div class="rounded bg-warning-subtle d-flex justify-content-center align-items-center"
+                   style="width: 35px; height: 35px;">
+                <i data-lucide="mic" class="text-warning"></i>
               </div>
             </div>
           </div>

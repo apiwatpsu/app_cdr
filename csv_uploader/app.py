@@ -1752,7 +1752,6 @@ def longest_internal_calls():
     )
 
 
-
 @app.route('/calls_no_route')
 def calls_no_route():
     page_title="Outbound Failed"
@@ -2303,6 +2302,26 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['total_outbound_time_data'] = total_outbound_time_rows
 
+        #avg internal call time
+        avg_internal_call_time = connection.execute(text("""
+                SELECT 
+                    AVG(cdr_ended_at - cdr_answered_at) AS "avg_internal_duration"
+                FROM cdroutput
+                WHERE source_entity_type != 'external_line'
+                AND destination_entity_type != 'external_line'
+                AND cdr_answered_at IS NOT NULL
+                AND cdr_ended_at IS NOT NULL
+                AND cdr_started_at BETWEEN :from_date AND :to_date;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        avg_internal_call_time_rows = [dict(row) for row in avg_internal_call_time]
+        for row in avg_internal_call_time_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['avg_internal_call_time_data'] = avg_internal_call_time_rows
+
         #agent_call_stats
         agent_call_stats = connection.execute(text("""
                 SELECT
@@ -2442,6 +2461,7 @@ def dashboard():
             service_call_count=data.get('service_call_count', 0),
             avg_dur_outbound_calls_data=data.get('avg_dur_outbound_calls_data', 0),
             avg_dur_inbound_calls_data=data.get('avg_dur_inbound_calls_data', 0),
+            avg_internal_call_time_data=data.get('avg_internal_call_time_data', 0),
             avg_waiting_time_data=data.get('avg_waiting_time_data', 0),
             max_waiting_time_data=data.get('max_waiting_time_data', 0),
             total_outbound_time_data=data.get('total_outbound_time_data', 0),
