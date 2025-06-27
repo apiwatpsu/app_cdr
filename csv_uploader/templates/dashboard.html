@@ -37,7 +37,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <div class="h4 fw-bold">{{ inbound_count + outbound_count }}</div>
-          <!-- <div class="text-success small">(+0%) <i data-lucide="arrow-up-right"></i></div> -->
+          
         </div>
         <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center"
              style="width: 40px; height: 40px;">
@@ -54,7 +54,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <div class="h4 fw-bold">{{ internal_count }}</div>
-          <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div> -->
+          
         </div>
         <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
              style="width: 40px; height: 40px;">
@@ -71,7 +71,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <div class="h4 fw-bold">{{ service_call_count }}</div>
-          <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div> -->
+          
         </div>
         <div class="rounded bg-success-subtle d-flex align-items-center justify-content-center"
              style="width: 40px; height: 40px;">
@@ -88,7 +88,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <div class="h4 fw-bold">{{ abandoned_count }}</div>
-          <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div> -->
+          
         </div>
         <div class="rounded bg-danger-subtle d-flex align-items-center justify-content-center"
              style="width: 40px; height: 40px;">
@@ -113,7 +113,7 @@
               <div>
                 <div class="small">Inbound</div>
                 <div class="h4 fw-bold">{{ inbound_count }}</div>
-                <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-down-right"></i></div> -->
+                
               </div>
               <div class="rounded bg-primary-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
@@ -130,7 +130,7 @@
               <div>
                 <div class="small">Outbound</div>
                 <div class="h4 fw-bold">{{ outbound_count }}</div>
-                <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div> -->
+                
               </div>
               <div class="rounded bg-primary-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
@@ -170,7 +170,7 @@
                     0%
                   {% endif %}
                 </div>
-                <!-- <div class="text-danger small">(-12.4%) <i data-lucide="arrow-up-right"></i></div> -->
+                
               </div>
               <div class="rounded bg-success-subtle d-flex justify-content-center align-items-center"
                    style="width: 40px; height: 40px;">
@@ -341,7 +341,6 @@
         </div>
         
 
-  
     <div class="col-12 col-lg-6">
       <div class="card p-4 bg-white rounded shadow-sm h-100">
         <div style="overflow-x: auto; max-height: 300px;">
@@ -446,10 +445,7 @@
       </div>
       </div>
 
-    
-    
-    
-    
+
     </div>
 
 <script>
@@ -465,7 +461,7 @@
   }
 
   setInterval(updateCurrentTime, 1000);
-  updateCurrentTime(); // call once immediately
+  updateCurrentTime();
 </script>
 
 
