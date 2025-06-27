@@ -345,7 +345,7 @@ def cdr_data():
 
         with engine.connect() as connection:
             result = connection.execute(text(f"""
-                SELECT * FROM {config.table}
+                SELECT * FROM cdroutput
                 WHERE cdr_started_at >= :from_date AND cdr_started_at <= :to_date
                 ORDER BY cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
