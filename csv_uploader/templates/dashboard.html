@@ -42,12 +42,12 @@
           <div class="h4 fw-bold">
             {% set total = inbound_count + outbound_count %}
             {% if total > 0 %}
-              <span class="fw-normal text-success">
+              <span class="fw-normal text-success fs-6">
                 <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i>
                 {{ '%.1f' % ((inbound_count / total) * 100) }}%
               </span>
 
-              <span class="fw-normal text-primary">
+              <span class="fw-normal text-primary fs-6">
                 <i data-lucide="arrow-up-right" class="me-1" style="width: 16px; height: 16px;"></i>
                 {{ '%.1f' % ((outbound_count / total) * 100) }}%
               </span>
