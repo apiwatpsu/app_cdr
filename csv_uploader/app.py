@@ -38,8 +38,6 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://csvuploader:!Q1q2w3e4r5t@localhost/csvuploader'
-# MySQL or Mariadb (ใช้ pymysql เป็น driver)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -50,20 +48,6 @@ db.init_app(app)
 @app.route('/')
 def index():
     return redirect(url_for('login'))
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         user = User.query.filter_by(username=request.form['username']).first()
-#         if user and check_password_hash(user.password, request.form['password']):
-#             session['username'] = user.username
-#             session['role'] = user.role
-#             session['menu_permissions'] = user.menu_permissions
-#             return redirect(url_for('dashboard'))
-#         else:
-#             return render_template('login.html', error='Invalid credentials')
-    
-#     return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
