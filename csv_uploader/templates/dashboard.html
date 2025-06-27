@@ -73,13 +73,13 @@
           <div class="h4 fw-bold">{{ service_call_count }}</div>
         </div> -->
         <div>
-          <div class="h4 text-success fw-bold">
+          <div class="h4 fw-bold">
             {{ service_call_count }}
             (
             {% if inbound_count > 0 %}
-              {{ '%.1f' % ((service_call_count / inbound_count) * 100) }}%
+              <span class="text-success">{{ '%.1f' % ((service_call_count / inbound_count) * 100) }}%</span>
             {% else %}
-              0%
+              <span class="text-success">0%</span>
             {% endif %}
             )
           </div>
