@@ -47,9 +47,10 @@
                 <!-- <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i> -->
                 {{ '%.1f' % ((inbound_count / total) * 100) }}%
               </span>
-                /
+                |
               <span class="fw-normal text-primary fs-5">
-                <i data-lucide="arrow-up-right" class="me-1" style="width: 16px; height: 16px;"></i>
+                <!-- <i data-lucide="arrow-up-right" class="me-1" style="width: 16px; height: 16px;"></i> -->
+                Out
                 {{ '%.1f' % ((outbound_count / total) * 100) }}%
               </span>
             {% else %}
