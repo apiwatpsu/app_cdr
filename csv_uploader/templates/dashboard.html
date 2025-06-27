@@ -28,7 +28,7 @@
   </div>
 </form>
 
-<!-- Row 1: Total External + Internal -->
+
 <div class="row g-4 mb-4">
   <!-- Total External -->
   <div class="col-12 col-sm-6 col-md-3">
@@ -38,24 +38,30 @@
         <div>
           <div class="h4 fw-bold">{{ inbound_count + outbound_count }}</div>
         </div>
+        
         <div>
           <div class="h4 fw-bold">
             {% set total = inbound_count + outbound_count %}
             {% if total > 0 %}
               <span class="fw-normal text-success fs-5">
-                In
-                <!-- <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i> -->
+                <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i>
                 {{ '%.1f' % ((inbound_count / total) * 100) }}%
               </span>
-                |
+
               <span class="fw-normal text-primary fs-5">
-                <!-- <i data-lucide="arrow-up-right" class="me-1" style="width: 16px; height: 16px;"></i> -->
-                Out
+                <i data-lucide="arrow-up-right" class="me-1" style="width: 16px; height: 16px;"></i>
                 {{ '%.1f' % ((outbound_count / total) * 100) }}%
               </span>
             {% else %}
-              <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i>
-              <span class="fw-normal text-success">0%</span>
+              <span class="fw-normal text-success fs-5">
+                <i data-lucide="arrow-down-left" class="me-1" style="width: 16px; height: 16px;"></i>
+                0%
+              </span>
+
+              <span class="fw-normal text-primary fs-5">
+                <i data-lucide="arrow-up-right" class="me-1" style="width: 16px; height: 16px;"></i>
+                0%
+              </span>
             {% endif %}
           </div>
         </div>
