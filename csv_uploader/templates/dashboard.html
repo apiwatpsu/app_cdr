@@ -91,7 +91,7 @@
     </div>
   </div> -->
 
-  <!-- Internal Calls -->
+  <!-- License Limit Exceeded -->
   <div class="col-12 col-sm-6 col-md-3">
     <div class="card p-4 bg-white rounded shadow-sm h-100">
       <h5>License Limit Exceeded</h5>
@@ -99,16 +99,20 @@
         <div>
           <div class="h4 fw-bold">
             {% if license_limit_exceeded_data and license_limit_exceeded_data[0]["License Limit Exceeded"] %}
-            {{ license_limit_exceeded_data }}
-          
+              {{ license_limit_exceeded_data[0]["License Limit Exceeded"] }}
+            {% else %}
+              0
+            {% endif %}
+          </div>
         </div>
         <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
-             style="width: 40px; height: 40px;">
+            style="width: 40px; height: 40px;">
           <i data-lucide="phone" class="text-warning"></i>
         </div>
       </div>
     </div>
   </div>
+
 
   <!-- Service Calls -->
   <div class="col-12 col-sm-6 col-md-3">
