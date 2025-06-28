@@ -2326,6 +2326,23 @@ def get_dashboard_data(from_date, to_date):
 
         dashboard_data['avg_internal_call_time_data'] = avg_internal_call_time_rows
 
+        #License Limit Exceeded
+        license_limit_exceeded = connection.execute(text("""
+                SELECT COUNT(*) AS "License Limit Exceeded"
+                    FROM cdroutput
+                    WHERE termination_reason_details = 'license_limit_reached'
+                    AND cdr_started_at >= :from_date
+                    AND cdr_started_at <= :to_date;
+        """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
+
+        license_limit_exceeded_rows = [dict(row) for row in license_limit_exceeded]
+        for row in license_limit_exceeded_rows:
+            for col in date_columns:
+                if col in row and isinstance(row[col], datetime):
+                    row[col] = row[col].replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+
+        dashboard_data['license_limit_exceeded_data'] = license_limit_exceeded_rows
+
         #agent_call_stats
         agent_call_stats = connection.execute(text("""
                 SELECT
@@ -2471,7 +2488,8 @@ def dashboard():
             max_waiting_time_data=data.get('max_waiting_time_data', 0),
             total_outbound_time_data=data.get('total_outbound_time_data', 0),
             agent_call_stats_data=data.get('agent_call_stats_data', 0),
-            queue_call_stats_data=data.get('queue_call_stats_data', 0)
+            queue_call_stats_data=data.get('queue_call_stats_data', 0),
+            license_limit_exceeded_data=data.get('license_limit_exceeded_data', 0)
         )
 
     except Exception as e:
