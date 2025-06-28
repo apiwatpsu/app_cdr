@@ -2310,7 +2310,7 @@ def get_dashboard_data(from_date, to_date):
         #avg internal call time
         avg_internal_call_time = connection.execute(text("""
                 SELECT 
-                    AVG(cdr_ended_at - cdr_answered_at) AS "avg_internal_duration"
+                    AVG(EXTRACT(EPOCH FROM (cdr_ended_at - cdr_answered_at))) AS "avg_internal_duration"
                 FROM cdroutput
                 WHERE source_entity_type = 'extension'
                 AND destination_entity_type = 'extension'
