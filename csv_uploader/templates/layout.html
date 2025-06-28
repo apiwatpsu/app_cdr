@@ -104,6 +104,13 @@
         Manage Users
     </a>
 
+    <a href="{{ url_for('blocked_users') }}"
+      data-menu="blocked_users"
+      class="{% if request.endpoint == 'blocked_users' %}active{% endif %}">
+        <i data-lucide="users"></i>
+        Blocked Users
+    </a>
+
     <a href="{{ url_for('db_config') }}"
       data-menu="db_config"
       class="{% if request.endpoint == 'db_config' %}active{% endif %}">

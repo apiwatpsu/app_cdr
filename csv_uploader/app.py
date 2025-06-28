@@ -32,6 +32,9 @@ app.secret_key = 'your_secret_key'
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+MAX_FAILED_ATTEMPTS = 3
+LOCKOUT_TIME_MINUTES = 5
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
@@ -51,6 +54,32 @@ migrate = Migrate(app, db)
 def index():
     return redirect(url_for('login'))
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+
+#         user = User.query.filter_by(username=username).first()
+#         if user and check_password_hash(user.password, password):
+#             session['pre_mfa_user_id'] = user.id  
+#             session['username'] = user.username
+
+#             if user.mfa_enabled:
+#                 if not user.mfa_secret:
+#                     return redirect(url_for('setup_mfa'))
+#                 else:
+#                     return redirect(url_for('verify_mfa'))
+#             user.last_login = datetime.utcnow()
+#             db.session.commit()
+            
+#             session['user_id'] = user.id
+#             return redirect(url_for('dashboard'))
+#         else:
+#             return render_template('login.html', error='Invalid credentials')
+
+#     return render_template('login.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -58,24 +87,52 @@ def login():
         password = request.form['password']
 
         user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
-            session['pre_mfa_user_id'] = user.id  # ยังไม่ login จริง
-            session['username'] = user.username
 
-            if user.mfa_enabled:
-                if not user.mfa_secret:
-                    return redirect(url_for('setup_mfa'))
+        # ถ้า user เจอ
+        if user:
+            # เช็คว่าถูกล็อกอยู่ไหม
+            if user.lockout_until and user.lockout_until > datetime.utcnow():
+                remaining = (user.lockout_until - datetime.utcnow()).seconds
+                return render_template('login.html', error=f'บัญชีถูกล็อกชั่วคราว โปรดลองอีกครั้งใน {remaining} วินาที')
+
+            # เช็ค password
+            if check_password_hash(user.password, password):
+                # reset ตัวนับ
+                user.failed_login_attempts = 0
+                user.lockout_until = None
+                db.session.commit()
+
+                session['pre_mfa_user_id'] = user.id
+                session['username'] = user.username
+
+                if user.mfa_enabled:
+                    if not user.mfa_secret:
+                        return redirect(url_for('setup_mfa'))
+                    else:
+                        return redirect(url_for('verify_mfa'))
+
+                user.last_login = datetime.utcnow()
+                db.session.commit()
+
+                session['user_id'] = user.id
+                return redirect(url_for('dashboard'))
+
+            else:
+                # password ผิด เพิ่ม count
+                user.failed_login_attempts += 1
+                if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
+                    user.lockout_until = datetime.utcnow() + timedelta(minutes=LOCKOUT_TIME_MINUTES)
+                db.session.commit()
+                if user.lockout_until:
+                    return render_template('login.html', error=f'ล็อกอินผิดเกิน {MAX_FAILED_ATTEMPTS} ครั้ง บัญชีถูกล็อก {LOCKOUT_TIME_MINUTES} นาที')
                 else:
-                    return redirect(url_for('verify_mfa'))
-            user.last_login = datetime.utcnow()
-            db.session.commit()
-            # ถ้ายังไม่เปิด MFA → login ทันที
-            session['user_id'] = user.id
-            return redirect(url_for('dashboard'))
+                    return render_template('login.html', error='Invalid credentials')
+
         else:
             return render_template('login.html', error='Invalid credentials')
 
     return render_template('login.html')
+
 
 
 @app.route('/setup_mfa', methods=['GET', 'POST'])
@@ -138,7 +195,19 @@ def verify_mfa():
 
     return render_template('verify_mfa.html')
 
+@app.route('/blocked_users')
+def blocked_users():
+    users = User.query.filter(User.lockout_until != None).filter(User.lockout_until > datetime.utcnow()).all()
+    return render_template('blocked_users.html', users=users)
 
+@app.route('/unlock_user/<int:user_id>', methods=['POST'])
+def unlock_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.failed_login_attempts = 0
+    user.lockout_until = None
+    db.session.commit()
+    flash(f'ปลดล็อกผู้ใช้ {user.username} เรียบร้อยแล้ว', 'success')
+    return redirect(url_for('blocked_users'))
 
 
 @app.route('/upload', methods=['GET', 'POST'])
