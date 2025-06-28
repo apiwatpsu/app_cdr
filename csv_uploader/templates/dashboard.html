@@ -503,16 +503,16 @@
 
       <div class="col-12 col-lg-6">
   <div class="card p-4 bg-white rounded shadow-sm h-100">
-    <h5 class="fw-bold mb-3 text-primary">Queue Call Stats</h5>
+    <h5 class="fw-bold mb-3 text-primary">📊 Queue Call Stats</h5>
     <div class="table-responsive" style="max-height: 400px;">
       <table id="DashTable" class="table table-hover table-striped align-middle mb-0 text-nowrap">
         <thead class="table-light">
           <tr>
-            <th>Queue Name</th>
-            <th class="text-center">Service</th>
-            <th class="text-center">Abandoned</th>
-            <th class="text-center">Total</th>
-            <th class="text-center">% Service</th>
+            <th>📥 Queue Name</th>
+            <th class="text-center">✅ Service</th>
+            <th class="text-center">❌ Abandoned</th>
+            <th class="text-center">📈 Total</th>
+            <th class="text-center">📊 % Breakdown</th>
           </tr>
         </thead>
         <tbody>
@@ -520,13 +520,8 @@
           {% set total = row["Total Calls"] %}
           {% set service = row["Service Calls"] %}
           {% set abandoned = row["Abandoned Calls"] %}
-          {% set percent = ((service / total * 100) if total > 0 else 0) | round(1) %}
-          {% set bar_color = (
-            'bg-danger' if percent < 50 else
-            'bg-warning' if percent < 80 else
-            'bg-success'
-          ) %}
-
+          {% set percent_service = ((service / total * 100) if total > 0 else 0) | round(1) %}
+          {% set percent_abandoned = ((abandoned / total * 100) if total > 0 else 0) | round(1) %}
           <tr>
             <td class="fw-medium">{{ row["Queue Name"] }}</td>
 
@@ -537,7 +532,7 @@
                 <div class="progress w-100" style="height: 8px;">
                   <div class="progress-bar bg-success"
                        role="progressbar"
-                       style="width: {{ (service / total * 100) if total else 0 }}%;">
+                       style="width: {{ percent_service }}%;">
                   </div>
                 </div>
               </div>
@@ -550,7 +545,7 @@
                 <div class="progress w-100" style="height: 8px;">
                   <div class="progress-bar bg-danger"
                        role="progressbar"
-                       style="width: {{ (abandoned / total * 100) if total else 0 }}%;">
+                       style="width: {{ percent_abandoned }}%;">
                   </div>
                 </div>
               </div>
@@ -561,23 +556,27 @@
               <div class="d-flex flex-column align-items-center">
                 <small>{{ total }}</small>
                 <div class="progress w-100" style="height: 8px;">
-                  <div class="progress-bar bg-primary"
-                       role="progressbar"
-                       style="width: 100%;">
-                  </div>
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 100%;"></div>
                 </div>
               </div>
             </td>
 
-            <!-- % Service -->
+            <!-- Stacked Progress -->
             <td class="text-center">
               <div class="d-flex flex-column align-items-center">
-                <small>{{ percent }}%</small>
-                <div class="progress w-100" style="height: 8px;">
-                  <div class="progress-bar {{ bar_color }}"
+                <small>{{ percent_service }}% / {{ percent_abandoned }}%</small>
+                <div class="progress w-100" style="height: 12px;">
+                  <div class="progress-bar bg-success"
                        role="progressbar"
-                       style="width: {{ percent }}%;"
-                       aria-valuenow="{{ percent }}"
+                       style="width: {{ percent_service }}%;"
+                       aria-valuenow="{{ percent_service }}"
+                       aria-valuemin="0"
+                       aria-valuemax="100">
+                  </div>
+                  <div class="progress-bar bg-danger"
+                       role="progressbar"
+                       style="width: {{ percent_abandoned }}%;"
+                       aria-valuenow="{{ percent_abandoned }}"
                        aria-valuemin="0"
                        aria-valuemax="100">
                   </div>
@@ -591,6 +590,7 @@
     </div>
   </div>
 </div>
+
 
 
 
