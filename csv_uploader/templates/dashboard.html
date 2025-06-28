@@ -97,7 +97,9 @@
       <h5>License Limit Exceeded</h5>
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <div class="h4 fw-bold">{{ license_limit_exceeded_data }}</div>
+          <div class="h4 fw-bold">
+            {% if license_limit_exceeded_data and license_limit_exceeded_data[0]["License Limit Exceeded"] %}
+            {{ license_limit_exceeded_data }}
           
         </div>
         <div class="rounded bg-warning-subtle d-flex align-items-center justify-content-center"
