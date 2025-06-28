@@ -517,13 +517,14 @@
 
   // Screenshot capture function
   document.getElementById('capture-btn').addEventListener('click', function () {
-    html2canvas(document.getElementById('dashboard-content')).then(function (canvas) {
-      let link = document.createElement('a');
-      link.download = 'dashboard-screenshot.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
+  html2canvas(document.getElementById('dashboard-content'), { useCORS: true }).then(function (canvas) {
+    let link = document.createElement('a');
+    link.download = 'dashboard-screenshot.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   });
+});
+
 </script>
 
 
