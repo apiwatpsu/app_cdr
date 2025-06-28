@@ -323,9 +323,7 @@ $(document).ready(function () {
     $("body").toggleClass("dark-mode", isDark);
     localStorage.setItem("theme", isDark ? "dark" : "light");
   });
-  
-  
-  
+    
   // ❶ เปิด dropdown ตามค่าที่จำไว้
   const lastOpen = localStorage.getItem('openDropdown');
   const lastSelectedMenu = localStorage.getItem('selectedMenu');
@@ -375,22 +373,12 @@ $(document).ready(function () {
 
     // ❹ เมื่อคลิกนอก dropdown → ปิด dropdown
   $(document).click(function (e) {
-    // ถ้าไม่ได้คลิกภายใน dropdown หรือปุ่ม
+    
     if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
       $(".dropdown-btn").removeClass("active");
       $(".dropdown-container").slideUp();
       localStorage.removeItem("openDropdown");
     }
-  });
-
-  document.getElementById('capture-btn').addEventListener('click', function () {
-    html2canvas(document.getElementById('dashboard-content')).then(function (canvas) {
-      // Create image
-      let link = document.createElement('a');
-      link.download = 'dashboard-screenshot.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
   });
 
   // ❺ DataTables config

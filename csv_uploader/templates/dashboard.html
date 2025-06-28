@@ -4,6 +4,8 @@
 
 {% block content %}
 
+<div id="dashboard-content">
+
 <div class="d-flex justify-content-between align-items-center mb-2">
   <h2 class="mb-0">Dashboard</h2>
   <div id="current-time" style="font-size: 1.5rem; color: #198754;" class="fw-medium"></div>
@@ -498,6 +500,7 @@
 
     </div>
 
+    </div>
 <script>
   function updateCurrentTime() {
     const now = new Date();
@@ -512,6 +515,16 @@
 
   setInterval(updateCurrentTime, 1000);
   updateCurrentTime();
+
+  // Screenshot capture function
+  document.getElementById('capture-btn').addEventListener('click', function () {
+    html2canvas(document.getElementById('dashboard-content')).then(function (canvas) {
+      let link = document.createElement('a');
+      link.download = 'dashboard-screenshot.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  });
 </script>
 
 
