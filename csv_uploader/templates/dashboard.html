@@ -503,24 +503,24 @@
 
       <div class="col-12 col-lg-6">
   <div class="card p-4 bg-white rounded shadow-sm h-100">
-    <h5 class="fw-bold mb-3 text-primary">📊 Queue Call Stats</h5>
-    <div class="table-responsive" style="max-height: 350px;">
+    <h5 class="fw-bold mb-3 text-primary">Queue Call Stats</h5>
+    <div class="table-responsive" style="max-height: 400px;">
       <table id="DashTable" class="table table-hover table-striped align-middle mb-0 text-nowrap">
         <thead class="table-light">
           <tr>
-            <th>📥 Queue Name</th>
-            <th class="text-center">✅ Service</th>
-            <th class="text-center">❌ Abandoned</th>
-            <th class="text-center">📈 Total</th>
-            <th class="text-center">🟢 % Service</th>
+            <th>Queue Name</th>
+            <th class="text-center">Service</th>
+            <th class="text-center">Abandoned</th>
+            <th class="text-center">Total</th>
+            <th class="text-center">% Service</th>
           </tr>
         </thead>
         <tbody>
           {% for row in queue_call_stats_data %}
           {% set total = row["Total Calls"] %}
           {% set service = row["Service Calls"] %}
+          {% set abandoned = row["Abandoned Calls"] %}
           {% set percent = ((service / total * 100) if total > 0 else 0) | round(1) %}
-
           {% set bar_color = (
             'bg-danger' if percent < 50 else
             'bg-warning' if percent < 80 else
@@ -530,19 +530,47 @@
           <tr>
             <td class="fw-medium">{{ row["Queue Name"] }}</td>
 
+            <!-- Service -->
             <td class="text-center">
-              <span class="badge bg-success fs-6 px-3">{{ service }}</span>
+              <div class="d-flex flex-column align-items-center">
+                <small>{{ service }}</small>
+                <div class="progress w-100" style="height: 8px;">
+                  <div class="progress-bar bg-success"
+                       role="progressbar"
+                       style="width: {{ (service / total * 100) if total else 0 }}%;">
+                  </div>
+                </div>
+              </div>
             </td>
 
+            <!-- Abandoned -->
             <td class="text-center">
-              <span class="badge bg-danger fs-6 px-3">{{ row["Abandoned Calls"] }}</span>
+              <div class="d-flex flex-column align-items-center">
+                <small>{{ abandoned }}</small>
+                <div class="progress w-100" style="height: 8px;">
+                  <div class="progress-bar bg-danger"
+                       role="progressbar"
+                       style="width: {{ (abandoned / total * 100) if total else 0 }}%;">
+                  </div>
+                </div>
+              </div>
             </td>
 
+            <!-- Total -->
             <td class="text-center">
-              <span class="badge bg-primary fs-6 px-3">{{ total }}</span>
+              <div class="d-flex flex-column align-items-center">
+                <small>{{ total }}</small>
+                <div class="progress w-100" style="height: 8px;">
+                  <div class="progress-bar bg-primary"
+                       role="progressbar"
+                       style="width: 100%;">
+                  </div>
+                </div>
+              </div>
             </td>
 
-            <td>
+            <!-- % Service -->
+            <td class="text-center">
               <div class="d-flex flex-column align-items-center">
                 <small>{{ percent }}%</small>
                 <div class="progress w-100" style="height: 8px;">
@@ -563,6 +591,7 @@
     </div>
   </div>
 </div>
+
 
 
     </div>
