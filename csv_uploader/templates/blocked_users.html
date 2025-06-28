@@ -9,26 +9,28 @@
     <thead class="table-light">
       <tr>
         <th>Username</th>
-        <th>Lockout Until</th>
+        <th>IP ล่าสุด</th>
+        <th>Platform</th>
+        <th>เวลาหมดล็อก</th>
+        <th>จำนวนครั้งที่ผิด</th>
         <th>Actions</th>
-      </tr>
+    </tr>
     </thead>
     <tbody>
-      {% for user in users %}
-      <tr>
+    {% for user in users %}
+    <tr>
         <td>{{ user.username }}</td>
+        <td>{{ user.last_failed_ip or '-' }}</td>
+        <td>{{ user.last_failed_platform or '-' }}</td>
         <td>{{ user.lockout_until.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ user.failed_login_attempts }}</td>
         <td>
-          <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('ต้องการปลดล็อกผู้ใช้ {{ user.username }}?');">
+        <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('ปลดล็อกผู้ใช้ {{ user.username }}?');">
             <button type="submit" class="btn btn-sm btn-success">ปลดล็อก</button>
-          </form>
+        </form>
         </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="3" class="text-center">ไม่มีผู้ใช้ถูกล็อก</td>
-      </tr>
-      {% endfor %}
+    </tr>
+    {% endfor %}
     </tbody>
   </table>
 

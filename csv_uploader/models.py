@@ -25,6 +25,8 @@ class User(db.Model):
     phone_number = db.Column(db.String(20), nullable=True)
     failed_login_attempts = db.Column(db.Integer, default=0)
     lockout_until = db.Column(db.DateTime, nullable=True)
+    last_failed_ip = db.Column(db.String(45), nullable=True)
+    last_failed_platform = db.Column(db.String(50), nullable=True)
 
     def __init__(self, username, password, role='viewer'):
         self.username = username
