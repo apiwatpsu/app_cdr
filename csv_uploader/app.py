@@ -535,7 +535,8 @@ def internal_calls():
     data = []
     columns = []
     error = None
-    date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+    # date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
+    date_columns = ['Start', 'Answered', 'End']
 
     # รับวันจาก query string
     from_date_str = request.args.get("from_date")
