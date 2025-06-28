@@ -5,30 +5,32 @@
 {% block content %}
   <h2 class="mb-4">รายชื่อผู้ใช้ถูกล็อก</h2>
 <div class="bg-white p-4 rounded shadow-sm">
-  <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%; border-collapse: collapse;">
-  <thead class="table-light">
-    <tr>
-      {% for col in columns %}
-        <th>{{ col }}</th>
+  <table id="myTable" class="table table-hover table-striped align-middle mb-0 nowrap" style="width:100%; border-collapse: collapse;">
+    <thead class="table-light">
+      <tr>
+        <th>Username</th>
+        <th>Lockout Until</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.lockout_until.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>
+          <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('ต้องการปลดล็อกผู้ใช้ {{ user.username }}?');">
+            <button type="submit" class="btn btn-sm btn-success">ปลดล็อก</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="3" class="text-center">ไม่มีผู้ใช้ถูกล็อก</td>
+      </tr>
       {% endfor %}
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in data %}
-    <tr>
-      {% for col in columns %}
-        <td>{{ row[col] }}</td>
-      {% endfor %}
-      <td>
-        <form action="{{ url_for('unlock_user', user_id=row['id']) }}" method="post" onsubmit="return confirm('ต้องการปลดล็อกผู้ใช้ {{ row['username'] }}?');">
-          <button type="submit" class="btn btn-sm btn-success">ปลดล็อก</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </tbody>
+  </table>
 
   </div>
 {% endblock %}
