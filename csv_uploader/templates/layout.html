@@ -191,20 +191,20 @@
     </a>
     <a href="{{ url_for('calls_handled_by_each_queue') }}" data-menu="calls_handled_by_each_queue">
       <i data-lucide="dot"></i>
-      Queue Call handled
+      Queue Call Handled
     </a>
     <a href="{{ url_for('average_time_before_agents_answered') }}" data-menu="average_time_before_agents_answered">
       <i data-lucide="dot"></i>
-      Avg time before answered
+      Avg Time Before Answered
     </a>
     <a href="{{ url_for('terminated_before_being_answered') }}" data-menu="terminated_before_being_answered">
       <i data-lucide="dot"></i>
-      Terminated before answered
+      Terminated Before Answered
     </a>
 
     <a href="{{ url_for('calls_transferred_to_queue') }}" data-menu="calls_transferred_to_queue">
       <i data-lucide="dot"></i>
-      Calls transferred to queue
+      Calls Transferred Queue
     </a>
   </div>
   {% endif %}
@@ -219,11 +219,11 @@
     <div class="dropdown-container">
         <a href="{{ url_for('avg_call_duration_answered_external') }}" data-menu="avg_call_duration_answered_external">
           <i data-lucide="dot"></i>
-        Avg duration Outbound calls
+        Avg Duration Outbound Calls
         </a>
         <a href="{{ url_for('longest_internal_calls') }}" data-menu="longest_internal_calls">
           <i data-lucide="dot"></i>
-        Longest internal calls
+        Longest Internal Calls
         </a>
     </div>
     {% endif %}
@@ -239,11 +239,11 @@
     <div class="dropdown-container">
         <a href="{{ url_for('calls_no_route') }}" data-menu="calls_no_route">
           <i data-lucide="dot"></i>
-         List calls failed
+         List Calls Failed
         </a>
         <a href="{{ url_for('calls_license_limits') }}" data-menu="calls_license_limits">
           <i data-lucide="dot"></i>
-         Calls license limits
+         Calls License Limits
         </a>
     </div>
     {% endif %}
