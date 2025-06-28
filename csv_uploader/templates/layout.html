@@ -383,6 +383,16 @@ $(document).ready(function () {
     }
   });
 
+  document.getElementById('capture-btn').addEventListener('click', function () {
+    html2canvas(document.getElementById('dashboard-content')).then(function (canvas) {
+      // Create image
+      let link = document.createElement('a');
+      link.download = 'dashboard-screenshot.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  });
+
   // ❺ DataTables config
   const table = $('#myTable').DataTable({
     scrollX: true,
