@@ -90,12 +90,10 @@
         Dashboard
     </a>
     {% endif %}
-    
-    
-    <!-- Settings Group -->
-     
-    {% if can_view('settings') %}
-    <div class="sidebar-label">Settings</div>
+
+
+    {% if can_view('users') %}
+    <div class="sidebar-label">Users</div>
 
     <a href="{{ url_for('manage_users') }}"
       data-menu="manage_users"
@@ -110,6 +108,26 @@
         <i data-lucide="users"></i>
         Blocked Users
     </a>
+    
+    
+    <!-- Settings Group -->
+     
+    {% if can_view('settings') %}
+    <div class="sidebar-label">Settings</div>
+
+    <!-- <a href="{{ url_for('manage_users') }}"
+      data-menu="manage_users"
+      class="{% if request.endpoint == 'manage_users' %}active{% endif %}">
+        <i data-lucide="users"></i>
+        Manage Users
+    </a>
+
+    <a href="{{ url_for('blocked_users') }}"
+      data-menu="blocked_users"
+      class="{% if request.endpoint == 'blocked_users' %}active{% endif %}">
+        <i data-lucide="users"></i>
+        Blocked Users
+    </a> -->
 
     <a href="{{ url_for('db_config') }}"
       data-menu="db_config"
