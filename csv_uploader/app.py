@@ -2312,10 +2312,9 @@ def get_dashboard_data(from_date, to_date):
                 SELECT 
                     AVG(cdr_ended_at - cdr_answered_at) AS "avg_internal_duration"
                 FROM cdroutput
-                WHERE source_entity_type != 'external_line'
-                AND destination_entity_type != 'external_line'
+                WHERE source_entity_type = 'extension'
+                AND destination_entity_type = 'extension'
                 AND cdr_answered_at IS NOT NULL
-                AND cdr_ended_at IS NOT NULL
                 AND cdr_started_at BETWEEN :from_date AND :to_date;
         """), {"from_date": from_date_utc, "to_date": to_date_utc}).mappings()
 
