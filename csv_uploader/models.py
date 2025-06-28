@@ -23,6 +23,8 @@ class User(db.Model):
     mfa_enabled = db.Column(db.Boolean, default=False)
     last_login = db.Column(db.DateTime, nullable=True)
     phone_number = db.Column(db.String(20), nullable=True)
+    failed_login_attempts = db.Column(db.Integer, default=0)
+    lockout_until = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, username, password, role='viewer'):
         self.username = username
