@@ -516,14 +516,20 @@
   updateCurrentTime();
 
   // Screenshot capture function
-  document.getElementById('capture-btn').addEventListener('click', function () {
-  html2canvas(document.getElementById('dashboard-content'), { useCORS: true }).then(function (canvas) {
+  html2canvas(document.getElementById('dashboard-content'), {
+    useCORS: true,
+    allowTaint: false,
+    logging: true,          // เปิด log เพื่อดู error ใน console
+    proxy: 'https://cors-anywhere.herokuapp.com/',  // ถ้าใช้ proxy สำหรับ CORS
+    backgroundColor: null,
+    scale: window.devicePixelRatio  // เพิ่มความคมชัด
+  }).then(function(canvas) {
     let link = document.createElement('a');
     link.download = 'dashboard-screenshot.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
   });
-});
+
 
 </script>
 
