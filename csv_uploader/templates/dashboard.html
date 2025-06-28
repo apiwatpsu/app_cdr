@@ -466,7 +466,7 @@
       </div>
 
 
-      <div class="col-12 col-lg-6">
+      <!-- <div class="col-12 col-lg-6">
       <div class="card p-4 bg-white rounded shadow-sm h-100">
         <div style="overflow-x: auto; max-height: 300px;">
           <h5>Queue Call Stats</h5>
@@ -499,7 +499,58 @@
           </table>
         </div>
       </div>
-      </div>
+      </div> -->
+
+      <div class="col-12 col-lg-6">
+  <div class="card p-4 bg-white rounded shadow-sm h-100">
+    <h5 class="fw-bold mb-3 text-primary">📊 Queue Call Stats</h5>
+    <div class="table-responsive" style="max-height: 350px;">
+      <table id="DashTable" class="table table-hover table-striped align-middle mb-0 text-nowrap">
+        <thead class="table-light">
+          <tr>
+            <th>📥 Queue Name</th>
+            <th class="text-center">✅ Service</th>
+            <th class="text-center">❌ Abandoned</th>
+            <th class="text-center">📈 Total</th>
+            <th style="width: 25%">🟢 % Service</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in queue_call_stats_data %}
+          {% set total = row["Total Calls"] %}
+          {% set service = row["Service Calls"] %}
+          {% set percent = ((service / total * 100) if total > 0 else 0) | round(1) %}
+          <tr>
+            <td class="fw-medium">{{ row["Queue Name"] }}</td>
+            <td class="text-center">
+              <span class="badge bg-success fs-6 px-3">{{ service }}</span>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-danger fs-6 px-3">{{ row["Abandoned Calls"] }}</span>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-primary fs-6 px-3">{{ total }}</span>
+            </td>
+            <td>
+              <div class="progress" style="height: 20px;">
+                <div class="progress-bar bg-success"
+                     role="progressbar"
+                     style="width: {{ percent }}%;"
+                     aria-valuenow="{{ percent }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                  {{ percent }}%
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 
 
     </div>
