@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Text
 import json
 from datetime import datetime
-# from extensions import db
 from werkzeug.security import generate_password_hash
 
 db = SQLAlchemy()

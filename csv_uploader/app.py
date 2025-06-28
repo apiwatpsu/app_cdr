@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, User
-from models import db, DBConfig
-from models import db, SMTPConfig
+# from models import db, User
+# from models import db, DBConfig
+# from models import db, SMTPConfig
+from models import db, User, DBConfig, SMTPConfig
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
@@ -25,8 +26,7 @@ from werkzeug.security import generate_password_hash
 
 BANGKOK_TZ = timezone('Asia/Bangkok')
 app = Flask(__name__)
-# db = SQLAlchemy()
-# migrate = Migrate(app, db)
+
 app.secret_key = 'your_secret_key'
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
@@ -42,6 +42,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@loca
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
+
+migrate = Migrate(app, db)
 
     
 
