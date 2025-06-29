@@ -32,8 +32,11 @@ app.secret_key = 'your_secret_key'
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-MAX_FAILED_ATTEMPTS = 3
-LOCKOUT_TIME_MINUTES = 5
+with app.app_context():
+    MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
+    LOCKOUT_TIME_MINUTES = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
+# MAX_FAILED_ATTEMPTS = 3
+# LOCKOUT_TIME_MINUTES = 5
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -371,6 +374,21 @@ def send_test_email(config, to_email):
 
     except Exception as e:
         return False, str(e)
+
+@app.route('/system_config', methods=['GET', 'POST'])
+def system_config():
+    if request.method == 'POST':
+        SystemConfig.set("MAX_FAILED_ATTEMPTS", request.form['max_attempts'])
+        SystemConfig.set("LOCKOUT_TIME_MINUTES", request.form['lockout_minutes'])
+
+        flash('Saved successfully', 'success')
+        return redirect(url_for('system_config'))
+
+    return render_template('system_config.html', 
+        max_attempts=SystemConfig.get("MAX_FAILED_ATTEMPTS", 3),
+        lockout_minutes=SystemConfig.get("LOCKOUT_TIME_MINUTES", 5)
+    )
+
 
 
 @app.route('/cdr_data')

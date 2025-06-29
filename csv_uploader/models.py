@@ -50,3 +50,31 @@ class SMTPConfig(db.Model):
     smtp_password = db.Column(db.String(255), nullable=False)
     use_tls = db.Column(db.Boolean, default=True)
     use_ssl = db.Column(db.Boolean, default=False)
+
+class SystemConfig(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(100), unique=True, nullable=False)
+    value = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return f'<SystemConfig {self.key}={self.value}>'
+
+    @staticmethod
+    def get(key, default=None, cast=str):
+        config = SystemConfig.query.filter_by(key=key).first()
+        if config:
+            try:
+                return cast(config.value)
+            except:
+                return default
+        return default
+
+    @staticmethod
+    def set(key, value):
+        config = SystemConfig.query.filter_by(key=key).first()
+        if not config:
+            config = SystemConfig(key=key, value=str(value))
+            db.session.add(config)
+        else:
+            config.value = str(value)
+        db.session.commit()

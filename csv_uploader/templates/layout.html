@@ -143,6 +143,12 @@
         <i data-lucide="send"></i>
         SMTP Settings
     </a>
+
+    <a href="{{ url_for('system_config') }}"
+      class="{% if request.endpoint == 'system_config' %}active{% endif %}">
+        <i data-lucide="cog"></i>
+        System Configuration
+    </a>
     {% endif %}
 
     

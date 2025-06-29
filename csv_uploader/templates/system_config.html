@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}System Config{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">System Configuration</h2>
+
+<form method="POST">
+  <div class="mb-3">
+    <label for="max_attempts" class="form-label">Max Failed Login Attempts</label>
+    <input type="number" name="max_attempts" class="form-control" value="{{ max_attempts }}" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="lockout_minutes" class="form-label">Lockout Time (Minutes)</label>
+    <input type="number" name="lockout_minutes" class="form-control" value="{{ lockout_minutes }}" required>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>
+{% endblock %}
