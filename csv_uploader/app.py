@@ -81,8 +81,8 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # ดึงค่าจากระบบ config ตอน login
-    max_attempts = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
-    lock_minutes = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
+    MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
+    LOCKOUT_TIME_MINUTES = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
 
     if request.method == 'POST':
         username = request.form['username']
