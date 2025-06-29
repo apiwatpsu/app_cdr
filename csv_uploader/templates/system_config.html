@@ -15,6 +15,11 @@
     <input type="number" name="lockout_minutes" class="form-control" value="{{ lockout_minutes }}" required>
   </div>
 
+  <div class="mb-3">
+    <label for="api_token" class="form-label">API Token</label>
+    <input type="text" class="form-control" id="api_token" name="api_token" value="{{ api_token }}">
+  </div>
+
   <button type="submit" class="btn btn-primary">Save</button>
 </form>
 {% endblock %}
