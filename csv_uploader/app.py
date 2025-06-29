@@ -44,13 +44,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@loca
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
-with app.app_context():
-    MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
-    LOCKOUT_TIME_MINUTES = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
 
 
 
-    
 
 @app.route('/')
 def index():
@@ -84,6 +80,10 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # ดึงค่าจากระบบ config ตอน login
+    max_attempts = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
+    lock_minutes = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
