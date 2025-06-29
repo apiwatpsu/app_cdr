@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, User, DBConfig, SMTPConfig, SystemConfig
+from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
@@ -2567,7 +2567,41 @@ def dashboard():
         
         return render_template("dashboard.html", error=str(e))
 
+@app.route('/api/csat', methods=['POST'])
+def receive_csat():
+    auth_header = request.headers.get('Authorization')
 
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    token = auth_header.split(" ")[1]
+    valid_token = SystemConfig.get("API_TOKEN", "")
+
+    if token != valid_token:
+        return jsonify({"error": "Invalid token"}), 403
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    try:
+        new_log = CSATLog(
+            number=data.get("number"),
+            score=int(data.get("score", 0)),
+            result=data.get("result", ""),
+            extension=data.get("extension", ""),
+            agent=data.get("agent", "")
+        )
+        db.session.add(new_log)
+        db.session.commit()
+        return jsonify({"message": "CSAT received"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/csat_logs')
+def csat_logs():
+    logs = CSATLog.query.order_by(CSATLog.received_at.desc()).all()
+    return render_template('csat_logs.html', logs=logs)
 
 @app.route('/logout')
 def logout():

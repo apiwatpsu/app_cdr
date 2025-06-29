@@ -78,3 +78,13 @@ class SystemConfig(db.Model):
         else:
             config.value = str(value)
         db.session.commit()
+
+class CSATLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.String(50))
+    score = db.Column(db.Integer)
+    result = db.Column(db.Text)
+    extension = db.Column(db.String(20))
+    agent = db.Column(db.String(100))
+    received_at = db.Column(db.DateTime, default=datetime.utcnow)
+
