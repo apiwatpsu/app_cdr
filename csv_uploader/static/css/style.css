@@ -238,132 +238,132 @@
 
     /* Dark Mode */
 
-    body.dark-mode {
+    html.dark-mode {
       background-color: #1d222b;
       color: #e2e2e4;
     }
 
-    body.dark-mode .topbar input::placeholder {
+    html.dark-mode .topbar input::placeholder {
       color: #ffffff;
       opacity: 0.5;
     }
 
-    body.dark-mode .sidebar {
+    html.dark-mode .sidebar {
       background-color: #212631;
       border-right: 1px solid #333;
     }
 
-    body.dark-mode .sidebar-label {
+    html.dark-mode .sidebar-label {
       color: #ccc;
     }
 
-    body.dark-mode .sidebar a {
+    html.dark-mode .sidebar a {
       color: #ddd;
     }
 
-    body.dark-mode .sidebar a:hover,
-    body.dark-mode .sidebar a.active,
-    body.dark-mode .dropdown-container a:hover,
-    body.dark-mode .dropdown-container a.selected {
+    html.dark-mode .sidebar a:hover,
+    html.dark-mode .sidebar a.active,
+    html.dark-mode .dropdown-container a:hover,
+    html.dark-mode .dropdown-container a.selected {
       background-color: #363e4e;
     }
 
-    body.dark-mode .dropdown-btn {
+    html.dark-mode .dropdown-btn {
       background-color: #212631;
       color: #f1f1f1;
     }
 
-    body.dark-mode .dropdown-container {
+    html.dark-mode .dropdown-container {
       background-color: #212631;
     }
 
-    body.dark-mode .dropdown-btn span {
+    html.dark-mode .dropdown-btn span {
       color: #f1f1f1;
     }
 
-    body.dark-mode .sidebar svg,
-    body.dark-mode .topbar-icon {
+    html.dark-mode .sidebar svg,
+    html.dark-mode .topbar-icon {
       opacity: 0.6 !important;
     }
 
-    body.dark-mode .main-content {
+    html.dark-mode .main-content {
       background-color: #1d222b;
       color: #eaeaea;
     }
 
-    body.dark-mode .my-muted {
+    html.dark-mode .my-muted {
       color: #f1f1f1 !important; 
     }
 
-    body.dark-mode .bg-white {
+    html.dark-mode .bg-white {
     background-color: #212631 !important;
     color: #f1f1f1;
     border: 1px solid #444 !important;
     }
     
-    body.dark-mode #myTable td,
-    body.dark-mode #myTable th {
+    html.dark-mode #myTable td,
+    html.dark-mode #myTable th {
       background-color: #323a49;
       color: #f1f1f1;             
       border: none !important;    
     }
 
-    body.dark-mode #DashTable td,
-    body.dark-mode #DashTable th {
+    html.dark-mode #DashTable td,
+    html.dark-mode #DashTable th {
       background-color: #212631;
       color: #f1f1f1;               
     }
 
-    body.dark-mode .dataTables_scrollHead th{
+    html.dark-mode .dataTables_scrollHead th{
       background-color: #323a49;
       color: #f1f1f1;
       border: none;
     }
 
-    body.dark-mode .dataTables_length select {
+    html.dark-mode .dataTables_length select {
       background-color: #1f2937;
       color: #f1f1f1;            
       border: 1px solid #374151;
     }
     
-    body.dark-mode .paginate_button {
+    html.dark-mode .paginate_button {
       color: #f1f1f1;
     }
 
-    body.dark-mode .dataTables_filter input {
+    html.dark-mode .dataTables_filter input {
       background-color: #323a49;
       padding: 8px;
       border-radius: 4px;
     }
     
-    body.dark-mode .sidebar {
+    html.dark-mode .sidebar {
       overflow: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
 
-    body.dark-mode .sidebar::-webkit-scrollbar {
+    html.dark-mode .sidebar::-webkit-scrollbar {
       display: none;
     }
-    body.dark-mode .dt-button,
-    body.dark-mode .dt-button.btn,
-    body.dark-mode .buttons-html5,
-    body.dark-mode .buttons-colvis,
-    body.dark-mode .buttons-print {
+    html.dark-mode .dt-button,
+    html.dark-mode .dt-button.btn,
+    html.dark-mode .buttons-html5,
+    html.dark-mode .buttons-colvis,
+    html.dark-mode .buttons-print {
       background-color: #198754 !important;
       color: #f1f1f1 !important;
       border: none !important;
     }
 
-    body.dark-mode .dt-button:hover,
-    body.dark-mode .dt-button.btn:hover,
-    body.dark-mode .buttons-html5:hover,
-    body.dark-mode .buttons-colvis:hover,
-    body.dark-mode .buttons-print:hover {
+    html.dark-mode .dt-button:hover,
+    html.dark-mode .dt-button.btn:hover,
+    html.dark-mode .buttons-html5:hover,
+    html.dark-mode .buttons-colvis:hover,
+    html.dark-mode .buttons-print:hover {
       background-color: #146c43 !important;
     }
 
-    body.dark-mode .form-control {
+    html.dark-mode .form-control {
     background-color: #363e4e; 
     color: #f1f1f1;            
     border: 1px solid #374151;
