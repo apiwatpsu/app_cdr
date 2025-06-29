@@ -41,7 +41,7 @@
       
     <i class="bi bi-bell-fill fs-5"></i>
     <i class="bi bi-envelope-fill fs-5"></i>
-    <!-- <button id="theme-toggle" class="btn btn-sm btn-light">🌓 Toggle Theme</button> -->
+    
     <div class="form-check form-switch">
       <input class="form-check-input" type="checkbox" id="theme-toggle">
       <label class="form-check-label" for="theme-toggle">🌙 Dark Mode</label>
@@ -51,7 +51,7 @@
     <!-- User Dropdown -->
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <!-- <img src="https://i.pravatar.cc/32" alt="avatar" class="rounded-circle" width="32" height="32"> -->
+        
          <img src="{{ url_for('static', filename='uploads/' ~ user.profile_image) if user.profile_image else url_for('static', filename='uploads/default.jpg') }}" 
           alt="avatar" class="rounded-circle" width="32" height="32">
         <span class="ms-2">{{ username }}</span>
@@ -116,20 +116,6 @@
      
     {% if can_view('settings') %}
     <div class="sidebar-label">Settings</div>
-
-    <!-- <a href="{{ url_for('manage_users') }}"
-      data-menu="manage_users"
-      class="{% if request.endpoint == 'manage_users' %}active{% endif %}">
-        <i data-lucide="users"></i>
-        Manage Users
-    </a>
-
-    <a href="{{ url_for('blocked_users') }}"
-      data-menu="blocked_users"
-      class="{% if request.endpoint == 'blocked_users' %}active{% endif %}">
-        <i data-lucide="users"></i>
-        Blocked Users
-    </a> -->
 
     <a href="{{ url_for('db_config') }}"
       data-menu="db_config"
@@ -345,18 +331,18 @@
 $(document).ready(function () {
   lucide.createIcons();
 
-  if (localStorage.getItem("theme") === "dark") {
-    $("body").addClass("dark-mode");
+  // Set theme toggle state
+  if (document.documentElement.classList.contains("dark-mode")) {
     $("#theme-toggle").prop("checked", true);
   }
 
-  // เมื่อกด toggle
+  // Toggle dark mode
   $("#theme-toggle").on("change", function () {
     const isDark = $(this).is(":checked");
-    $("body").toggleClass("dark-mode", isDark);
+    document.documentElement.classList.toggle("dark-mode", isDark);
     localStorage.setItem("theme", isDark ? "dark" : "light");
   });
-    
+
   // ❶ เปิด dropdown ตามค่าที่จำไว้
   const lastOpen = localStorage.getItem('openDropdown');
   const lastSelectedMenu = localStorage.getItem('selectedMenu');
@@ -368,8 +354,8 @@ $(document).ready(function () {
   }
 
   if (lastSelectedMenu) {
-    $('.dropdown-container a').removeClass('selected'); // ลบ selected ทุกตัวก่อน
-    $(`.dropdown-container a[data-menu="${lastSelectedMenu}"]`).addClass('selected'); // เพิ่ม selected เมนูที่จำ
+    $('.dropdown-container a').removeClass('selected');
+    $(`.dropdown-container a[data-menu="${lastSelectedMenu}"]`).addClass('selected');
   }
 
   // ❷ เมื่อคลิก dropdown ปกติ
@@ -399,14 +385,12 @@ $(document).ready(function () {
     localStorage.setItem("openDropdown", parentKey);
     localStorage.setItem("selectedMenu", menuKey);
 
-    // เปลี่ยนสี selected
     $('.dropdown-container a').removeClass('selected');
     $(this).addClass('selected');
   });
 
-    // ❹ เมื่อคลิกนอก dropdown → ปิด dropdown
+  // ❹ เมื่อคลิกนอก dropdown → ปิด dropdown
   $(document).click(function (e) {
-    
     if (!$(e.target).closest('.dropdown-btn, .dropdown-container').length) {
       $(".dropdown-btn").removeClass("active");
       $(".dropdown-container").slideUp();
@@ -428,9 +412,6 @@ $(document).ready(function () {
   });
 });
 </script>
-
-
-
 
 
 
