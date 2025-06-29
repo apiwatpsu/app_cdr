@@ -4,7 +4,7 @@
 {% block content %}
 <h2 class="mb-4">System Configuration</h2>
 
-<form method="POST">
+<form method="POST" class="bg-white p-4 rounded shadow-sm">
   <div class="mb-3">
     <label for="max_attempts" class="form-label">Max Failed Login Attempts</label>
     <input type="number" name="max_attempts" class="form-control" value="{{ max_attempts }}" required>
