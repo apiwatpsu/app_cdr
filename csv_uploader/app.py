@@ -769,8 +769,11 @@ def inbound_calls():
                     cr.recording_url AS "Recording URL"
                 FROM cdroutput co
                 LEFT JOIN cdrrecordings cr 
-                ON co.cdr_id = cr.cdr_id 
-                AND co.cdr_participant_id = cr.cdr_participant_id
+                ON co.cdr_id = cr.cdr_id
+                AND (
+                        co.source_participant_id = cr.cdr_participant_id
+                    OR co.destination_participant_id = cr.cdr_participant_id
+                )
                 WHERE co.source_entity_type = 'external_line'
                 AND co.cdr_started_at >= :from_date
                 AND co.cdr_started_at <= :to_date
