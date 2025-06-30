@@ -662,24 +662,34 @@ def outbound_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT 
-                source_entity_type AS "From Type",
-                source_dn_number AS "From Extension",
-                source_dn_name AS "From Agent",
-                source_participant_group_name AS "From Group",
-                destination_entity_type AS "To Type",
-                destination_dn_name AS "Trunk",
-                destination_participant_phone_number AS "To Number",
-                termination_reason AS "Termination Reason",
-                cdr_started_at AS "Start",
-                cdr_answered_at AS "Answered",
-                cdr_ended_at AS "End",
-                call_history_id AS "Call ID"
-                FROM cdroutput
-                WHERE source_entity_type = 'extension'
-                AND destination_entity_type = 'external_line'
-                AND cdr_started_at >= :from_date
-                AND cdr_started_at <= :to_date
-                ORDER BY cdr_started_at DESC;
+                    co.source_entity_type AS "From Type",
+                    co.source_dn_number AS "From Extension",
+                    co.source_dn_name AS "From Agent",
+                    co.source_participant_group_name AS "From Group",
+                    co.destination_entity_type AS "To Type",
+                    co.destination_dn_name AS "Trunk",
+                    co.destination_participant_phone_number AS "To Number",
+                    co.termination_reason AS "Termination Reason",
+                    co.cdr_started_at AS "Start",
+                    co.cdr_answered_at AS "Answered",
+                    co.cdr_ended_at AS "End",
+                    co.call_history_id AS "Call ID",
+                    cr.recording_url AS "Recording URL"
+
+                FROM cdroutput co
+                LEFT JOIN cdrrecordings cr 
+                ON co.call_history_id = cr.cdr_id
+                AND (
+                    co.source_participant_id = cr.cdr_participant_id
+                    OR co.destination_participant_id = cr.cdr_participant_id
+                )
+
+                WHERE co.source_entity_type = 'extension'
+                AND co.destination_entity_type = 'external_line'
+                AND co.cdr_started_at >= :from_date
+                AND co.cdr_started_at <= :to_date
+
+                ORDER BY co.cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
