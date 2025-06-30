@@ -678,7 +678,7 @@ def outbound_calls():
 
                 FROM cdroutput co
                 LEFT JOIN cdrrecordings cr 
-                ON co.call_history_id = cr.cdr_id
+                ON co.cdr_id = cr.cdr_id
                 AND (
                     co.source_participant_id = cr.cdr_participant_id
                     OR co.destination_participant_id = cr.cdr_participant_id
