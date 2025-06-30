@@ -356,6 +356,7 @@ def system_config():
         SystemConfig.set("MAX_FAILED_ATTEMPTS", request.form['max_attempts'])
         SystemConfig.set("LOCKOUT_TIME_MINUTES", request.form['lockout_minutes'])
         SystemConfig.set("API_TOKEN", request.form['api_token'])
+        SystemConfig.set("RECORDING_PATH", request.form['recording_path'])
 
         flash('Saved successfully', 'success')
         return redirect(url_for('system_config'))
@@ -363,7 +364,8 @@ def system_config():
     return render_template('system_config.html', 
         max_attempts=SystemConfig.get("MAX_FAILED_ATTEMPTS", 3),
         lockout_minutes=SystemConfig.get("LOCKOUT_TIME_MINUTES", 5),
-        api_token=SystemConfig.get("API_TOKEN", "")
+        api_token=SystemConfig.get("API_TOKEN", ""),
+        recording_path=SystemConfig.get("RECORDING_PATH", "")
     )
 
 
