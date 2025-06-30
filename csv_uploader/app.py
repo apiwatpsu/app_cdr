@@ -674,7 +674,7 @@ def outbound_calls():
                     co.cdr_answered_at AS "Answered",
                     co.cdr_ended_at AS "End",
                     co.call_history_id AS "Call ID",
-                    cr.recording_url AS "Recording URL"
+                    cr.recording_url AS "Recording"
 
                 FROM cdroutput co
                 LEFT JOIN cdrrecordings cr 
