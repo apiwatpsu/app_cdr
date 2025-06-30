@@ -1,18 +1,38 @@
 {% extends "layout.html" %}
+{% block title %}Recordings{% endblock %}
 
 {% block content %}
-<h2>Call Recordings</h2>
-<ul class="list-group bg-white p-4 rounded shadow-sm">
-  {% for file in files %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      {{ file }}
-      <audio controls>
-        <source src="{{ url_for('play_recording', filename=file) }}" type="audio/wav">
-        Your browser does not support the audio element.
-      </audio>
-    </li>
-  {% else %}
-    <li class="list-group-item">No recordings found.</li>
-  {% endfor %}
-</ul>
+<h2 class="mb-4">Call Recordings</h2>
+
+<div class="bg-white p-4 rounded shadow-sm">
+  <table id="myTable" class="table table-hover table-striped align-middle mb-0 nowrap" style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>File Name</th>
+        <th>Play</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for file in files %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ file }}</td>
+        <td>
+          <audio controls preload="none" style="width: 200px;">
+            <source src="{{ url_for('play_recording', filename=file) }}" type="audio/wav">
+            Your browser does not support the audio element.
+          </audio>
+        </td>
+        <td>
+          <a href="{{ url_for('play_recording', filename=file) }}" download class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-download"></i> Download
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
