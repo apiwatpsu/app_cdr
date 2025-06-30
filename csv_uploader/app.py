@@ -559,12 +559,12 @@ def internal_calls():
     to_date_str = request.args.get("to_date")
 
     filters = {
-        "co.source_dn_number": request.args.get("from_extension"),
-        "co.source_dn_name": request.args.get("from_agent"),
-        "co.source_participant_group_name": request.args.get("from_group"),
-        "co.destination_dn_number": request.args.get("to_extension"),
-        "co.destination_dn_name": request.args.get("to_agent"),
-        "co.destination_participant_group_name": request.args.get("to_group"),
+        "source_dn_number": request.args.get("from_extension"),
+        "source_dn_name": request.args.get("from_agent"),
+        "source_participant_group_name": request.args.get("from_group"),
+        "destination_dn_number": request.args.get("to_extension"),
+        "destination_dn_name": request.args.get("to_agent"),
+        "destination_participant_group_name": request.args.get("to_group"),
     }
 
     try:
