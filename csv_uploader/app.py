@@ -2606,7 +2606,7 @@ def csat_logs():
     return render_template('csat_logs.html', logs=logs)
 
 @app.route('/recordings')
-def list_recordings():
+def recordings():
     recording_path = SystemConfig.get("RECORDING_PATH", "/var/lib/3cxpbx/Instance1/Data/Recordings")
 
     try:
