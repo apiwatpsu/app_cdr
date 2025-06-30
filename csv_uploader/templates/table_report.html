@@ -40,11 +40,21 @@
         {% for row in data %}
         <tr>
           {% for col in columns %}
-          <td>{{ row[col] }}</td>
+          <td>
+            {% if col == 'Recording URL' and row[col] %}
+              <audio controls preload="none" style="width: 300px;">
+                <source src="{{ url_for('play_recording', filename=row[col]) }}" type="audio/wav">
+                Your browser does not support the audio element.
+              </audio>
+            {% else %}
+              {{ row[col] }}
+            {% endif %}
+          </td>
           {% endfor %}
         </tr>
         {% endfor %}
       </tbody>
+
     </table>
   </div>
 
