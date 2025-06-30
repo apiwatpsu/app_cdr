@@ -389,9 +389,18 @@ def cdr_data():
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
 
+    # รับค่า filter เพิ่มเติม
+    filters = {
+        "source_dn_number": request.args.get("from_extension"),
+        "source_dn_name": request.args.get("from_agent"),
+        "source_participant_group_name": request.args.get("from_group"),
+        "destination_dn_number": request.args.get("to_extension"),
+        "destination_dn_name": request.args.get("to_agent"),
+        "destination_participant_group_name": request.args.get("to_group"),
+    }
+
     try:
         if from_date_str:
-            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
             from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
@@ -401,7 +410,6 @@ def cdr_data():
         else:
             to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
-        # แปลงเป็น UTC สำหรับใช้ใน query
         from_date = from_date_local.astimezone(utc)
         to_date = to_date_local.astimezone(utc)
 
@@ -415,17 +423,26 @@ def cdr_data():
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
 
+        where_clauses = ["cdr_started_at >= :from_date", "cdr_started_at <= :to_date"]
+        params = {"from_date": from_date, "to_date": to_date}
+
+        for field, value in filters.items():
+            if value:
+                where_clauses.append(f"{field} ILIKE :{field}")
+                params[field] = f"%{value}%"
+
+        where_sql = " AND ".join(where_clauses)
+
         with engine.connect() as connection:
             result = connection.execute(text(f"""
                 SELECT * FROM cdroutput
-                WHERE cdr_started_at >= :from_date AND cdr_started_at <= :to_date
+                WHERE {where_sql}
                 ORDER BY cdr_started_at DESC;
-            """), {"from_date": from_date, "to_date": to_date})
+            """), params)
 
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
-            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
@@ -443,6 +460,7 @@ def cdr_data():
         page_title=page_title,
         error=error
     )
+
 
 
 @app.route('/count_call_by_type')
