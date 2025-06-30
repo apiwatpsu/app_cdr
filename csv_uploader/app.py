@@ -659,7 +659,7 @@ def internal_calls():
 
 @app.route('/outbound_calls')
 def outbound_calls():
-    page_title="Outbound Call"
+    page_title = "Outbound Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -675,9 +675,18 @@ def outbound_calls():
     # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
+
+    # รับค่า filter เพิ่มเติม
+    filters = {
+        "source_dn_number": request.args.get("from_extension"),
+        "source_dn_name": request.args.get("from_agent"),
+        "source_participant_group_name": request.args.get("from_group"),
+        "destination_participant_phone_number": request.args.get("to_number"),
+        "destination_dn_name": request.args.get("to_trunk"),
+    }
+
     try:
         if from_date_str:
-            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
             from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
@@ -687,22 +696,36 @@ def outbound_calls():
         else:
             to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
-        # แปลงเป็น UTC สำหรับใช้ใน query
         from_date = from_date_local.astimezone(utc)
         to_date = to_date_local.astimezone(utc)
-    
+
     except ValueError:
-            error = "Invalid date format"
-            now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=7)).astimezone(utc)
-            to_date = (now + timedelta(days=1)).astimezone(utc)
+        error = "Invalid date format"
+        now = BANGKOK_TZ.localize(datetime.now())
+        from_date = (now - timedelta(days=7)).astimezone(utc)
+        to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
 
+        where_clauses = [
+            "co.source_entity_type = 'extension'",
+            "co.destination_entity_type = 'external_line'",
+            "co.cdr_started_at >= :from_date",
+            "co.cdr_started_at <= :to_date"
+        ]
+        params = {"from_date": from_date, "to_date": to_date}
+
+        for field, value in filters.items():
+            if value:
+                where_clauses.append(f"co.{field} ILIKE :{field}")
+                params[field] = f"%{value}%"
+
+        where_sql = " AND ".join(where_clauses)
+
         with engine.connect() as connection:
-            result = connection.execute(text("""
+            result = connection.execute(text(f"""
                 SELECT 
                     co.source_entity_type AS "From Type",
                     co.source_dn_number AS "From Extension",
@@ -717,22 +740,16 @@ def outbound_calls():
                     co.cdr_ended_at AS "End",
                     co.call_history_id AS "Call ID",
                     cr.recording_url AS "Recording"
-
                 FROM cdroutput co
                 LEFT JOIN cdrrecordings cr 
-                ON co.cdr_id = cr.cdr_id
-                AND (
-                    co.source_participant_id = cr.cdr_participant_id
-                    OR co.destination_participant_id = cr.cdr_participant_id
-                )
-
-                WHERE co.source_entity_type = 'extension'
-                AND co.destination_entity_type = 'external_line'
-                AND co.cdr_started_at >= :from_date
-                AND co.cdr_started_at <= :to_date
-
+                    ON co.cdr_id = cr.cdr_id
+                    AND (
+                        co.source_participant_id = cr.cdr_participant_id
+                        OR co.destination_participant_id = cr.cdr_participant_id
+                    )
+                WHERE {where_sql}
                 ORDER BY co.cdr_started_at DESC;
-            """), {"from_date": from_date, "to_date": to_date})
+            """), params)
 
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
