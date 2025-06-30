@@ -37,25 +37,42 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in data %}
-        <tr>
-          {% for col in columns %}
-          <td>
-            {% if col == 'Recording' and row[col] %}
-              <audio controls preload="none" style="width: 200px; height: 30px;">
-                <source src="{{ url_for('play_recording', filename=row[col]) }}" type="audio/wav">
-                Your browser does not support the audio element.
-              </audio>
-            {% else %}
-              {{ row[col] }}
-            {% endif %}
-          </td>
+          {% for row in data %}
+          <tr>
+            {% for col in columns %}
+            <td>
+              {% if col == 'Recording' and row[col] %}
+                <button type="button" class="btn btn-sm btn-outline-primary play-audio-btn" data-filename="{{ row[col] }}" data-bs-toggle="modal" data-bs-target="#audioModal">
+                  ▶️ Play
+                </button>
+              {% else %}
+                {{ row[col] }}
+              {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
           {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
+        </tbody>
 
     </table>
+  </div>
+
+  <!-- 🔊 Modal สำหรับเปิด player -->
+  <div class="modal fade" id="audioModal" tabindex="-1" aria-labelledby="audioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="audioModalLabel">Play Recording</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <audio id="modal-audio-player" controls style="width: 100%; height: 40px;">
+            <source id="modal-audio-source" src="" type="audio/wav">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      </div>
+    </div>
   </div>
 
 {% endblock %}
