@@ -754,23 +754,27 @@ def inbound_calls():
         with engine.connect() as connection:
             result = connection.execute(text("""
                 SELECT 
-                source_entity_type AS "From Type",
-                source_participant_phone_number AS "From Number",
-                source_participant_trunk_did AS "Trunk DID",
-                destination_entity_type AS "To Type",
-                destination_dn_number AS "To Number",
-                destination_dn_name AS "To Name",
-                destination_participant_group_name AS "To Group",
-                termination_reason AS "Termination Reason",
-                cdr_started_at AS "Start",
-                cdr_answered_at AS "Answered",
-                cdr_ended_at AS "End",
-                call_history_id AS "Call ID"
-                FROM cdroutput
-                WHERE source_entity_type = 'external_line'
-                AND cdr_started_at >= :from_date
-                AND cdr_started_at <= :to_date
-                ORDER BY cdr_started_at DESC;
+                    co.source_entity_type AS "From Type",
+                    co.source_participant_phone_number AS "From Number",
+                    co.source_participant_trunk_did AS "Trunk DID",
+                    co.destination_entity_type AS "To Type",
+                    co.destination_dn_number AS "To Number",
+                    co.destination_dn_name AS "To Name",
+                    co.destination_participant_group_name AS "To Group",
+                    co.termination_reason AS "Termination Reason",
+                    co.cdr_started_at AS "Start",
+                    co.cdr_answered_at AS "Answered",
+                    co.cdr_ended_at AS "End",
+                    co.call_history_id AS "Call ID",
+                    cr.recording_url AS "Recording URL"
+                FROM cdroutput co
+                LEFT JOIN cdrrecordings cr 
+                ON co.cdr_id = cr.cdr_id 
+                AND co.cdr_participant_id = cr.cdr_participant_id
+                WHERE co.source_entity_type = 'external_line'
+                AND co.cdr_started_at >= :from_date
+                AND co.cdr_started_at <= :to_date
+                ORDER BY co.cdr_started_at DESC;
             """), {"from_date": from_date, "to_date": to_date})
 
             columns = result.keys()
