@@ -248,6 +248,11 @@
       opacity: 0.5;
     }
 
+    html.dark-mode .form-control input::placeholder {
+      color: #ffffff;
+      opacity: 0.5;
+    }
+
     html.dark-mode .sidebar {
       background-color: #212631;
       border-right: 1px solid #333;
