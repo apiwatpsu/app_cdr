@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+from flask import Flask, render_template, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog
@@ -2604,6 +2604,33 @@ def receive_csat():
 def csat_logs():
     logs = CSATLog.query.order_by(CSATLog.received_at.desc()).all()
     return render_template('csat_logs.html', logs=logs)
+
+@app.route('/recordings')
+def list_recordings():
+    recording_path = SystemConfig.get("RECORDING_PATH", "/var/lib/3cxpbx/Instance1/Data/Recordings")
+
+    try:
+        files = []
+        for root, dirs, filenames in os.walk(recording_path):
+            for filename in filenames:
+                if filename.endswith('.wav') or filename.endswith('.mp3'):
+                    full_path = os.path.join(root, filename)
+                    relative_path = os.path.relpath(full_path, recording_path)
+                    files.append(relative_path)
+        return render_template('recordings.html', files=files)
+    except Exception as e:
+        return str(e), 500
+
+@app.route('/recordings/play/<path:filename>')
+def play_recording(filename):
+    recording_path = SystemConfig.get("RECORDING_PATH", "/var/lib/3cxpbx/Instance1/Data/Recordings")
+    filepath = os.path.join(recording_path, filename)
+    
+    if os.path.exists(filepath):
+        return send_file(filepath)
+    else:
+        abort(404)
+
 
 @app.route('/logout')
 def logout():

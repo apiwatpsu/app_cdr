@@ -284,6 +284,15 @@
     </a>
     {% endif %}
 
+    {% if can_view('recording') %}
+    <a href="{{ url_for('recordings') }}" 
+      data-menu="recordings"
+      class="{% if request.endpoint == 'recordings' %}active{% endif %}">
+        <i data-lucide="audio-lines"></i>
+        Recording
+    </a>
+    {% endif %}
+
 
 <div class="sidebar-label">System Utilization</div>
   <div class="px-3 py-2 mb-2">

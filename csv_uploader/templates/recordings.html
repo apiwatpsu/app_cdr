@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Call Recordings</h2>
+<ul class="list-group">
+  {% for file in files %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      {{ file }}
+      <audio controls>
+        <source src="{{ url_for('play_recording', filename=file) }}" type="audio/wav">
+        Your browser does not support the audio element.
+      </audio>
+    </li>
+  {% else %}
+    <li class="list-group-item">No recordings found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
