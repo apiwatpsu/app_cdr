@@ -11,7 +11,7 @@
 
 
 
-  <form method="get" class="d-flex gap-2 mb-3">
+  <!-- <form method="get" class="d-flex gap-2 mb-3">
     <div>
         <label for="fromDate" class="form-label mb-0">From:</label>
         <input type="date" id="fromDate" name="from_date" class="form-control form-control-sm"
@@ -31,7 +31,61 @@
     <input type="text" name="to_extension" placeholder="To Extension" class="form-control form-control-sm" value="{{ request.args.get('to_extension', '') }}">
     <input type="text" name="to_agent" placeholder="To Agent" class="form-control form-control-sm" value="{{ request.args.get('to_agent', '') }}">
     <input type="text" name="to_group" placeholder="To Group" class="form-control form-control-sm" value="{{ request.args.get('to_group', '') }}">
+  </form> -->
+
+  <form method="get" class="row g-2 mb-3">
+    <!-- วันที่ -->
+    <div class="col-md-2">
+      <label for="fromDate" class="form-label mb-0">From:</label>
+      <input type="date" id="fromDate" name="from_date" class="form-control form-control-sm"
+        value="{{ request.args.get('from_date', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label for="toDate" class="form-label mb-0">To:</label>
+      <input type="date" id="toDate" name="to_date" class="form-control form-control-sm"
+        value="{{ request.args.get('to_date', '') }}">
+    </div>
+
+    <!-- ฟิลเตอร์ฝั่ง From -->
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Extension</label>
+      <input type="text" name="from_extension" placeholder="From Extension"
+        class="form-control form-control-sm" value="{{ request.args.get('from_extension', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Agent</label>
+      <input type="text" name="from_agent" placeholder="From Agent"
+        class="form-control form-control-sm" value="{{ request.args.get('from_agent', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Group</label>
+      <input type="text" name="from_group" placeholder="From Group"
+        class="form-control form-control-sm" value="{{ request.args.get('from_group', '') }}">
+    </div>
+
+    <!-- ฟิลเตอร์ฝั่ง To -->
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Extension</label>
+      <input type="text" name="to_extension" placeholder="To Extension"
+        class="form-control form-control-sm" value="{{ request.args.get('to_extension', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Agent</label>
+      <input type="text" name="to_agent" placeholder="To Agent"
+        class="form-control form-control-sm" value="{{ request.args.get('to_agent', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Group</label>
+      <input type="text" name="to_group" placeholder="To Group"
+        class="form-control form-control-sm" value="{{ request.args.get('to_group', '') }}">
+    </div>
+
+    <!-- ปุ่ม Filter -->
+    <div class="col-md-2 align-self-end">
+      <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+    </div>
   </form>
+
   
   <div class="bg-white p-4 rounded shadow-sm">
   <div style="overflow-x: auto;">
