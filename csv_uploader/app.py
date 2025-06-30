@@ -540,10 +540,9 @@ def count_call_by_type():
     )
 
 
-
 @app.route('/internal_calls')
 def internal_calls():
-    page_title="Internal Call"
+    page_title = "Internal Call"
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -554,15 +553,22 @@ def internal_calls():
     data = []
     columns = []
     error = None
-    # date_columns = ['cdr_started_at', 'cdr_answered_at', 'cdr_ended_at']
     date_columns = ['Start', 'Answered', 'End']
 
-    # รับวันจาก query string
     from_date_str = request.args.get("from_date")
     to_date_str = request.args.get("to_date")
+
+    filters = {
+        "co.source_dn_number": request.args.get("from_extension"),
+        "co.source_dn_name": request.args.get("from_agent"),
+        "co.source_participant_group_name": request.args.get("from_group"),
+        "co.destination_dn_number": request.args.get("to_extension"),
+        "co.destination_dn_name": request.args.get("to_agent"),
+        "co.destination_participant_group_name": request.args.get("to_group"),
+    }
+
     try:
         if from_date_str:
-            # ตีความวันที่ว่าเป็นเวลาไทย แล้วแปลงเป็น UTC
             from_date_local = BANGKOK_TZ.localize(datetime.strptime(from_date_str, "%Y-%m-%d"))
         else:
             from_date_local = BANGKOK_TZ.localize(datetime.now() - timedelta(days=7))
@@ -572,22 +578,36 @@ def internal_calls():
         else:
             to_date_local = BANGKOK_TZ.localize(datetime.now()) + timedelta(days=1)
 
-        # แปลงเป็น UTC สำหรับใช้ใน query
         from_date = from_date_local.astimezone(utc)
         to_date = to_date_local.astimezone(utc)
-    
+
     except ValueError:
-            error = "Invalid date format"
-            now = BANGKOK_TZ.localize(datetime.now())
-            from_date = (now - timedelta(days=7)).astimezone(utc)
-            to_date = (now + timedelta(days=1)).astimezone(utc)
+        error = "Invalid date format"
+        now = BANGKOK_TZ.localize(datetime.now())
+        from_date = (now - timedelta(days=7)).astimezone(utc)
+        to_date = (now + timedelta(days=1)).astimezone(utc)
 
     try:
         conn_str = f'postgresql://{config.user}:{config.password}@{config.host}:{config.port}/{config.dbname}'
         engine = create_engine(conn_str)
 
+        where_clauses = [
+            "co.source_entity_type = 'extension'",
+            "co.destination_entity_type = 'extension'",
+            "co.cdr_started_at >= :from_date",
+            "co.cdr_started_at <= :to_date"
+        ]
+        params = {"from_date": from_date, "to_date": to_date}
+
+        for field, value in filters.items():
+            if value:
+                where_clauses.append(f"{field} ILIKE :{field}")
+                params[field] = f"%{value}%"
+
+        where_sql = " AND ".join(where_clauses)
+
         with engine.connect() as connection:
-            result = connection.execute(text("""
+            result = connection.execute(text(f"""
                 SELECT 
                     co.source_entity_type AS "From Type",
                     co.source_dn_number AS "From Extension",
@@ -610,17 +630,13 @@ def internal_calls():
                         co.source_participant_id = cr.cdr_participant_id
                         OR co.destination_participant_id = cr.cdr_participant_id
                     )
-                WHERE co.source_entity_type = 'extension'
-                AND co.destination_entity_type = 'extension'
-                AND co.cdr_started_at >= :from_date
-                AND co.cdr_started_at <= :to_date
+                WHERE {where_sql}
                 ORDER BY co.cdr_started_at DESC;
-            """), {"from_date": from_date, "to_date": to_date})
+            """), params)
 
             columns = result.keys()
             rows = [dict(row._mapping) for row in result]
 
-            # Convert datetime fields to Bangkok time
             for row in rows:
                 for col in date_columns:
                     if col in row and isinstance(row[col], datetime):
@@ -638,6 +654,7 @@ def internal_calls():
         page_title=page_title,
         error=error
     )
+
 
 
 @app.route('/outbound_calls')
