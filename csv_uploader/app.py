@@ -601,7 +601,7 @@ def internal_calls():
 
         for field, value in filters.items():
             if value:
-                where_clauses.append(f"{field} ILIKE :{field}")
+                where_clauses.append(f"co.{field} ILIKE :{field}")
                 params[field] = f"%{value}%"
 
         where_sql = " AND ".join(where_clauses)
