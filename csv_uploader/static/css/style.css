@@ -372,8 +372,8 @@
 
   html.dark-mode input::placeholder {
   color: #f1f1f1 !important;
-  opacity: 0.5 !important;
-}
+
+  }
 
 
 
