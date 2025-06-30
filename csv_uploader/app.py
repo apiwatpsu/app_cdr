@@ -455,7 +455,7 @@ def cdr_data():
         error = str(e)
 
     return render_template(
-        'table_report.html',
+        'table_report_filter.html',
         username=session['username'],
         data=data,
         columns=columns,
@@ -651,7 +651,7 @@ def internal_calls():
         error = str(e)
 
     return render_template(
-        'table_report.html',
+        'table_report_filter.html',
         username=session['username'],
         data=data,
         columns=columns,
@@ -772,7 +772,7 @@ def outbound_calls():
         error = str(e)
 
     return render_template(
-        'table_report.html',
+        'table_report_filter.html',
         username=session['username'],
         data=data,
         columns=columns,
@@ -887,7 +887,7 @@ def inbound_calls():
         error = str(e)
 
     return render_template(
-        'table_report.html',
+        'table_report_filter.html',
         username=session['username'],
         data=data,
         columns=columns,

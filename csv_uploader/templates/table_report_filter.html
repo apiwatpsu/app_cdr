@@ -23,6 +23,51 @@
         value="{{ request.args.get('to_date', '') }}">
     </div>
 
+    <!-- ฟิลเตอร์ฝั่ง From -->
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Number</label>
+      <input type="text" name="from_number" placeholder="From Number"
+        class="form-control form-control-sm" value="{{ request.args.get('from_number', '') }}">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Number</label>
+      <input type="text" name="to_number" placeholder="To Number"
+        class="form-control form-control-sm" value="{{ request.args.get('to_number', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Extension</label>
+      <input type="text" name="from_extension" placeholder="From Extension"
+        class="form-control form-control-sm" value="{{ request.args.get('from_extension', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Agent</label>
+      <input type="text" name="from_agent" placeholder="From Agent"
+        class="form-control form-control-sm" value="{{ request.args.get('from_agent', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">From Group</label>
+      <input type="text" name="from_group" placeholder="From Group"
+        class="form-control form-control-sm" value="{{ request.args.get('from_group', '') }}">
+    </div>
+
+    <!-- ฟิลเตอร์ฝั่ง To -->
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Extension</label>
+      <input type="text" name="to_extension" placeholder="To Extension"
+        class="form-control form-control-sm" value="{{ request.args.get('to_extension', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Agent</label>
+      <input type="text" name="to_agent" placeholder="To Agent"
+        class="form-control form-control-sm" value="{{ request.args.get('to_agent', '') }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Group</label>
+      <input type="text" name="to_group" placeholder="To Group"
+        class="form-control form-control-sm" value="{{ request.args.get('to_group', '') }}">
+    </div>
+
     <!-- ปุ่ม Filter -->
     <div class="col-md-2 align-self-end">
       <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
