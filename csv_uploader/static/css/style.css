@@ -370,11 +370,10 @@
     border: 1px solid #374151;
   }
 
-  html.dark-mode .form-control ::placeholder {
-      color: #f1f1f1 !important;
-      opacity: 0.5;
-  }
-
+  html.dark-mode input::placeholder {
+  color: #f1f1f1 !important;
+  opacity: 0.5 !important;
+}
 
 
 
