@@ -567,6 +567,8 @@ def internal_calls():
         "destination_dn_number": request.args.get("to_extension"),
         "destination_dn_name": request.args.get("to_agent"),
         "destination_participant_group_name": request.args.get("to_group"),
+        "source_participant_phone_number": request.args.get("from_number"),
+        "destination_participant_phone_number": request.args.get("to_number")
     }
 
     try:
@@ -686,6 +688,8 @@ def outbound_calls():
         "destination_dn_number": request.args.get("to_extension"),
         "destination_dn_name": request.args.get("to_agent"),
         "destination_participant_group_name": request.args.get("to_group"),
+        "source_participant_phone_number": request.args.get("from_number"),
+        "destination_participant_phone_number": request.args.get("to_number")
     }
 
     try:
@@ -804,6 +808,8 @@ def inbound_calls():
         "destination_dn_number": request.args.get("to_extension"),
         "destination_dn_name": request.args.get("to_agent"),
         "destination_participant_group_name": request.args.get("to_group"),
+        "source_participant_phone_number": request.args.get("from_number"),
+        "destination_participant_phone_number": request.args.get("to_number")
     }
 
     try:
