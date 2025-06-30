@@ -20,7 +20,7 @@
         <td>{{ loop.index }}</td>
         <td>{{ file }}</td>
         <td>
-          <audio controls preload="none" style="width: 300px;">
+          <audio controls preload="none" style="width: 250px; height: 40px;">
             <source src="{{ url_for('play_recording', filename=file) }}" type="audio/wav">
             Your browser does not support the audio element.
           </audio>
