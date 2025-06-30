@@ -48,6 +48,17 @@
 
     <!-- ฟิลเตอร์ฝั่ง From -->
     <div class="col-md-2">
+      <label class="form-label mb-0">From Number</label>
+      <input type="text" name="from_number" placeholder="From Number"
+        class="form-control form-control-sm" value="{{ request.args.get('from_number', '') }}">
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label mb-0">To Number</label>
+      <input type="text" name="to_number" placeholder="To Number"
+        class="form-control form-control-sm" value="{{ request.args.get('to_number', '') }}">
+    </div>
+    <div class="col-md-2">
       <label class="form-label mb-0">From Extension</label>
       <input type="text" name="from_extension" placeholder="From Extension"
         class="form-control form-control-sm" value="{{ request.args.get('from_extension', '') }}">
