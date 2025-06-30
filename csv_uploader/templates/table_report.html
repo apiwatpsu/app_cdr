@@ -41,8 +41,8 @@
         <tr>
           {% for col in columns %}
           <td>
-            {% if col == 'Recording URL' and row[col] %}
-              <audio controls preload="none" style="width: 300px;">
+            {% if col == 'Recording' and row[col] %}
+              <audio controls preload="none" style="width: 200px;">
                 <source src="{{ url_for('play_recording', filename=row[col]) }}" type="audio/wav">
                 Your browser does not support the audio element.
               </audio>
