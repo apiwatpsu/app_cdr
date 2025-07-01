@@ -8,6 +8,10 @@
   <!-- CSS: Bootstrap + DataTables -->
 
   <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+    lucide.createIcons();
+    });
     // เปิด dark mode ทันทีถ้าจำไว้
     (function () {
       if (localStorage.getItem("theme") === "dark") {
