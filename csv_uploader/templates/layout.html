@@ -164,23 +164,23 @@
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('cdr_data') }}">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Call Detail Record
         </a>
         <a href="{{ url_for('count_call_by_type') }}" data-menu="count_call_by_type">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Call Type Summary
         </a>
         <a href="{{ url_for('internal_calls') }}" data-menu="internal_calls">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Internal Calls
         </a>
         <a href="{{ url_for('outbound_calls') }}" data-menu="outbound_calls">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Outbound Calls
         </a>
         <a href="{{ url_for('inbound_calls') }}" data-menu="inbound_calls">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Inbound Calls
         </a>
     </div>
@@ -191,20 +191,22 @@
   <!-- <div class="sidebar-label text-muted">Agent Performance</div> -->
    {% if can_view('agent_report') %}
   <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="agent_report">
-      <span><i data-lucide="headphones"></i> Agent Report</span>
-      <i data-lucide="chevron-down"></i>
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-headphones-icon lucide-headphones"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" zn_id="447"/></svg>
+        Agent Report
+      </span>
   </button>
   <div class="dropdown-container">
     <a href="{{ url_for('average_call_handling_by_agent') }}" data-menu="average_call_handling_by_agent">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1" zn_id="473"/></svg>
       Avg Call Handling Time
     </a>
     <a href="{{ url_for('count_call_handling_by_agent') }}" data-menu="count_call_handling_by_agent">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1" zn_id="473"/></svg>
       Count Call Handling
     </a>
     <a href="{{ url_for('agent_utilization_rate') }}" data-menu="agent_utilization_rate">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1" zn_id="473"/></svg>
       Utilization Rate
     </a>
   </div>
@@ -215,29 +217,32 @@
   <!-- <div class="sidebar-label text-muted">Queue Performance</div> -->
    {% if can_view('queue_report') %}
   <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="queue_report">
-      <span><i data-lucide="list-ordered"></i> Queue Report</span>
-      <i data-lucide="chevron-down"></i>
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered-icon lucide-list-ordered"><path d="M10 12h11" zn_id="509"/><path d="M10 18h11" zn_id="510"/><path d="M10 6h11" zn_id="511"/><path d="M4 10h2" zn_id="512"/><path d="M4 6h1v4" zn_id="513"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" zn_id="514"/></svg> 
+        Queue Report
+      </span>
+      
   </button>
   <div class="dropdown-container">
     <a href="{{ url_for('list_all_lost_queue_calls') }}" data-menu="list_all_lost_queue_calls">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
       Lost Queue Call
     </a>
     <a href="{{ url_for('calls_handled_by_each_queue') }}" data-menu="calls_handled_by_each_queue">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
       Queue Call Handled
     </a>
     <a href="{{ url_for('average_time_before_agents_answered') }}" data-menu="average_time_before_agents_answered">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
       Avg Time Before Answered
     </a>
     <a href="{{ url_for('terminated_before_being_answered') }}" data-menu="terminated_before_being_answered">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
       Terminated Before Answered
     </a>
 
     <a href="{{ url_for('calls_transferred_to_queue') }}" data-menu="calls_transferred_to_queue">
-      <i data-lucide="dot"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
       Calls Transferred Queue
     </a>
   </div>
@@ -252,11 +257,11 @@
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('avg_call_duration_answered_external') }}" data-menu="avg_call_duration_answered_external">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Avg Duration Outbound Calls
         </a>
         <a href="{{ url_for('longest_internal_calls') }}" data-menu="longest_internal_calls">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
         Longest Internal Calls
         </a>
     </div>
@@ -267,16 +272,19 @@
     <!-- <div class="sidebar-label text-muted">Error and Failure Analysis</div> -->
      {% if can_view('error_failure') %}
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="error_failure">
-      <span><i data-lucide="circle-x"></i> Error and Failure</span>
-      <i data-lucide="chevron-down"></i>
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x-icon lucide-circle-x"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg> 
+        Error and Failure
+      </span>
+      
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('calls_no_route') }}" data-menu="calls_no_route">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
          List Calls Failed
         </a>
         <a href="{{ url_for('calls_license_limits') }}" data-menu="calls_license_limits">
-          <i data-lucide="dot"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
          Calls License Limits
         </a>
     </div>
@@ -286,7 +294,7 @@
     <a href="{{ url_for('csat_logs') }}" 
       data-menu="csat_logs"
       class="{% if request.endpoint == 'csat_logs' %}active{% endif %}">
-        <i data-lucide="chart-no-axes-combined"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined"><path d="M12 16v5" zn_id="150"/><path d="M16 14v7" zn_id="151"/><path d="M20 10v11" zn_id="152"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" zn_id="153"/><path d="M4 18v3" zn_id="154"/><path d="M8 14v7" zn_id="155"/></svg>
         CSAT Report
     </a>
     {% endif %}
@@ -296,7 +304,7 @@
     <a href="{{ url_for('recordings') }}" 
       data-menu="recordings"
       class="{% if request.endpoint == 'recordings' %}active{% endif %}">
-        <i data-lucide="audio-lines"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-audio-lines-icon lucide-audio-lines"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>
         Recording
     </a>
     {% endif %}
