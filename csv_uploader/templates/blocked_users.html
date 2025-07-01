@@ -3,7 +3,7 @@
 {% block title %}Blocked Users{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Blocked Users</h2>
+<h2 class="mb-4">locked Users</h2>
 <div class="bg-white p-4 rounded shadow-sm">
   <table id="myTable" class="table table-hover table-striped align-middle mb-0 nowrap" style="width:100%; border-collapse: collapse;">
     <thead class="table-light">
@@ -11,7 +11,7 @@
         <th>Username</th>
         <th>IP Address</th>
         <th>Platform</th>
-        <th>Blocked Expire</th>
+        <th>locked Expire</th>
         <th>Interval</th>
         <th>Actions</th>
     </tr>
@@ -25,8 +25,8 @@
         <td>{{ user.lockout_until.strftime('%Y-%m-%d %H:%M:%S') }}</td>
         <td>{{ user.failed_login_attempts }}</td>
         <td>
-        <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('ปลดล็อกผู้ใช้ {{ user.username }}?');">
-            <button type="submit" class="btn btn-sm btn-success">Unblock</button>
+        <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('Unlock {{ user.username }}?');">
+            <button type="submit" class="btn btn-sm btn-success">Unlock</button>
         </form>
         </td>
     </tr>
