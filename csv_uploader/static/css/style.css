@@ -234,8 +234,13 @@
     .my-muted {
       color: #333 !important; 
     }
-    h2, h4, h4.fw-bold, h5 {
+    
+    h2, h4, h5 {
       color: #333 !important;
+    }
+
+    h4.fw-bold {
+      color: #333;
     }
 
 
