@@ -110,14 +110,14 @@
     <a href="{{ url_for('manage_users') }}"
       data-menu="manage_users"
       class="{% if request.endpoint == 'manage_users' %}active{% endif %}">
-        <i data-lucide="users"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
         Manage Users
     </a>
 
     <a href="{{ url_for('blocked_users') }}"
       data-menu="blocked_users"
       class="{% if request.endpoint == 'blocked_users' %}active{% endif %}">
-        <i data-lucide="lock-open"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open-icon lucide-lock-open"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
         Locked Users
     </a>
 
@@ -132,19 +132,19 @@
     <a href="{{ url_for('db_config') }}"
       data-menu="db_config"
       class="{% if request.endpoint == 'db_config' %}active{% endif %}">
-        <i data-lucide="database"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database-icon lucide-database"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
         Database Settings
     </a>
 
     <a href="{{ url_for('smtp_config') }}"
       class="{% if request.endpoint == 'smtp_config' %}active{% endif %}">
-        <i data-lucide="send"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-icon lucide-send"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
         SMTP Settings
     </a>
 
     <a href="{{ url_for('system_config') }}"
       class="{% if request.endpoint == 'system_config' %}active{% endif %}">
-        <i data-lucide="cog"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cog-icon lucide-cog"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg>
         System Configuration
     </a>
     {% endif %}
@@ -157,7 +157,7 @@
     {% if can_view('cdr_report') %}
     <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="cdr_report">
       <span><i data-lucide="folder"></i> Call Reports</span>
-      <i data-lucide="chevron-down"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" zn_id="396"/></svg>
     </button>
     <div class="dropdown-container">
         <a href="{{ url_for('cdr_data') }}">
