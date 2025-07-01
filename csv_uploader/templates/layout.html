@@ -7,15 +7,10 @@
 
   <!-- CSS: Bootstrap + DataTables -->
 
-  <!-- <script>
-    (function () {
-      if (localStorage.getItem("theme") === "dark") {
-        document.documentElement.classList.add("dark-mode");
-      }
-    })();
-  </script> -->
-
   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      lucide.createIcons();
+    });
     // เปิด dark mode ทันทีถ้าจำไว้
     (function () {
       if (localStorage.getItem("theme") === "dark") {
