@@ -234,6 +234,9 @@
     .my-muted {
       color: #333 !important; 
     }
+    h2, h4, h5 {
+      color: #333 !important;
+    }
 
 
     /* Dark Mode */
