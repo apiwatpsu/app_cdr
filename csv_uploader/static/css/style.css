@@ -382,6 +382,12 @@
     color: #f1f1f1 !important;
     opacity: 0.7;
   }
+  
+  html.dark-mode h2,
+  html.dark-mode h4,
+  html.dark-mode h5 {
+    color: #f1f1f1;
+  }
 
 
 
