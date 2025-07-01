@@ -386,7 +386,7 @@
   html.dark-mode h2,
   html.dark-mode h4,
   html.dark-mode h5 {
-    color: #f1f1f1;
+    color: #f1f1f1 !important;
   }
 
 
