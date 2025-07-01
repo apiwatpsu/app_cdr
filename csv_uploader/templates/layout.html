@@ -53,7 +53,10 @@
     
     <div class="form-check form-switch">
       <input class="form-check-input" type="checkbox" id="theme-toggle">
-      <label class="form-check-label" for="theme-toggle">🌙 Dark Mode</label>
+      <label class="form-check-label" for="theme-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon-icon lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        Dark Mode
+      </label>
     </div>
 
 
@@ -72,7 +75,7 @@
           Profile
         </a>
         <a class="dropdown-item" href="{{ url_for('logout') }}">
-          <i data-lucide="log-out" class="topbar-icon"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" class="topbar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
           Logout
         </a>
 
