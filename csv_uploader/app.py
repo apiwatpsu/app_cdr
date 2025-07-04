@@ -97,17 +97,17 @@ def login():
 
             else:
                 # password ผิด เพิ่ม count
-                if user.username.lower() != 'admin':
-                    user.failed_login_attempts += 1
-                    if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
-                        user.lockout_until = datetime.utcnow() + timedelta(minutes=LOCKOUT_TIME_MINUTES)
-                    user.last_failed_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-                    user.last_failed_platform = request.user_agent.platform
-                    db.session.commit()
-                    if user.lockout_until:
-                        return render_template('login.html', error=f'ล็อกอินผิดเกิน {MAX_FAILED_ATTEMPTS} ครั้ง บัญชีถูกล็อก {LOCKOUT_TIME_MINUTES} นาที')
-                    else:
-                        return render_template('login.html', error='Invalid credentials')
+                
+                user.failed_login_attempts += 1
+                if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
+                    user.lockout_until = datetime.utcnow() + timedelta(minutes=LOCKOUT_TIME_MINUTES)
+                user.last_failed_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+                user.last_failed_platform = request.user_agent.platform
+                db.session.commit()
+                if user.lockout_until:
+                    return render_template('login.html', error=f'ล็อกอินผิดเกิน {MAX_FAILED_ATTEMPTS} ครั้ง บัญชีถูกล็อก {LOCKOUT_TIME_MINUTES} นาที')
+                else:
+                    return render_template('login.html', error='Invalid credentials')
 
         else:
             return render_template('login.html', error='Invalid credentials')
