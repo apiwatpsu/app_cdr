@@ -566,6 +566,7 @@
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script>
   function updateCurrentTime() {
     const now = new Date();
@@ -613,6 +614,7 @@
   });
 
     // === แสดง Chart.js ===
+  Chart.register(ChartDataLabels);
   const queueData = {{ queue_call_stats_data | tojson }};
   const labels = queueData.map(row => row["Queue Name"]);
   const serviceData = queueData.map(row => row["Service Calls"]);
@@ -662,7 +664,8 @@
           title: { display: true, text: 'Calls' }
         }
       }
-    }
+    },
+    plugins: [ChartDataLabels]
   });
 
 
