@@ -464,7 +464,7 @@
       </div>
       </div>
 
-  <div class="col-12 col-lg-6">
+  <!-- <div class="col-12 col-lg-6">
   <div class="card p-4 bg-white rounded shadow-sm h-100">
     <h5>Queue Call Stats</h5>
     <div class="table-responsive" style="max-height: 400px;">
@@ -488,7 +488,7 @@
           <tr>
             <td class="fw-medium">{{ row["Queue Name"] }}</td>
 
-            <!-- Service -->
+            
             <td class="text-center">
               <div class="d-flex flex-column align-items-center">
                 <small>{{ service }}</small>
@@ -501,7 +501,7 @@
               </div>
             </td>
 
-            <!-- Abandoned -->
+            
             <td class="text-center">
               <div class="d-flex flex-column align-items-center">
                 <small>{{ abandoned }}</small>
@@ -514,7 +514,7 @@
               </div>
             </td>
 
-            <!-- Total -->
+            
             <td class="text-center">
               <div class="d-flex flex-column align-items-center">
                 <small>{{ total }}</small>
@@ -524,7 +524,7 @@
               </div>
             </td>
 
-            <!-- Stacked Progress -->
+            
             <td class="text-center">
               <div class="d-flex flex-column align-items-center">
                 <small>{{ percent_service }}% / {{ percent_abandoned }}%</small>
@@ -552,7 +552,13 @@
       </table>
     </div>
   </div>
-</div>
+</div> -->
+
+<!-- Stacked Chart -->
+    <div class="card p-4 shadow-sm">
+      <h5>Queue Call Stats (Stacked Bar)</h5>
+      <canvas id="queueChart" height="400"></canvas>
+    </div>
 
 
 
@@ -602,6 +608,59 @@
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
+      }
+    }
+  });
+
+    // === แสดง Chart.js ===
+  const queueData = {{ queue_call_stats_data | tojson }};
+  const labels = queueData.map(row => row["Queue Name"]);
+  const serviceData = queueData.map(row => row["Service Calls"]);
+  const abandonedData = queueData.map(row => row["Abandoned Calls"]);
+  const totalData = queueData.map(row => row["Total Calls"]);
+  const othersData = totalData.map((total, i) => total - serviceData[i] - abandonedData[i]);
+
+  const ctx = document.getElementById('queueChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Service',
+          data: serviceData,
+          backgroundColor: '#28a745'
+        },
+        {
+          label: 'Abandoned',
+          data: abandonedData,
+          backgroundColor: '#dc3545'
+        },
+        {
+          label: 'Other',
+          data: othersData,
+          backgroundColor: '#6c757d'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: { mode: 'index', intersect: false },
+        legend: { position: 'bottom' },
+        title: { display: true, text: 'Queue Call Stats (Stacked)' }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      scales: {
+        x: { stacked: true },
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          title: { display: true, text: 'Calls' }
+        }
       }
     }
   });
