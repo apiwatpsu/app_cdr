@@ -2,7 +2,7 @@
 {% block title %}Upload Campaign{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">📁 อัปโหลด Campaign</h2>
+<h2 class="mb-3">Upload Campaign</h2>
 
 <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm mb-4" action="/campaign/upload">
   <div class="row g-2 align-items-center">
@@ -10,10 +10,10 @@
       <input type="file" name="file" accept=".csv" required class="form-control">
     </div>
     <div class="col-auto">
-      <a href="/download/template" class="btn btn-outline-secondary">⬇️ ดาวน์โหลดเทมเพลต CSV</a>
+      <a href="/download/template" class="btn btn-outline-secondary">Template CSV</a>
     </div>
     <div class="col-auto">
-      <button type="submit" class="btn btn-success">📁 อัปโหลดไฟล์ CSV</button>
+      <button type="submit" class="btn btn-success">Upload CSV</button>
     </div>
   </div>
 </form>
