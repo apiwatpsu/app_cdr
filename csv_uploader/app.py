@@ -2911,9 +2911,11 @@ def campaign_launch_bulk():
             call_resp.raise_for_status()
             lead.call_status = "success"
             lead.called_at = datetime.utcnow()
+            flash(f"📞 โทรหา {lead.phone_number} สำเร็จ", "dialing")
             called += 1
         except Exception as e:
             lead.call_status = "failed"
+            flash(f"❌ โทรหา {lead.phone_number} ล้มเหลว", "dialing")
             failed += 1
 
         db.session.add(lead)

@@ -59,6 +59,19 @@
   <button type="submit" class="btn btn-primary mt-3">📞 เริ่มโทรออก</button>
 </form>
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {% if category == 'dialing' %}
+        <div class="alert alert-info py-1 px-2 mb-1 small" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
 
 <!-- ✅ ตาราง Leads -->
 <div class="bg-white p-4 rounded shadow-sm">
