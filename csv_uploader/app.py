@@ -358,6 +358,12 @@ def system_config():
         SystemConfig.set("LOCKOUT_TIME_MINUTES", request.form['lockout_minutes'])
         SystemConfig.set("API_TOKEN", request.form['api_token'])
         SystemConfig.set("RECORDING_PATH", request.form['recording_path'])
+        SystemConfig.set("TCX_URL", request.form['tcx_url'])
+        SystemConfig.set("TCX_TOKEN_URL", request.form['tcx_token_url'])
+        SystemConfig.set("TCX_CLIENT_SECRET", request.form['tcx_client_secret'])
+        SystemConfig.set("TCX_GRANT_TYPE", request.form['tcx_grant_type'])
+        SystemConfig.set("TCX_CLIENT_ID", request.form['tcx_client_id'])
+
 
         flash('Saved successfully', 'success')
         return redirect(url_for('system_config'))
@@ -366,7 +372,12 @@ def system_config():
         max_attempts=SystemConfig.get("MAX_FAILED_ATTEMPTS", 3),
         lockout_minutes=SystemConfig.get("LOCKOUT_TIME_MINUTES", 5),
         api_token=SystemConfig.get("API_TOKEN", ""),
-        recording_path=SystemConfig.get("RECORDING_PATH", "")
+        recording_path=SystemConfig.get("RECORDING_PATH", ""),
+        tcx_url = SystemConfig.get("TCX_URL", ""),
+        tcx_token_url = SystemConfig.get("TCX_TOKEN_URL", ""),
+        tcx_client_secret = SystemConfig.get("TCX_CLIENT_SECRET", ""),
+        tcx_grant_type = SystemConfig.get("TCX_GRANT_TYPE", ""),
+        tcx_client_id = SystemConfig.get("TCX_CLIENT_ID", "")
     )
 
 
