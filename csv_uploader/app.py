@@ -2805,7 +2805,7 @@ def campaign_outbound():
 
     return render_template("test_campaign_outbound.html")
 
-@app.route('/campaign/upload', methods=['POST'])
+@app.route('/campaign/upload', methods=['GET', 'POST'])
 def upload_campaign():
     file = request.files['file']
     
