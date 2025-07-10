@@ -4,14 +4,19 @@
 {% block content %}
 <h2 class="mb-4">Upload Campaign</h2>
 <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm mb-4" action="/campaign/upload">
-  <input type="file" name="file" accept=".csv" required>
-  <div class="d-flex justify-content-between mb-3">
-  <a href="/download/template" class="btn btn-outline-secondary">
-    ⬇️ ดาวน์โหลดเทมเพลต CSV
-  </a>
-  <button type="submit" class="btn btn-success">📁 อัปโหลดไฟล์ CSV</button>
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <input type="file" name="file" accept=".csv" required class="form-control w-auto">
+
+    <a href="/download/template" class="btn btn-outline-secondary">
+      ⬇️ ดาวน์โหลดเทมเพลต CSV
+    </a>
+
+    <button type="submit" class="btn btn-success">
+      📁 อัปโหลดไฟล์ CSV
+    </button>
   </div>
 </form>
+
 
 <div class="bg-white p-4 rounded shadow-sm">
   <div style="overflow-x: auto;">
