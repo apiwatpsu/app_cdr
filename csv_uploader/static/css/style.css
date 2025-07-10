@@ -262,7 +262,7 @@
 
 
     html.dark-mode .sidebar {
-      background-color: #212631;
+      background-color: #212630;
       border-right: 1px solid #333;
     }
 
@@ -282,12 +282,12 @@
     }
 
     html.dark-mode .dropdown-btn {
-      background-color: #212631;
+      background-color: #212630;
       color: #f1f1f1;
     }
 
     html.dark-mode .dropdown-container {
-      background-color: #212631;
+      background-color: #212630;
     }
 
     html.dark-mode .dropdown-btn span {
@@ -309,7 +309,7 @@
     }
 
     html.dark-mode .bg-white {
-    background-color: #212631 !important;
+    background-color: #212630 !important;
     color: #f1f1f1;
     border: 1px;
     }
@@ -323,7 +323,7 @@
 
     html.dark-mode #DashTable td,
     html.dark-mode #DashTable th {
-      background-color: #212631;
+      background-color: #212630;
       color: #f1f1f1;               
     }
 
