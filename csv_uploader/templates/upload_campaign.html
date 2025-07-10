@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Upload Campaign{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Upload Campaign</h2>
+<form method="POST" enctype="multipart/form-data" action="/campaign/upload">
+  <input type="file" name="file" accept=".csv" required>
+  <button type="submit" class="btn btn-success mt-2">อัปโหลด CSV</button>
+</form>
+
+<div class="bg-white p-4 rounded shadow-sm">
+  <div style="overflow-x: auto;">
+    <table id="campaignTable" class="table table-hover table-striped align-middle nowrap" style="width:100%; border-collapse: collapse;">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>ชื่อ</th>
+          <th>เบอร์โทร</th>
+          <th>หมายเหตุ</th>
+          <th>Queue</th>
+          <th>Agent</th>
+          <th>สถานะการโทร</th>
+          <th>โทรออก</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lead in leads %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ lead.name }}</td>
+          <td>{{ lead.phone_number }}</td>
+          <td>{{ lead.remark }}</td>
+          <td>{{ lead.queue or '-' }}</td>
+          <td>{{ lead.agent or '-' }}</td>
+          <td>{{ lead.call_status or '-' }}</td>
+          <td>
+            <form method="POST" action="/campaign/call/{{ lead.id }}" class="d-inline">
+              <input type="hidden" name="dn" value="8006">
+              <button class="btn btn-sm btn-outline-primary" type="submit">📞 โทรออก</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+{% endblock %}

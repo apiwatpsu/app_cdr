@@ -2803,7 +2803,32 @@ def campaign_outbound():
 
         return redirect("/campaign/outbound")
 
-    return render_template("campaign_outbound.html")
+    return render_template("test_campaign_outbound.html")
+
+@app.route('/campaign/upload', methods=['POST'])
+def upload_campaign():
+    file = request.files['file']
+    
+    if not file or not file.filename.endswith('.csv'):
+        flash("กรุณาเลือกไฟล์ CSV ที่ถูกต้อง", "danger")
+        return redirect('/campaign/outbound')
+
+    # ✅ แปลงไฟล์เป็น string ด้วย decode แล้วส่งเข้า StringIO
+    stream = StringIO(file.stream.read().decode("utf-8"))
+    reader = csv.DictReader(stream)
+
+    for row in reader:
+        call = CampaignCall(
+            name=row.get('name'),
+            phone_number=row.get('phone_number'),
+            remark=row.get('remark'),
+            queue=row.get('queue'),
+        )
+        db.session.add(call)
+
+    db.session.commit()
+    flash("อัปโหลดข้อมูลแคมเปญเรียบร้อย", "success")
+    return redirect('/campaign/leads')
 
 
 
