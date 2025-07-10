@@ -8,4 +8,5 @@ Werkzeug
 psutil
 pytz
 pyotp
+requests
 qrcode[pil]
