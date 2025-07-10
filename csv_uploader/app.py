@@ -2985,6 +2985,8 @@ def campaign_launch_bulk():
 
     # 🔄 สร้าง summary ต่อ campaign
     campaign_summary = {}
+    total_success = 0
+    total_failed = 0
     for name in selected_campaigns:
         calls = CampaignCall.query.filter_by(name=name).all()
         success = sum(1 for c in calls if c.call_status == 'success')
