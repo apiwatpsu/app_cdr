@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}จัดการแคมเปญ{% endblock %}
+
+{% block content %}
+<div class="bg-white p-4 rounded shadow-sm">
+  <h3 class="mb-4">🗂 จัดการแคมเปญ</h3>
+
+  {% if campaigns %}
+    <table class="table table-striped align-middle" id="myTable">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>ชื่อแคมเปญ</th>
+          <th>วันที่สร้างล่าสุด</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in campaigns %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ c.name }}</td>
+          <td>{{ c.created_at.strftime('%Y-%m-%d %H:%M:%S') if c.created_at else '-' }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_campaign', name=c.name) }}" onsubmit="return confirm('ยืนยันการลบแคมเปญ {{ c.name }} ?')">
+              <button type="submit" class="btn btn-sm btn-danger">🗑 ลบ</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>ยังไม่มีแคมเปญ</p>
+  {% endif %}
+</div>
+{% endblock %}

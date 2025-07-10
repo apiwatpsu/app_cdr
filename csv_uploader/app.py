@@ -2915,6 +2915,26 @@ def campaign_launch_bulk():
     return redirect("/campaign/upload")
 
 
+@app.route('/campaign/manage')
+def manage_campaigns():
+    # ดึงเฉพาะชื่อแคมเปญที่มีอยู่ และแสดงวันสร้างล่าสุดของแต่ละแคมเปญ
+    campaigns = db.session.query(
+        CampaignCall.name,
+        db.func.max(CampaignCall.created_at).label('created_at')
+    ).group_by(CampaignCall.name).order_by(CampaignCall.created_at.desc()).all()
+
+    return render_template('manage_campaign.html', campaigns=campaigns)
+
+@app.route('/campaign/delete/<name>', methods=['POST'])
+def delete_campaign(name):
+    # ลบข้อมูลทั้งหมดที่ตรงกับชื่อแคมเปญนี้
+    db.session.query(CampaignCall).filter_by(name=name).delete()
+    db.session.commit()
+    flash(f'ลบแคมเปญ "{name}" เรียบร้อยแล้ว', 'success')
+    return redirect('/campaign/manage')
+
+
+
 @app.route('/logout')
 def logout():
         session.clear()
