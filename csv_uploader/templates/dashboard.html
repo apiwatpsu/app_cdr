@@ -666,7 +666,7 @@
       legend: {
         position: 'bottom',
         labels: {
-          color: '#222',
+          color: document.documentElement.classList.contains('dark-mode') ? '#fff' : '#333',
           usePointStyle: true,
           pointStyle: 'circle'
         }
