@@ -311,7 +311,7 @@
     html.dark-mode .bg-white {
     background-color: #212631 !important;
     color: #f1f1f1;
-    border: 0.5px;
+    border: 1px;
     }
     
     html.dark-mode #myTable td,
