@@ -255,10 +255,6 @@
       color: #e2e2e4;
     }
     
-    html.dark-mode .card {
-      border: 0.5px;
-    }
-
     html.dark-mode .topbar input::placeholder {
       color: #ffffff;
       opacity: 0.5;
@@ -315,7 +311,7 @@
     html.dark-mode .bg-white {
     background-color: #212631 !important;
     color: #f1f1f1;
-    border: 1px solid #444 !important;
+    border: 0.5px;
     }
     
     html.dark-mode #myTable td,
