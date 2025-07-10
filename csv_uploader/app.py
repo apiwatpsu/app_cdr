@@ -7,6 +7,7 @@ from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
 from pytz import timezone, utc
 from flask import g
+from collections import defaultdict
 import csv
 import psutil
 import shutil
