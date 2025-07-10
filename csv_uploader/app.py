@@ -2998,7 +2998,8 @@ def campaign_launch_bulk():
     return render_template(
         "upload_campaign.html",  # ✅ เปลี่ยนชื่อไฟล์ template ตามที่คุณใช้จริง
         campaign_names=selected_campaigns,
-        campaign_summary=campaign_summary
+        campaign_summary=campaign_summary,
+        leads=leads
     )
 
 
