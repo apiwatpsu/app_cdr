@@ -4,14 +4,25 @@
 {% block content %}
 <h2 class="mb-4">Test Campaign Outbound</h2>
 <form method="POST" action="/campaign/outbound" class="bg-white p-4 rounded shadow-sm">
-  <div class="mb-3">
+  <!-- <div class="mb-3">
     <label for="dn" class="form-label">DN:</label>
     <input type="text" class="form-control" name="dn" required>
   
+    <label for="number" class="form-label">เบอร์ปลายทาง:</label>
+    <input type="text" class="form-control" name="number" required>
+  </div> -->
 
+  <div class="row mb-3">
+  <div class="col-md-6">
+    <label for="dn" class="form-label">DN:</label>
+    <input type="text" class="form-control" name="dn" required>
+  </div>
+  <div class="col-md-6">
     <label for="number" class="form-label">เบอร์ปลายทาง:</label>
     <input type="text" class="form-control" name="number" required>
   </div>
+</div>
+
   
   <button type="submit" class="btn btn-success">โทรออก</button>
 </form>
