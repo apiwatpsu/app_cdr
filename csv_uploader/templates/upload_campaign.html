@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2 class="mb-4">Upload Campaign</h2>
-<form method="POST" enctype="multipart/form-data" action="/campaign/upload">
+<form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm mb-4" action="/campaign/upload">
   <input type="file" name="file" accept=".csv" required>
   <button type="submit" class="btn btn-success mt-2">อัปโหลด CSV</button>
 </form>
