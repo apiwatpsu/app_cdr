@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, abort, redirect, url_for, session, flash
+from flask import Flask, render_template, send_from_directory, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall
@@ -2833,6 +2833,13 @@ def upload_campaign():
     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
     return render_template('upload_campaign.html', leads=leads)
 
+@app.route('/download/template')
+def download_template():
+    return send_from_directory(
+        directory='static/templates',
+        path='campaign_template.csv',
+        as_attachment=True
+    )
 
 @app.route('/logout')
 def logout():
