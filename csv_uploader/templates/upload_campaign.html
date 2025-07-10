@@ -56,8 +56,11 @@
 
   </div>
 
-  <button type="submit" class="btn btn-primary mt-3">Start</button>
-  <a href="/campaign/stop" class="btn btn-danger mt-2">Stop</a>
+ <div class="d-flex gap-2 mt-3">
+  <button type="submit" class="btn btn-primary">📞 Start</button>
+  <a href="/campaign/stop" class="btn btn-danger">⛔️ Stop</a>
+</div>
+
 </form>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
