@@ -626,53 +626,72 @@
 
   const ctx = document.getElementById('queueChart').getContext('2d');
   new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Service',
-          data: serviceData,
-          backgroundColor: 'rgba(25, 135, 84, 0.4)'
-        },
-        {
-          label: 'Abandoned',
-          data: abandonedData,
-          backgroundColor: 'rgba(220, 53, 69, 0.4)'
-        },
-        {
-          label: 'Other',
-          data: othersData,
-          backgroundColor: 'rgba(108, 117, 125, 0.4)'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        tooltip: { mode: 'index', intersect: false },
-        legend: { 
-          position: 'bottom',
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Service',
+        data: serviceData,
+        backgroundColor: 'rgba(25, 135, 84, 0.4)',
+        borderColor: 'rgba(25, 135, 84, 1)',
+        fill: true,
+        tension: 0.4,
+        stack: 'stack1'
+      },
+      {
+        label: 'Abandoned',
+        data: abandonedData,
+        backgroundColor: 'rgba(220, 53, 69, 0.4)',
+        borderColor: 'rgba(220, 53, 69, 1)',
+        fill: true,
+        tension: 0.4,
+        stack: 'stack1'
+      },
+      {
+        label: 'Other',
+        data: othersData,
+        backgroundColor: 'rgba(108, 117, 125, 0.4)',
+        borderColor: 'rgba(108, 117, 125, 1)',
+        fill: true,
+        tension: 0.4,
+        stack: 'stack1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      tooltip: { mode: 'index', intersect: false },
+      legend: {
+        position: 'bottom',
+        labels: {
           color: '#222',
           usePointStyle: true,
           pointStyle: 'circle'
         }
-      },
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      scales: {
-        x: { stacked: true },
-        y: {
-          stacked: true,
-          beginAtZero: true,
-          title: { display: true, text: 'Calls' }
-        }
       }
     },
-    plugins: [ChartDataLabels]
-  });
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    scales: {
+      x: {
+        stacked: true
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Calls'
+        }
+      }
+    }
+  },
+  plugins: [ChartDataLabels]
+});
 
 
 
