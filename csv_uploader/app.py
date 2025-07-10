@@ -2916,8 +2916,6 @@ def download_template():
 #     return redirect("/campaign/upload")
 
 
-from collections import defaultdict
-
 @app.route('/campaign/launch_bulk', methods=['POST'])
 def campaign_launch_bulk():
     selected_campaigns = request.form.getlist("campaign_names")
