@@ -254,6 +254,10 @@
       background-color: #1d222b;
       color: #e2e2e4;
     }
+    
+    html.card {
+      border: 0.5px;
+    }
 
     html.dark-mode .topbar input::placeholder {
       color: #ffffff;
