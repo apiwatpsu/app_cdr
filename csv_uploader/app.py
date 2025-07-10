@@ -2879,6 +2879,7 @@ def campaign_launch_bulk():
         token_resp.raise_for_status()
         access_token = token_resp.json().get("access_token")
     except Exception as e:
+        session['calling_active'] = False
         flash(f"ไม่สามารถขอ Token ได้: {str(e)}", "danger")
         return redirect("/campaign/upload")
 
@@ -2892,6 +2893,9 @@ def campaign_launch_bulk():
     failed = 0
 
     for lead in leads:
+        if not session.get('calling_active'):
+            flash("⛔️ หยุดการโทรแล้ว", "warning")
+            break
         dn = (lead.queue or "").strip()  # ใช้ queue เป็น DN
         if not dn or not lead.phone_number:
             continue  # ข้ามถ้าไม่มีข้อมูล
@@ -2921,7 +2925,15 @@ def campaign_launch_bulk():
         db.session.add(lead)
 
     db.session.commit()
+    session['calling_active'] = False
     flash(f"📞 โทรสำเร็จ {called} รายการ / ล้มเหลว {failed} รายการ", "success")
+    return redirect("/campaign/upload")
+
+
+@app.route('/campaign/stop')
+def campaign_stop():
+    session['calling_active'] = False
+    flash("⛔️ หยุดการโทรเรียบร้อยแล้ว", "warning")
     return redirect("/campaign/upload")
 
 
