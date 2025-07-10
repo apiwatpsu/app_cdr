@@ -255,7 +255,7 @@
       color: #e2e2e4;
     }
     
-    html.card {
+    html.dark-mode .card {
       border: 0.5px;
     }
 
