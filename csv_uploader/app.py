@@ -2821,7 +2821,6 @@ def upload_campaign():
             call = CampaignCall(
                 name=row.get('name'),
                 phone_number=row.get('phone_number'),
-                remark=row.get('remark'),
                 queue=row.get('queue'),
             )
             db.session.add(call)
