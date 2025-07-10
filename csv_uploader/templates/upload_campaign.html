@@ -43,12 +43,12 @@
         <label class="form-check-label fw-bold" for="chk_{{ loop.index }}">{{ name }}</label>
       </div>
 
-      {% set summary = campaign_summary[name] %}
-      {% set success_count = summary.success %}
-      {% set failed_count = summary.failed %}
-      {% set total = success_count + failed_count %}
-      {% set percent_success = (success_count / total * 100) if total > 0 else 0 %}
-      {% set percent_failed = (failed_count / total * 100) if total > 0 else 0 %}
+        {% set summary = campaign_summary[name] %}
+        {% set success_count = summary.success %}
+        {% set failed_count = summary.failed %}
+        {% set total = success_count + failed_count %}
+        {% set percent_success = (success_count / total * 100) if total > 0 else 0 %}
+        {% set percent_failed = (failed_count / total * 100) if total > 0 else 0 %}
 
       <div class="progress" style="height: 20px;">
         <div class="progress-bar bg-success" role="progressbar"
