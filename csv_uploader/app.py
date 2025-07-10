@@ -2748,6 +2748,64 @@ def play_recording(filename):
         abort(404)
 
 
+@app.route('/campaign/outbound', methods=['GET', 'POST'])
+def campaign_outbound():
+    if request.method == 'POST':
+        dn = request.form['dn']
+        number = request.form['number']
+
+        # ดึง config
+        token_url = SystemConfig.get("TCX_TOKEN_URL")
+        client_id = SystemConfig.get("TCX_CLIENT_ID")
+        client_secret = SystemConfig.get("TCX_CLIENT_SECRET")
+        grant_type = SystemConfig.get("TCX_GRANT_TYPE", "client_credentials")
+        call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL")
+        makecall_path = SystemConfig.get("TCX_MAKECALL_PATH")
+
+        # 1️⃣ ขอ Access Token
+        token_data = {
+            "grant_type": grant_type,
+            "client_id": client_id,
+            "client_secret": client_secret
+        }
+
+        token_headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
+        try:
+            token_resp = requests.post(token_url, data=token_data, headers=token_headers)
+            token_resp.raise_for_status()
+            access_token = token_resp.json().get("access_token")
+        except Exception as e:
+            flash(f"ไม่สามารถดึง Token ได้: {str(e)}", "error")
+            return redirect("/campaign/outbound")
+
+        # 2️⃣ โทรออก
+        call_url = f"{call_control_url}/{dn}/{makecall_path}"
+        call_payload = {
+            "destination": number,
+            "timeout": 0
+        }
+
+        call_headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {access_token}"
+        }
+
+        try:
+            call_resp = requests.post(call_url, json=call_payload, headers=call_headers)
+            call_resp.raise_for_status()
+            flash("โทรออกสำเร็จ", "success")
+        except Exception as e:
+            flash(f"โทรไม่สำเร็จ: {str(e)}", "error")
+
+        return redirect("/campaign/outbound")
+
+    return render_template("campaign_outbound.html")
+
+
+
 @app.route('/logout')
 def logout():
         session.clear()
