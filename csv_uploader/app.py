@@ -2889,6 +2889,8 @@ def campaign_launch_bulk():
         CampaignCall.call_status == None
     ).all()
 
+    session['calling_active'] = True
+
     called = 0
     failed = 0
 
