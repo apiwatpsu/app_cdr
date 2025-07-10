@@ -2831,7 +2831,14 @@ def upload_campaign():
     # โหลด leads ทั้งหมด
     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
     campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
-    return render_template('upload_campaign.html', leads=leads, campaign_names=campaign_names)
+
+    campaign_summary = {}
+    for name in campaign_names:
+        calls = [l for l in leads if l.name == name]
+        success = sum(1 for c in calls if c.call_status == 'success')
+        failed = sum(1 for c in calls if c.call_status == 'failed')
+        campaign_summary[name] = {'success': success, 'failed': failed}
+    return render_template('upload_campaign.html', leads=leads, campaign_names=campaign_names, campaign_summary=campaign_summary)
 
 
 @app.route('/download/template')
@@ -2842,80 +2849,6 @@ def download_template():
         as_attachment=True
     )
 
-# @app.route('/campaign/launch_bulk', methods=['POST'])
-# def campaign_launch_bulk():
-#     selected_campaigns = request.form.getlist("campaign_names")
-
-#     if not selected_campaigns:
-#         flash("กรุณาเลือกชื่อแคมเปญอย่างน้อยหนึ่งรายการ", "warning")
-#         return redirect("/campaign/upload")
-
-#     # ดึง config
-#     token_url = SystemConfig.get("TCX_TOKEN_URL")
-#     client_id = SystemConfig.get("TCX_CLIENT_ID")
-#     client_secret = SystemConfig.get("TCX_CLIENT_SECRET")
-#     grant_type = SystemConfig.get("TCX_GRANT_TYPE", "client_credentials")
-#     call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL")
-#     makecall_path = SystemConfig.get("TCX_MAKECALL_PATH")
-
-#     # 🔐 ขอ access token
-#     try:
-#         token_resp = requests.post(
-#             token_url,
-#             data={
-#                 "grant_type": grant_type,
-#                 "client_id": client_id,
-#                 "client_secret": client_secret
-#             },
-#             headers={"Content-Type": "application/x-www-form-urlencoded"}
-#         )
-#         token_resp.raise_for_status()
-#         access_token = token_resp.json().get("access_token")
-#     except Exception as e:
-#         flash(f"ไม่สามารถขอ Token ได้: {str(e)}", "danger")
-#         return redirect("/campaign/upload")
-
-#     # ✅ ดึง leads ตาม campaign
-#     leads = CampaignCall.query.filter(
-#         CampaignCall.name.in_(selected_campaigns),
-#         CampaignCall.call_status == None
-#     ).all()
-
-#     called = 0
-#     failed = 0
-
-#     for lead in leads:
-#         dn = (lead.queue or "").strip()  # ใช้ queue เป็น DN
-#         if not dn or not lead.phone_number:
-#             continue  # ข้ามถ้าไม่มีข้อมูล
-
-#         call_url = f"{call_control_url}/{dn}/{makecall_path}"
-#         call_payload = {
-#             "destination": lead.phone_number,
-#             "timeout": 0
-#         }
-#         call_headers = {
-#             "Content-Type": "application/json",
-#             "Authorization": f"Bearer {access_token}"
-#         }
-
-#         try:
-#             call_resp = requests.post(call_url, json=call_payload, headers=call_headers)
-#             call_resp.raise_for_status()
-#             lead.call_status = "success"
-#             lead.called_at = datetime.utcnow()
-#             called += 1
-#         except Exception as e:
-#             lead.call_status = "failed"
-#             failed += 1
-
-#         db.session.add(lead)
-
-#     db.session.commit()
-#     flash(f"📞 โทรสำเร็จ {called} รายการ / ล้มเหลว {failed} รายการ", "success")
-#     return redirect("/campaign/upload")
-
-
 @app.route('/campaign/launch_bulk', methods=['POST'])
 def campaign_launch_bulk():
     selected_campaigns = request.form.getlist("campaign_names")
@@ -2924,7 +2857,7 @@ def campaign_launch_bulk():
         flash("กรุณาเลือกชื่อแคมเปญอย่างน้อยหนึ่งรายการ", "warning")
         return redirect("/campaign/upload")
 
-    # 🔐 ดึง config
+    # ดึง config
     token_url = SystemConfig.get("TCX_TOKEN_URL")
     client_id = SystemConfig.get("TCX_CLIENT_ID")
     client_secret = SystemConfig.get("TCX_CLIENT_SECRET")
@@ -2949,17 +2882,19 @@ def campaign_launch_bulk():
         flash(f"ไม่สามารถขอ Token ได้: {str(e)}", "danger")
         return redirect("/campaign/upload")
 
-    # ✅ ดึง leads
+    # ✅ ดึง leads ตาม campaign
     leads = CampaignCall.query.filter(
         CampaignCall.name.in_(selected_campaigns),
         CampaignCall.call_status == None
     ).all()
 
-    # ✅ โทรและบันทึกผล
+    called = 0
+    failed = 0
+
     for lead in leads:
-        dn = (lead.queue or "").strip()
+        dn = (lead.queue or "").strip()  # ใช้ queue เป็น DN
         if not dn or not lead.phone_number:
-            continue
+            continue  # ข้ามถ้าไม่มีข้อมูล
 
         call_url = f"{call_control_url}/{dn}/{makecall_path}"
         call_payload = {
@@ -2976,31 +2911,16 @@ def campaign_launch_bulk():
             call_resp.raise_for_status()
             lead.call_status = "success"
             lead.called_at = datetime.utcnow()
+            called += 1
         except Exception as e:
             lead.call_status = "failed"
+            failed += 1
 
         db.session.add(lead)
 
     db.session.commit()
-
-    # 🔄 สร้าง summary ต่อ campaign
-    campaign_summary = {}
-    total_success = 0
-    total_failed = 0
-    for name in selected_campaigns:
-        calls = CampaignCall.query.filter_by(name=name).all()
-        success = sum(1 for c in calls if c.call_status == 'success')
-        failed = sum(1 for c in calls if c.call_status == 'failed')
-        campaign_summary[name] = {'success': success, 'failed': failed}
-        total_success += success
-        total_failed += failed
-    flash(f"📞 โทรสำเร็จ {total_success} รายการ / ล้มเหลว {total_failed} รายการ", "success")
-    return render_template(
-        "upload_campaign.html",  # ✅ เปลี่ยนชื่อไฟล์ template ตามที่คุณใช้จริง
-        campaign_names=selected_campaigns,
-        campaign_summary=campaign_summary,
-        leads=leads
-    )
+    flash(f"📞 โทรสำเร็จ {called} รายการ / ล้มเหลว {failed} รายการ", "success")
+    return redirect("/campaign/upload")
 
 
 
