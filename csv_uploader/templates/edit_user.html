@@ -63,10 +63,17 @@
             {% if 'call_duration' in selected_permissions %}checked{% endif %}>
       <label class="form-check-label">Call Duration Analysis</label>
     </div>
+    
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="menu_permissions" value="error_failure"
             {% if 'error_failure' in selected_permissions %}checked{% endif %}>
       <label class="form-check-label">Error And Failure Report</label>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="menu_permissions" value="campaign_outbound"
+            {% if 'error_failure' in selected_permissions %}checked{% endif %}>
+      <label class="form-check-label">Campaign Outbound</label>
     </div>
 
 
