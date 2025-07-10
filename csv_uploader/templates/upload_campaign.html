@@ -56,7 +56,13 @@
           <td>{{ lead.phone_number }}</td>
           <td>{{ lead.queue or '-' }}</td>
           <td>{{ lead.agent or '-' }}</td>
-          <td>{{ lead.call_status or '-' }}</td>
+          <td class="
+            {% if lead.call_status == 'success' %}
+                bg-success text-white
+            {% elif lead.call_status == 'failed' %}
+                bg-danger text-white
+            {% endif %}
+            ">{{ lead.call_status or '-' }}</td>
           <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') if lead.created_at else '-' }}</td>
           <td>{{ lead.called_at.strftime('%Y-%m-%d %H:%M:%S') if lead.called_at else '-' }}</td>
         </tr>
