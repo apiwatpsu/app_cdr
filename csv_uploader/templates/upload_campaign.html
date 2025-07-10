@@ -50,7 +50,7 @@
         {% set percent_success = (success_count / total * 100) if total > 0 else 0 %}
         {% set percent_failed = (failed_count / total * 100) if total > 0 else 0 %}
 
-      <div class="progress" style="height: 20px;">
+      <div class="progress" style="height: 20px; max-width: 100px;">
         <div class="progress-bar bg-success" role="progressbar"
              style="width: {{ percent_success }}%"
              aria-valuenow="{{ percent_success }}"
