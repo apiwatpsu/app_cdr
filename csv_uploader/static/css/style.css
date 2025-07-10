@@ -48,6 +48,10 @@
       opacity: 0.5;
     }
 
+    .card {
+      border: 2px solid #ccc;
+    }
+
     .sidebar {
       width: 288px;
       height: calc(100vh - 60px);
