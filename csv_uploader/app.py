@@ -2808,30 +2808,31 @@ def campaign_outbound():
 
 @app.route('/campaign/upload', methods=['GET', 'POST'])
 def upload_campaign():
-    leads = []
     if request.method == 'POST':
         file = request.files['file']
-        
         if not file or not file.filename.endswith('.csv'):
             flash("กรุณาเลือกไฟล์ CSV ที่ถูกต้อง", "danger")
-        else:
-            stream = StringIO(file.stream.read().decode("utf-8"))
-            reader = csv.DictReader(stream)
+            return redirect('/campaign/upload')
 
-            for row in reader:
-                call = CampaignCall(
-                    name=row.get('name'),
-                    phone_number=row.get('phone_number'),
-                    note=row.get('note'),
-                    queue=row.get('queue'),
-                )
-                db.session.add(call)
-            db.session.commit()
-            flash("อัปโหลดข้อมูลแคมเปญเรียบร้อย", "success")
+        stream = StringIO(file.stream.read().decode("utf-8"))
+        reader = csv.DictReader(stream)
 
-    # โหลดข้อมูลทั้งหมดจาก DB เพื่อแสดงตาราง
+        for row in reader:
+            call = CampaignCall(
+                name=row.get('name'),
+                phone_number=row.get('phone_number'),
+                remark=row.get('remark'),
+                queue=row.get('queue'),
+            )
+            db.session.add(call)
+        db.session.commit()
+        flash("อัปโหลดข้อมูลแคมเปญเรียบร้อย", "success")
+
+    # โหลด leads ทั้งหมด
     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
-    return render_template('upload_campaign.html', leads=leads)
+    campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
+    return render_template('upload_campaign.html', leads=leads, campaign_names=campaign_names)
+
 
 @app.route('/download/template')
 def download_template():

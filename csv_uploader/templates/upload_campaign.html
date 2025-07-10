@@ -2,25 +2,40 @@
 {% block title %}Upload Campaign{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Upload Campaign</h2>
+<h2 class="mb-3">📁 อัปโหลด Campaign</h2>
+
 <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm mb-4" action="/campaign/upload">
-  <div class="d-flex align-items-center gap-2 flex-wrap">
-    <input type="file" name="file" accept=".csv" required class="form-control w-auto">
-
-    <a href="/download/template" class="btn btn-primary">
-      Template
-    </a>
-
-    <button type="submit" class="btn btn-success">
-      Upload CSV
-    </button>
+  <div class="row g-2 align-items-center">
+    <div class="col-auto">
+      <input type="file" name="file" accept=".csv" required class="form-control">
+    </div>
+    <div class="col-auto">
+      <a href="/download/template" class="btn btn-outline-secondary">⬇️ ดาวน์โหลดเทมเพลต CSV</a>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-success">📁 อัปโหลดไฟล์ CSV</button>
+    </div>
   </div>
 </form>
 
+<!-- ✅ เลือก Campaign Name สำหรับเริ่มโทร -->
+<form method="POST" action="/campaign/launch_bulk" class="mb-4">
+  <label class="form-label fw-bold">เลือกแคมเปญที่ต้องการโทร:</label>
+  <div class="d-flex flex-wrap gap-3">
+    {% for name in campaign_names %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="campaign_names" value="{{ name }}" id="chk_{{ loop.index }}">
+      <label class="form-check-label" for="chk_{{ loop.index }}">{{ name }}</label>
+    </div>
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-primary mt-2">📞 เริ่มโทรออก</button>
+</form>
 
+<!-- ✅ ตาราง Leads -->
 <div class="bg-white p-4 rounded shadow-sm">
   <div style="overflow-x: auto;">
-    <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%; border-collapse: collapse;">
+    <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%;">
       <thead class="table-light">
         <tr>
           <th>#</th>
@@ -42,20 +57,12 @@
           <td>{{ lead.queue or '-' }}</td>
           <td>{{ lead.agent or '-' }}</td>
           <td>{{ lead.call_status or '-' }}</td>
-          <td>{{ lead.created_at or '-' }}</td>
-          <td>{{ lead.called_at or '-' }}</td>
-          <td>
-            <form method="POST" action="/campaign/call/{{ lead.id }}" class="d-inline">
-              <input type="hidden" name="dn" value="8006">
-              <button class="btn btn-sm btn-outline-primary" type="submit">📞 โทรออก</button>
-            </form>
-          </td>
+          <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') if lead.created_at else '-' }}</td>
+          <td>{{ lead.called_at.strftime('%Y-%m-%d %H:%M:%S') if lead.called_at else '-' }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
-
-
 {% endblock %}
