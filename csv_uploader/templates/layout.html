@@ -36,19 +36,6 @@
 </head>
 <body>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="container mt-3">
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-
 
 <!-- Topbar -->
 <div class="topbar d-flex justify-content-between align-items-center px-3 py-2">
@@ -103,6 +90,19 @@
   </div>
 </div>
 
+    <!-- ✅ Flash Message มุมขวาบนใต้ Topbar -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="position-fixed top-0 end-0 mt-5 me-3" style="z-index: 1055; width: 300px;">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show small py-2 px-3" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
     <!-- Sidebar -->
     <div class="sidebar">
 
