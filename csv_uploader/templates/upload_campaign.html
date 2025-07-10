@@ -19,8 +19,8 @@
           <th>Queue</th>
           <th>Agent</th>
           <th>Call State</th>
-          <th>Created At</th>
-          <th>Call At</th>
+          <!-- <th>Created At</th>
+          <th>Call At</th> -->
         </tr>
       </thead>
       <tbody>
@@ -32,8 +32,8 @@
           <td>{{ lead.queue or '-' }}</td>
           <td>{{ lead.agent or '-' }}</td>
           <td>{{ lead.call_status or '-' }}</td>
-          <td>{{ lead.created_at or '-' }}</td>
-          <td>{{ lead.called_at or '-' }}</td>
+          <!-- <td>{{ lead.created_at or '-' }}</td>
+          <td>{{ lead.called_at or '-' }}</td> -->
           <td>
             <form method="POST" action="/campaign/call/{{ lead.id }}" class="d-inline">
               <input type="hidden" name="dn" value="8006">
