@@ -14,13 +14,11 @@
       <thead class="table-light">
         <tr>
           <th>#</th>
-          <th>ชื่อ</th>
-          <th>เบอร์โทร</th>
-          <th>หมายเหตุ</th>
+          <th>Campaign Name</th>
+          <th>Phone No.</th>
           <th>Queue</th>
           <th>Agent</th>
-          <th>สถานะการโทร</th>
-          <th>โทรออก</th>
+          <th>Call State</th>
         </tr>
       </thead>
       <tbody>
@@ -29,7 +27,6 @@
           <td>{{ loop.index }}</td>
           <td>{{ lead.name }}</td>
           <td>{{ lead.phone_number }}</td>
-          <td>{{ lead.remark }}</td>
           <td>{{ lead.queue or '-' }}</td>
           <td>{{ lead.agent or '-' }}</td>
           <td>{{ lead.call_status or '-' }}</td>
