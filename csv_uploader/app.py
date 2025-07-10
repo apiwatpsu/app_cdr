@@ -363,7 +363,8 @@ def system_config():
         SystemConfig.set("TCX_CLIENT_SECRET", request.form['tcx_client_secret'])
         SystemConfig.set("TCX_GRANT_TYPE", request.form['tcx_grant_type'])
         SystemConfig.set("TCX_CLIENT_ID", request.form['tcx_client_id'])
-        SystemConfig.set("TCX_MAKECALL_URL", request.form['tcx_makecall_url'])
+        SystemConfig.set("TCX_CALL_CONTROL_URL", request.form['tcx_call_control_url'])
+        SystemConfig.set("TCX_MAKECALL_PATH", request.form['tcx_makecall_path'])
 
 
 
@@ -380,7 +381,8 @@ def system_config():
         tcx_client_secret = SystemConfig.get("TCX_CLIENT_SECRET", ""),
         tcx_grant_type = SystemConfig.get("TCX_GRANT_TYPE", ""),
         tcx_client_id = SystemConfig.get("TCX_CLIENT_ID", ""),
-        tcx_makecall_url = SystemConfig.get("TCX_MAKECALL_URL", "")
+        tcx_call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL", ""),
+        tcx_makecall_path = SystemConfig.get("TCX_MAKECALL_PATH", "")
     )
 
 
