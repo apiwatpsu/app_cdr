@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog
+from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta

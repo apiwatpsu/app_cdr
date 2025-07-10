@@ -88,3 +88,15 @@ class CSATLog(db.Model):
     agent = db.Column(db.String(100))
     received_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class CampaignCall(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    phone_number = db.Column(db.String(20))
+    note = db.Column(db.Text)
+    queue = db.Column(db.String(50))
+    agent = db.Column(db.String(100))
+    call_status = db.Column(db.String(50))
+    remark = db.Column(db.Boolean, default=False)
+    called_at = db.Column(db.DateTime)
+
+
