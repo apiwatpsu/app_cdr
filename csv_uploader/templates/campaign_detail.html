@@ -14,10 +14,13 @@
 
 <hr>
 
-<table class="table table-striped mt-4">
-  <thead>
+<div class="bg-white p-4 rounded shadow-sm">
+  <div style="overflow-x: auto;">
+    <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%;">
+  <thead class="table-light">
     <tr>
       <th>#</th>
+      <th>Campaign Name</th>
       <th>Phone No.</th>
       <th>Queue</th>
       <th>Agent</th>
@@ -30,6 +33,7 @@
     {% for lead in leads %}
     <tr>
       <td>{{ loop.index }}</td>
+      <td>{{ lead.name }}</td>
       <td>{{ lead.phone_number }}</td>
       <td>{{ lead.queue or '-' }}</td>
       <td>{{ lead.agent or '-' }}</td>
@@ -48,4 +52,6 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
+</div>
 {% endblock %}
