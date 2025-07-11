@@ -4,8 +4,10 @@ from flask_migrate import Migrate
 from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
-from datetime import datetime, timezone, timedelta
-from pytz import timezone, utc
+# from datetime import datetime, timezone, timedelta
+# from pytz import timezone, utc
+from pytz import timezone as pytz_timezone, utc
+from datetime import datetime, timezone as dt_timezone, timedelta
 from flask import g
 from collections import defaultdict
 import csv
@@ -2866,12 +2868,13 @@ def upload_campaign():
     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
 
     # แปลง timezone naive datetime เป็น timezone aware Asia/Bangkok
-    bangkok = pytz.timezone('Asia/Bangkok')
+    BANGKOK_TZ = pytz_timezone('Asia/Bangkok')
     for lead in leads:
         if lead.created_at and lead.created_at.tzinfo is None:
-            lead.created_at = lead.created_at.replace(tzinfo=timezone.utc).astimezone(bangkok)
+            # กำหนดว่าเวลานี้เป็น UTC แล้วแปลงเป็น Bangkok
+            lead.created_at = lead.created_at.replace(tzinfo=dt_timezone.utc).astimezone(BANGKOK_TZ)
         if lead.called_at and lead.called_at.tzinfo is None:
-            lead.called_at = lead.called_at.replace(tzinfo=timezone.utc).astimezone(bangkok)
+            lead.called_at = lead.called_at.replace(tzinfo=dt_timezone.utc).astimezone(BANGKOK_TZ)
 
     campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
 
