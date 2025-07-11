@@ -31,10 +31,6 @@
               <label class="form-label">Password</label>
               <input type="password" name="password" value="{{ config.password if config else '' }}" class="form-control" required>
           </div>
-          <div class="col-12">
-            <label class="form-label">Custom SQL Query</label>
-            <textarea name="sql_query" class="form-control" rows="3" placeholder="เช่น SELECT * FROM mytable หรือ \\dt">{{ request.form.sql_query if request.form else '' }}</textarea>
-        </div>
           <div class="col-12 text-end">
               <button type="submit" class="btn btn-primary">Connect</button>
           </div>
