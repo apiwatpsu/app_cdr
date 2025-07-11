@@ -2808,6 +2808,41 @@ def campaign_outbound():
     return render_template("test_campaign_outbound.html")
 
 
+# @app.route('/campaign/upload', methods=['GET', 'POST'])
+# def upload_campaign():
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         if not file or not file.filename.endswith('.csv'):
+#             flash("กรุณาเลือกไฟล์ CSV ที่ถูกต้อง", "danger")
+#             return redirect('/campaign/upload')
+
+#         stream = StringIO(file.stream.read().decode("utf-8"))
+#         reader = csv.DictReader(stream)
+
+#         for row in reader:
+#             call = CampaignCall(
+#                 name=row.get('name'),
+#                 phone_number=row.get('phone_number'),
+#                 queue=row.get('queue'),
+#             )
+#             db.session.add(call)
+#         db.session.commit()
+#         flash("อัปโหลดข้อมูลแคมเปญเรียบร้อย", "success")
+
+#     # โหลด leads ทั้งหมด
+#     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
+#     campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
+
+#     campaign_summary = {}
+#     for name in campaign_names:
+#         calls = [l for l in leads if l.name == name]
+#         success = sum(1 for c in calls if c.call_status == 'success')
+#         failed = sum(1 for c in calls if c.call_status == 'failed')
+#         campaign_summary[name] = {'success': success, 'failed': failed}
+#     return render_template('upload_campaign.html', leads=leads, campaign_names=campaign_names, campaign_summary=campaign_summary)
+
+
+
 @app.route('/campaign/upload', methods=['GET', 'POST'])
 def upload_campaign():
     if request.method == 'POST':
@@ -2831,6 +2866,15 @@ def upload_campaign():
 
     # โหลด leads ทั้งหมด
     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
+
+    # แปลง timezone ของ created_at และ called_at เป็น Asia/Bangkok
+    for lead in leads:
+        if lead.created_at and lead.created_at.tzinfo is None:
+            # สมมติว่า created_at เป็น naive datetime (UTC) แปลงเป็น Bangkok
+            lead.created_at = lead.created_at.replace(tzinfo=pytz.utc).astimezone(BANGKOK_TZ)
+        if lead.called_at and lead.called_at.tzinfo is None:
+            lead.called_at = lead.called_at.replace(tzinfo=pytz.utc).astimezone(BANGKOK_TZ)
+
     campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
 
     campaign_summary = {}
@@ -2839,7 +2883,13 @@ def upload_campaign():
         success = sum(1 for c in calls if c.call_status == 'success')
         failed = sum(1 for c in calls if c.call_status == 'failed')
         campaign_summary[name] = {'success': success, 'failed': failed}
-    return render_template('upload_campaign.html', leads=leads, campaign_names=campaign_names, campaign_summary=campaign_summary)
+
+    return render_template(
+        'upload_campaign.html',
+        leads=leads,
+        campaign_names=campaign_names,
+        campaign_summary=campaign_summary
+    )
 
 
 @app.route('/download/template')
