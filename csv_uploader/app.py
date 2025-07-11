@@ -3008,13 +3008,38 @@ def campaign_stop():
 
 
 
+# @app.route('/campaign/manage')
+# def manage_campaigns():
+#     # ดึงเฉพาะชื่อแคมเปญที่มีอยู่ และแสดงวันสร้างล่าสุดของแต่ละแคมเปญ
+#     campaigns = db.session.query(
+#         CampaignCall.name,
+#         db.func.max(CampaignCall.created_at).label('created_at')
+#     ).group_by(CampaignCall.name).order_by(CampaignCall.created_at.desc()).all()
+
+#     return render_template('manage_campaign.html', campaigns=campaigns)
+
 @app.route('/campaign/manage')
 def manage_campaigns():
-    # ดึงเฉพาะชื่อแคมเปญที่มีอยู่ และแสดงวันสร้างล่าสุดของแต่ละแคมเปญ
-    campaigns = db.session.query(
+    campaigns_raw = db.session.query(
         CampaignCall.name,
         db.func.max(CampaignCall.created_at).label('created_at')
-    ).group_by(CampaignCall.name).order_by(CampaignCall.created_at.desc()).all()
+    ).group_by(CampaignCall.name).order_by(db.func.max(CampaignCall.created_at).desc()).all()
+
+    campaigns = []
+    for name, created_at in campaigns_raw:
+        if created_at:
+            # แปลงจาก naive datetime เป็น aware datetime UTC ก่อน (ถ้ายังไม่มี tzinfo)
+            if created_at.tzinfo is None:
+                created_at = created_at.replace(tzinfo=utc)
+            # แปลงเป็นเวลาประเทศไทย
+            created_at_bkk = created_at.astimezone(BANGKOK_TZ)
+        else:
+            created_at_bkk = None
+
+        campaigns.append({
+            'name': name,
+            'created_at': created_at_bkk
+        })
 
     return render_template('manage_campaign.html', campaigns=campaigns)
 
