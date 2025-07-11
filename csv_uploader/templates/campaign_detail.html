@@ -15,7 +15,7 @@
   </p>
 
   <div class="flex-grow-1">
-    <div class="progress" style="height: 20px;">
+    <div class="progress" style="height: 20px; max-width: 100px;">
       <div class="progress-bar bg-success"
            role="progressbar"
            style="width: {{ summary.success / summary.total * 100 if summary.total > 0 else 0 }}%">
