@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Campaign: {{ campaign_name }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">📞 Campaign: {{ campaign_name }}</h2>
+
+<p>✅ Success: <strong>{{ summary.success }}</strong> | ❌ Failed: <strong>{{ summary.failed }}</strong> | Total: <strong>{{ summary.total }}</strong></p>
+
+<form method="POST" action="/campaign/launch_bulk">
+  <input type="hidden" name="campaign_names" value="{{ campaign_name }}">
+  <button type="submit" class="btn btn-primary">📞 Start Calling This Campaign</button>
+  <a href="/campaign/upload" class="btn btn-secondary ms-2">⬅️ Back</a>
+</form>
+
+<hr>
+
+<table class="table table-striped mt-4">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Phone No.</th>
+      <th>Queue</th>
+      <th>Agent</th>
+      <th>Status</th>
+      <th>Created</th>
+      <th>Called At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for lead in leads %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ lead.phone_number }}</td>
+      <td>{{ lead.queue or '-' }}</td>
+      <td>{{ lead.agent or '-' }}</td>
+      <td>
+        {% if lead.call_status == 'success' %}
+          <span class="badge bg-success">Success</span>
+        {% elif lead.call_status == 'failed' %}
+          <span class="badge bg-danger">Failed</span>
+        {% else %}
+          <span class="badge bg-secondary">-</span>
+        {% endif %}
+      </td>
+      <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') if lead.created_at else '-' }}</td>
+      <td>{{ lead.called_at.strftime('%Y-%m-%d %H:%M:%S') if lead.called_at else '-' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

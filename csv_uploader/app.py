@@ -2932,6 +2932,24 @@ def campaign_launch_bulk():
     return redirect("/campaign/upload")
 
 
+@app.route('/campaign/<name>')
+def campaign_detail(name):
+    leads = CampaignCall.query.filter_by(name=name).order_by(CampaignCall.id.desc()).all()
+
+    # คำนวณ summary สำหรับแคมเปญนี้
+    success = sum(1 for l in leads if l.call_status == 'success')
+    failed = sum(1 for l in leads if l.call_status == 'failed')
+    total = len(leads)
+
+    return render_template(
+        'campaign_detail.html',
+        campaign_name=name,
+        leads=leads,
+        summary={'success': success, 'failed': failed, 'total': total}
+    )
+
+
+
 @app.route('/campaign/stop')
 def campaign_stop():
     session['calling_active'] = False
