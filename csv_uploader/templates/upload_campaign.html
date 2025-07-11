@@ -32,6 +32,48 @@
   </ul>
 </div>
 
+<h4 class="mt-4">📋 Campaign List</h4>
+<div class="bg-white p-4 rounded shadow-sm">
+  <div style="overflow-x: auto;">
+    <table class="table table-bordered table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Campaign Name</th>
+          <th>Success / Total</th>
+          <th>Created At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name in campaign_names %}
+        {% set campaign = leads | selectattr("name", "equalto", name) | list | first %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ name }}</td>
+          <td>
+            <span class="badge bg-success">{{ campaign_summary[name].success }}</span>
+            /
+            <span class="badge bg-secondary">
+              {{ campaign_summary[name].success + campaign_summary[name].failed }}
+            </span>
+          </td>
+          <td>
+            {{ campaign.created_at.strftime('%Y-%m-%d %H:%M:%S') if campaign and campaign.created_at else '-' }}
+          </td>
+          <td>
+            <a href="{{ url_for('campaign_detail', name=name) }}" class="btn btn-sm btn-outline-primary">
+              View Detail
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
 
 
 <!-- <form method="POST" action="/campaign/launch_bulk" class="bg-white p-4 rounded shadow-sm mb-4">
