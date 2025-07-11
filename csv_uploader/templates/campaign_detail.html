@@ -7,7 +7,7 @@
 <!-- <p>✅ Success: <strong>{{ summary.success }}</strong> | ❌ Failed: <strong>{{ summary.failed }}</strong> | Total: <strong>{{ summary.total }}</strong></p> -->
 
 
-<div class="d-flex align-items-center gap-3">
+<!-- <div class="d-flex align-items-center gap-3">
   <p class="mb-0">
     ✅ Success: <strong>{{ summary.success }}</strong> |
     ❌ Failed: <strong>{{ summary.failed }}</strong> |
@@ -26,7 +26,35 @@
       </div>
     </div>
   </div>
+</div> -->
+
+<div class="d-flex align-items-center gap-3">
+  <p class="mb-0">
+    ✅ Success: <strong>{{ summary.success }}</strong> |
+    ❌ Failed: <strong>{{ summary.failed }}</strong> |
+    Total: <strong>{{ summary.total }}</strong>
+  </p>
+
+  <div class="flex-grow-1">
+    <div class="progress" style="height: 20px; max-width: 200px;">
+      {% set percent_success = (summary.success / summary.total * 100) if summary.total > 0 else 0 %}
+      {% set percent_failed = (summary.failed / summary.total * 100) if summary.total > 0 else 0 %}
+
+      <div class="progress-bar bg-success"
+           role="progressbar"
+           style="width: {{ percent_success }}%">
+        {{ percent_success | round(0) }}%
+      </div>
+
+      <div class="progress-bar bg-danger"
+           role="progressbar"
+           style="width: {{ percent_failed }}%">
+        {{ percent_failed | round(0) }}%
+      </div>
+    </div>
+  </div>
 </div>
+
 
 
 <form method="POST" action="/campaign/launch_bulk">
