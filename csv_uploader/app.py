@@ -2870,10 +2870,9 @@ def upload_campaign():
     # แปลง timezone ของ created_at และ called_at เป็น Asia/Bangkok
     for lead in leads:
         if lead.created_at and lead.created_at.tzinfo is None:
-            # สมมติว่า created_at เป็น naive datetime (UTC) แปลงเป็น Bangkok
-            lead.created_at = lead.created_at.replace(tzinfo=pytz.utc).astimezone(BANGKOK_TZ)
+            lead.created_at = lead.created_at.replace(tzinfo=utc).astimezone(BANGKOK_TZ)
         if lead.called_at and lead.called_at.tzinfo is None:
-            lead.called_at = lead.called_at.replace(tzinfo=pytz.utc).astimezone(BANGKOK_TZ)
+            lead.called_at = lead.called_at.replace(tzinfo=utc).astimezone(BANGKOK_TZ)
 
     campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
 
