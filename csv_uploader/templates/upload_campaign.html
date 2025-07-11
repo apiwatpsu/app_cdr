@@ -18,19 +18,7 @@
   </div>
 </form>
 
-<h4 class="mt-4">📋 Campaign List</h4>
-<div class="bg-white p-4 rounded shadow-sm">
-  <ul class="list-group">
-    {% for name in campaign_names %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a href="{{ url_for('campaign_detail', name=name) }}">{{ name }}</a>
-        <span class="badge bg-primary rounded-pill">
-          {{ campaign_summary[name].success }}/{{ campaign_summary[name].success + campaign_summary[name].failed }}
-        </span>
-      </li>
-    {% endfor %}
-  </ul>
-</div>
+
 
 <h4 class="mt-4">📋 Campaign List</h4>
 <div class="bg-white p-4 rounded shadow-sm">

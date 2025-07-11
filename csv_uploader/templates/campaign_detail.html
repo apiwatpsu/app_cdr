@@ -8,7 +8,12 @@
 
 <form method="POST" action="/campaign/launch_bulk">
   <input type="hidden" name="campaign_names" value="{{ campaign_name }}">
+  <div class="d-flex gap-2 mt-3">
+  <button type="submit" class="btn btn-primary">📞 Start</button>
+  <a href="/campaign/stop" class="btn btn-danger">⛔️ Stop</a>
+  </div>
   <button type="submit" class="btn btn-primary">📞 Start Calling This Campaign</button>
+
   <a href="/campaign/upload" class="btn btn-secondary ms-2">⬅️ Back</a>
 </form>
 
