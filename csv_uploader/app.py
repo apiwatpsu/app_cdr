@@ -2982,9 +2982,38 @@ def campaign_launch_bulk():
     return redirect("/campaign/upload")
 
 
+# @app.route('/campaign/<name>')
+# def campaign_detail(name):
+#     leads = CampaignCall.query.filter_by(name=name).order_by(CampaignCall.id.desc()).all()
+
+#     # คำนวณ summary สำหรับแคมเปญนี้
+#     success = sum(1 for l in leads if l.call_status == 'success')
+#     failed = sum(1 for l in leads if l.call_status == 'failed')
+#     total = len(leads)
+
+#     return render_template(
+#         'campaign_detail.html',
+#         campaign_name=name,
+#         leads=leads,
+#         summary={'success': success, 'failed': failed, 'total': total}
+#     )
+
+
 @app.route('/campaign/<name>')
 def campaign_detail(name):
     leads = CampaignCall.query.filter_by(name=name).order_by(CampaignCall.id.desc()).all()
+
+    # แปลง timezone สำหรับ created_at และ called_at
+    for lead in leads:
+        if lead.created_at:
+            if lead.created_at.tzinfo is None:
+                lead.created_at = lead.created_at.replace(tzinfo=utc)
+            lead.created_at = lead.created_at.astimezone(BANGKOK_TZ)
+
+        if lead.called_at:
+            if lead.called_at.tzinfo is None:
+                lead.called_at = lead.called_at.replace(tzinfo=utc)
+            lead.called_at = lead.called_at.astimezone(BANGKOK_TZ)
 
     # คำนวณ summary สำหรับแคมเปญนี้
     success = sum(1 for l in leads if l.call_status == 'success')
@@ -2997,6 +3026,7 @@ def campaign_detail(name):
         leads=leads,
         summary={'success': success, 'failed': failed, 'total': total}
     )
+
 
 
 
