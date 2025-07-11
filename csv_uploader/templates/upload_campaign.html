@@ -63,66 +63,6 @@
 
 
 
-
-
-<!-- <form method="POST" action="/campaign/launch_bulk" class="bg-white p-4 rounded shadow-sm mb-4">
-  <label class="form-label fw-bold">Select Campaign To Start Call:</label>
-  <div class="d-flex flex-column gap-3">
-
-    {% for name in campaign_names %}
-    
-      <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" name="campaign_names" value="{{ name }}" id="chk_{{ loop.index }}">
-        <label class="form-check-label fw-bold" for="chk_{{ loop.index }}">{{ name }}</label>
-      </div>
-
-        {% set summary = campaign_summary[name] %}
-        {% set success_count = summary.success %}
-        {% set failed_count = summary.failed %}
-        {% set total = success_count + failed_count %}
-        {% set percent_success = (success_count / total * 100) if total > 0 else 0 %}
-        {% set percent_failed = (failed_count / total * 100) if total > 0 else 0 %}
-
-      <div class="progress" style="height: 20px; max-width: 100px;">
-        <div class="progress-bar bg-success" role="progressbar"
-             style="width: {{ percent_success }}%"
-             aria-valuenow="{{ percent_success }}"
-             aria-valuemin="0" aria-valuemax="100">
-          {{ success_count }}
-        </div>
-        <div class="progress-bar bg-danger" role="progressbar"
-             style="width: {{ percent_failed }}%"
-             aria-valuenow="{{ percent_failed }}"
-             aria-valuemin="0" aria-valuemax="100">
-          {{ failed_count }}
-        </div>
-      </div>
-    
-    {% endfor %}
-
-  </div>
-
- <div class="d-flex gap-2 mt-3">
-  <button type="submit" class="btn btn-primary">📞 Start</button>
-  <a href="/campaign/stop" class="btn btn-danger">⛔️ Stop</a>
-</div>
-
-</form> -->
-
-<!-- {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      {% if category == 'dialing' %}
-        <div class="alert alert-info py-1 px-2 mb-1 small" role="alert">
-          {{ message }}
-        </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-{% endwith %} -->
-
-
-
 <!-- ✅ ตาราง Leads -->
 <!-- <div class="bg-white p-4 rounded shadow-sm">
   <div style="overflow-x: auto;">
