@@ -18,7 +18,7 @@
   </div>
 </form>
 
-<h4 class="mt-4">📋 Campaign List</h4>
+<h4 class="mt-4">Campaign List</h4>
 <ul class="list-group">
   {% for name in campaign_names %}
     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -31,7 +31,7 @@
 </ul>
 
 
-<form method="POST" action="/campaign/launch_bulk" class="bg-white p-4 rounded shadow-sm mb-4">
+<!-- <form method="POST" action="/campaign/launch_bulk" class="bg-white p-4 rounded shadow-sm mb-4">
   <label class="form-label fw-bold">Select Campaign To Start Call:</label>
   <div class="d-flex flex-column gap-3">
 
@@ -73,9 +73,9 @@
   <a href="/campaign/stop" class="btn btn-danger">⛔️ Stop</a>
 </div>
 
-</form>
+</form> -->
 
-{% with messages = get_flashed_messages(with_categories=true) %}
+<!-- {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
       {% if category == 'dialing' %}
@@ -85,7 +85,7 @@
       {% endif %}
     {% endfor %}
   {% endif %}
-{% endwith %}
+{% endwith %} -->
 
 
 
