@@ -1,18 +1,18 @@
 {% extends "layout.html" %}
-{% block title %}จัดการแคมเปญ{% endblock %}
+{% block title %}Manage Campaign{% endblock %}
 
 {% block content %}
 <div class="bg-white p-4 rounded shadow-sm">
-  <h3 class="mb-4">🗂 จัดการแคมเปญ</h3>
+  <h3 class="mb-4">Manage Campaign</h3>
 
   {% if campaigns %}
     <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%;">
       <thead class="table-light">
         <tr>
           <th>#</th>
-          <th>ชื่อแคมเปญ</th>
-          <th>วันที่สร้างล่าสุด</th>
-          <th>จัดการ</th>
+          <th>Campaign Name</th>
+          <th>Created_At</th>
+          <th>Manage</th>
         </tr>
       </thead>
       <tbody>
@@ -23,7 +23,7 @@
           <td>{{ c.created_at.strftime('%Y-%m-%d %H:%M:%S') if c.created_at else '-' }}</td>
           <td>
             <form method="POST" action="{{ url_for('delete_campaign', name=c.name) }}" onsubmit="return confirm('ยืนยันการลบแคมเปญ {{ c.name }} ?')">
-              <button type="submit" class="btn btn-sm btn-danger">🗑 ลบ</button>
+              <button type="submit" class="btn btn-sm btn-danger">🗑 Delete</button>
             </form>
           </td>
         </tr>
@@ -31,7 +31,7 @@
       </tbody>
     </table>
   {% else %}
-    <p>ยังไม่มีแคมเปญ</p>
+    <p>There is no campaign yet</p>
   {% endif %}
 </div>
 {% endblock %}
