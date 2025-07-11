@@ -15,7 +15,7 @@
   </p>
 
   <div class="flex-grow-1">
-    <div class="progress" style="height: 20px; max-width: 100px;">
+    <div class="progress" style="height: 20px; max-width: 200px;">
       <div class="progress-bar bg-success"
            role="progressbar"
            style="width: {{ summary.success / summary.total * 100 if summary.total > 0 else 0 }}%">
@@ -41,15 +41,18 @@
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    {% for category, message in messages %}
-      {% if category == 'dialing' %}
-        <div class="alert alert-info py-1 px-2 mb-1 small" role="alert">
-          {{ message }}
-        </div>
-      {% endif %}
-    {% endfor %}
+    <div style="max-height: 400px; overflow-y: auto;">
+      {% for category, message in messages %}
+        {% if category == 'dialing' %}
+          <div class="alert alert-info py-1 px-2 mb-1 small" role="alert">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
   {% endif %}
 {% endwith %}
+
 
 <hr>
 
