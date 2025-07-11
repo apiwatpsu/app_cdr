@@ -25,7 +25,8 @@ import os
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 
-BANGKOK_TZ = timezone('Asia/Bangkok')
+# BANGKOK_TZ = timezone('Asia/Bangkok')
+BANGKOK_TZ = dt_timezone('Asia/Bangkok')
 app = Flask(__name__)
 
 app.secret_key = 'your_secret_key'
