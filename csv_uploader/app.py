@@ -2811,6 +2811,11 @@ def campaign_outbound():
 
         return redirect("/campaign/outbound")
     messages = CampaignMessage.query.order_by(CampaignMessage.created_at.desc()).all()
+    for message in messages:
+        if message.created_at:
+            if message.created_at.tzinfo is None:
+                message.created_at = message.created_at.replace(tzinfo=utc)
+            message.created_at = message.created_at.astimezone(BANGKOK_TZ)
     return render_template("test_campaign_outbound.html", messages=messages)
 
 
