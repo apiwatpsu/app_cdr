@@ -2761,7 +2761,7 @@ def campaign_outbound():
         sub_category = request.form['sub_category']
 
         # 🔹 1. บันทึกข้อความใน DB ก่อน
-        new_msg = CampaignMessage(dn=dn, number=number, message=mesage, category=category, sub_category=sub_category)
+        new_msg = CampaignMessage(dn=dn, number=number, message=message, category=category, sub_category=sub_category)
         db.session.add(new_msg)
         db.session.commit()
 
