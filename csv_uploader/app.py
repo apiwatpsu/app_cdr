@@ -2756,6 +2756,7 @@ def campaign_outbound():
     if request.method == 'POST':
         dn = request.form['dn']
         number = request.form['number']
+        mesage = request.form['mesage']
 
         # ดึง config
         token_url = SystemConfig.get("TCX_TOKEN_URL")
