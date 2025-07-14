@@ -67,9 +67,9 @@
           <td>{{ msg.category }}</td>
           <td>{{ msg.sub_category }}</td>
           <td>
-              {% if lead.call_status == 'success' %}
+              {% if msg.call_status == 'success' %}
                 <span class="badge bg-success">Success</span>
-              {% elif lead.call_status == 'failed' %}
+              {% elif msg.call_status == 'failed' %}
                 <span class="badge bg-danger">Failed</span>
               {% else %}
                 <span class="badge bg-secondary">-</span>
