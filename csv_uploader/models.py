@@ -101,10 +101,12 @@ class CampaignCall(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class CampaignMessage(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # auto increment
+    id = db.Column(db.Integer, primary_key=True)
     dn = db.Column(db.String(20), nullable=False)
     number = db.Column(db.String(20), nullable=False)
     message = db.Column(db.Text, nullable=True)
+    category = db.Column(db.String(100))
+    sub_category = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
@@ -113,6 +115,8 @@ class CampaignMessage(db.Model):
             "dn": self.dn,
             "number": self.number,
             "message": self.message,
+            "category": self.category,
+            "sub_category": self.sub_category,
             "created_at": self.created_at.isoformat()
         }
 

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall
+from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall, CampaignMessage
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
@@ -2758,6 +2758,11 @@ def campaign_outbound():
         number = request.form['number']
         mesage = request.form['mesage']
 
+        # 🔹 1. บันทึกข้อความใน DB ก่อน
+        new_msg = CampaignMessage(dn=dn, number=number, message=mesage)
+        db.session.add(new_msg)
+        db.session.commit()
+
         # ดึง config
         token_url = SystemConfig.get("TCX_TOKEN_URL")
         client_id = SystemConfig.get("TCX_CLIENT_ID")
@@ -2805,42 +2810,8 @@ def campaign_outbound():
             flash(f"โทรไม่สำเร็จ: {str(e)}", "error")
 
         return redirect("/campaign/outbound")
-
-    return render_template("test_campaign_outbound.html")
-
-
-# @app.route('/campaign/upload', methods=['GET', 'POST'])
-# def upload_campaign():
-#     if request.method == 'POST':
-#         file = request.files['file']
-#         if not file or not file.filename.endswith('.csv'):
-#             flash("กรุณาเลือกไฟล์ CSV ที่ถูกต้อง", "danger")
-#             return redirect('/campaign/upload')
-
-#         stream = StringIO(file.stream.read().decode("utf-8"))
-#         reader = csv.DictReader(stream)
-
-#         for row in reader:
-#             call = CampaignCall(
-#                 name=row.get('name'),
-#                 phone_number=row.get('phone_number'),
-#                 queue=row.get('queue'),
-#             )
-#             db.session.add(call)
-#         db.session.commit()
-#         flash("อัปโหลดข้อมูลแคมเปญเรียบร้อย", "success")
-
-#     # โหลด leads ทั้งหมด
-#     leads = CampaignCall.query.order_by(CampaignCall.id.desc()).all()
-#     campaign_names = sorted(set([lead.name for lead in leads if lead.name]))
-
-#     campaign_summary = {}
-#     for name in campaign_names:
-#         calls = [l for l in leads if l.name == name]
-#         success = sum(1 for c in calls if c.call_status == 'success')
-#         failed = sum(1 for c in calls if c.call_status == 'failed')
-#         campaign_summary[name] = {'success': success, 'failed': failed}
-#     return render_template('upload_campaign.html', leads=leads, campaign_names=campaign_names, campaign_summary=campaign_summary)
+    messages = CampaignMessage.query.order_by(CampaignMessage.created_at.desc()).all()
+    return render_template("test_campaign_outbound.html", messages=messages)
 
 
 
@@ -2983,21 +2954,6 @@ def campaign_launch_bulk():
     return redirect("/campaign/upload")
 
 
-# @app.route('/campaign/<name>')
-# def campaign_detail(name):
-#     leads = CampaignCall.query.filter_by(name=name).order_by(CampaignCall.id.desc()).all()
-
-#     # คำนวณ summary สำหรับแคมเปญนี้
-#     success = sum(1 for l in leads if l.call_status == 'success')
-#     failed = sum(1 for l in leads if l.call_status == 'failed')
-#     total = len(leads)
-
-#     return render_template(
-#         'campaign_detail.html',
-#         campaign_name=name,
-#         leads=leads,
-#         summary={'success': success, 'failed': failed, 'total': total}
-#     )
 
 
 @app.route('/campaign/<name>')
@@ -3039,16 +2995,6 @@ def campaign_stop():
 
 
 
-# @app.route('/campaign/manage')
-# def manage_campaigns():
-#     # ดึงเฉพาะชื่อแคมเปญที่มีอยู่ และแสดงวันสร้างล่าสุดของแต่ละแคมเปญ
-#     campaigns = db.session.query(
-#         CampaignCall.name,
-#         db.func.max(CampaignCall.created_at).label('created_at')
-#     ).group_by(CampaignCall.name).order_by(CampaignCall.created_at.desc()).all()
-
-#     return render_template('manage_campaign.html', campaigns=campaigns)
-
 @app.route('/campaign/manage')
 def manage_campaigns():
     campaigns_raw = db.session.query(
@@ -3081,6 +3027,45 @@ def delete_campaign(name):
     db.session.commit()
     flash(f'ลบแคมเปญ "{name}" เรียบร้อยแล้ว', 'success')
     return redirect('/campaign/manage')
+
+
+@app.route('/api/campaign_message', methods=['POST'])
+def api_create_campaign_message():
+    # 🔐 ตรวจสอบ Authorization Header
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    token = auth_header.split(" ")[1]
+    valid_token = SystemConfig.get("API_TOKEN", "")
+    if token != valid_token:
+        return jsonify({"error": "Invalid token"}), 403
+
+    # 📥 ตรวจสอบ JSON payload
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    try:
+        new_message = CampaignMessage(
+            dn=data.get("dn"),
+            number=data.get("number"),
+            message=data.get("message", "")
+            category=data.get("category", "")
+            sub_category=data.get("sub_category", "")
+
+        )
+        db.session.add(new_message)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Campaign message created successfully",
+            "id": new_message.id
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
 

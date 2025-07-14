@@ -27,4 +27,38 @@
   <button type="submit" class="btn btn-primary">Start</button>
 </form>
 
+
+<!-- ✅ ตาราง CampaignMessage -->
+<div class="bg-white p-4 rounded shadow-sm">
+  <h5>Campaign Message Log</h5>
+  <div style="overflow-x: auto;">
+    <table class="table table-striped align-middle nowrap" style="width:100%;">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>DN</th>
+          <th>Number</th>
+          <th>Message</th>
+          <th>Category</th>
+          <th>Sub-Category</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for msg in messages %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ msg.dn }}</td>
+          <td>{{ msg.number }}</td>
+          <td>{{ msg.message }}</td>
+          <td>{{ msg.category }}</td>
+          <td>{{ msg.sub_category }}</td>
+          <td>{{ msg.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 {% endblock %}
