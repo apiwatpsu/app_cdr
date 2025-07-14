@@ -2807,8 +2807,16 @@ def campaign_outbound():
         try:
             call_resp = requests.post(call_url, json=call_payload, headers=call_headers)
             call_resp.raise_for_status()
+            #Update call success status & time
+            new_msg.call_status = 'success'
+            new_msg.called_at = datetime.utcnow()
+            db.session.commit()
             flash("โทรออกสำเร็จ", "success")
         except Exception as e:
+            # Update call failed status & time
+            new_msg.call_status = 'failed'
+            new_msg.called_at = datetime.utcnow()
+            db.session.commit()
             flash(f"โทรไม่สำเร็จ: {str(e)}", "error")
 
         return redirect("/campaign/outbound")
