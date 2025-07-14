@@ -141,7 +141,7 @@ def setup_mfa():
     if request.method == 'POST':
         token = request.form['token']
         if totp.verify(token):
-            # ✅ ยืนยันสำเร็จ → stamp ลง db
+            # ยืนยันสำเร็จ → stamp ลง db
             user.mfa_secret = secret
             db.session.commit()
 
@@ -168,7 +168,7 @@ def verify_mfa():
     if request.method == 'POST':
         token = request.form.get('token')
         if totp.verify(token):
-            # ✅ ยืนยัน OTP แล้ว ค่อยตั้ง session
+            # ยืนยัน OTP แล้ว ค่อยตั้ง session
             session['user_id'] = user.id
             session.pop('pre_mfa_user_id', None)
             user.last_login = datetime.utcnow()
@@ -195,26 +195,6 @@ def unlock_user(user_id):
     flash(f'ปลดล็อกผู้ใช้ {user.username} เรียบร้อยแล้ว', 'success')
     return redirect(url_for('blocked_users'))
 
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    json_data = None
-    if request.method == 'POST':
-        f = request.files.get('csv_file')
-        if f and f.filename.endswith('.csv'):
-            import io, csv
-            stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
-            reader = csv.DictReader(stream)
-            json_data = list(reader)
-        else:
-            json_data = []
-
-        return render_template('upload.html', username=session['username'], json_data=json_data)
-
-    return render_template('upload.html', username=session['username'])
 
 
 @app.route('/users')
@@ -321,7 +301,7 @@ def smtp_config():
         # ถ้ากด Save
         if action == 'save':
             db.session.commit()
-            success = "✅ Configuration saved."
+            success = "Configuration saved."
 
         # ถ้ากด Test
         elif action == 'test':
@@ -341,7 +321,7 @@ def send_test_email(config, to_email):
             server.starttls()
         server.login(config.smtp_user, config.smtp_password)
 
-        msg = MIMEText("✅ This is a test email from your SMTP configuration.")
+        msg = MIMEText("This is a test email from your SMTP configuration.")
         msg["Subject"] = "CDRPro SMTP Test Email"
         msg["From"] = config.smtp_user
         msg["To"] = to_email
@@ -2198,7 +2178,7 @@ def edit_user(user_id):
         if password:
             user.password = generate_password_hash(password)
 
-        # ✅ จัดการ menu_permissions
+        # จัดการ menu_permissions
         permissions = request.form.getlist('menu_permissions')
         user.menu_permissions = json.dumps(permissions)
 
@@ -2210,12 +2190,12 @@ def edit_user(user_id):
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
 
-    # 🔒 ห้ามลบ admin
+    # ห้ามลบ admin
     if user.username == 'admin':
         flash('ไม่สามารถลบ admin ได้', 'danger')
         return redirect(url_for('manage_users'))
 
-    # ✅ ลบผู้ใช้
+    # ลบผู้ใช้
     db.session.delete(user)
     db.session.commit()
 
@@ -2260,7 +2240,7 @@ def get_dashboard_data(from_date, to_date):
     if not config:
         raise Exception("ยังไม่มีการตั้งค่า database")
 
-    # 🔄 แปลง from/to เป็น timezone aware และแปลงเป็น UTC
+    # แปลง from/to เป็น timezone aware และแปลงเป็น UTC
     if from_date.tzinfo is None:
         from_date = BANGKOK_TZ.localize(from_date)
     if to_date.tzinfo is None:
@@ -2773,7 +2753,7 @@ def campaign_outbound():
         call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL")
         makecall_path = SystemConfig.get("TCX_MAKECALL_PATH")
 
-        # 1️⃣ ขอ Access Token
+        #  Access Token
         token_data = {
             "grant_type": grant_type,
             "client_id": client_id,
@@ -2792,7 +2772,7 @@ def campaign_outbound():
             flash(f"ไม่สามารถดึง Token ได้: {str(e)}", "error")
             return redirect("/campaign/outbound")
 
-        # 2️⃣ โทรออก
+        # โทรออก
         call_url = f"{call_control_url}/{dn}/{makecall_path}"
         call_payload = {
             "destination": number,
@@ -2902,7 +2882,7 @@ def campaign_launch_bulk():
     call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL")
     makecall_path = SystemConfig.get("TCX_MAKECALL_PATH")
 
-    # 🔐 ขอ access token
+    # ขอ access token
     try:
         token_resp = requests.post(
             token_url,
@@ -2920,7 +2900,7 @@ def campaign_launch_bulk():
         flash(f"ไม่สามารถขอ Token ได้: {str(e)}", "danger")
         return redirect("/campaign/upload")
 
-    # ✅ ดึง leads ตาม campaign
+    #ดึง leads ตาม campaign
     leads = CampaignCall.query.filter(
         CampaignCall.name.in_(selected_campaigns),
         CampaignCall.call_status == None
@@ -3048,7 +3028,7 @@ def delete_campaign(name):
 
 @app.route('/api/campaign_message', methods=['POST', 'GET'])
 def api_campaign_message():
-    # 🔐 ตรวจสอบ Authorization Header
+    #ตรวจสอบ Authorization Header
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith("Bearer "):
         return jsonify({"error": "Unauthorized"}), 401
@@ -3059,7 +3039,7 @@ def api_campaign_message():
         return jsonify({"error": "Invalid token"}), 403
 
     if request.method == 'POST':
-        # 📥 ตรวจสอบ JSON payload
+        #ตรวจสอบ JSON payload
         data = request.get_json()
         if not data:
             return jsonify({"error": "Invalid JSON"}), 400
@@ -3086,12 +3066,12 @@ def api_campaign_message():
 
     # GET Method
     if request.method == 'GET':
-        # 📥 รับ query params
+        #รับ query params
         dn = request.args.get("dn")
         category = request.args.get("category")
         sub_category = request.args.get("sub_category")
 
-        # 🔍 สร้าง query แบบ dynamic
+        #สร้าง query แบบ dynamic
         query = CampaignMessage.query
         if dn:
             query = query.filter(CampaignMessage.dn == dn)
