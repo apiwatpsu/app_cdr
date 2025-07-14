@@ -66,7 +66,15 @@
           <td>{{ msg.message }}</td>
           <td>{{ msg.category }}</td>
           <td>{{ msg.sub_category }}</td>
-          <td>{{ msg.call_status }}</td>
+          <td>
+              {% if lead.call_status == 'success' %}
+                <span class="badge bg-success">Success</span>
+              {% elif lead.call_status == 'failed' %}
+                <span class="badge bg-danger">Failed</span>
+              {% else %}
+                <span class="badge bg-secondary">-</span>
+              {% endif %}
+          </td>
           <td>{{ msg.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
           <td>{{ msg.called_at.strftime('%Y-%m-%d %H:%M:%S') if msg.called_at else '-' }}</td>
         </tr>
