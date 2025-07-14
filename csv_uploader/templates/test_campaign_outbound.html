@@ -68,7 +68,7 @@
           <td>{{ msg.sub_category }}</td>
           <td>{{ msg.call_status }}</td>
           <td>{{ msg.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-          <td>{{ msg.called_at }}</td>
+          <td>{{ msg.called_at.strftime('%Y-%m-%d %H:%M:%S') if msg.called_at else '-' }}</td>
         </tr>
         {% endfor %}
       </tbody>

@@ -120,8 +120,8 @@ class CampaignMessage(db.Model):
             "category": self.category,
             "sub_category": self.sub_category,
             "call_status": self.call_status,
-            "created_at": self.created_at.isoformat(),
-            "called_at": self.called_at.isoformat()
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "called_at": self.called_at.isoformat() if self.called_at else None,
         }
 
 
