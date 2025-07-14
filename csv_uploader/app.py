@@ -3050,8 +3050,8 @@ def api_create_campaign_message():
         new_message = CampaignMessage(
             dn=data.get("dn"),
             number=data.get("number"),
-            message=data.get("message", "")
-            category=data.get("category", "")
+            message=data.get("message", ""),
+            category=data.get("category", ""),
             sub_category=data.get("sub_category", "")
 
         )
