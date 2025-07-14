@@ -100,4 +100,22 @@ class CampaignCall(db.Model):
     called_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class CampaignMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # auto increment
+    dn = db.Column(db.String(20), nullable=False)
+    number = db.Column(db.String(20), nullable=False)
+    message = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "dn": self.dn,
+            "number": self.number,
+            "message": self.message,
+            "created_at": self.created_at.isoformat()
+        }
+
+
+
 
