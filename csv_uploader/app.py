@@ -2731,82 +2731,6 @@ def play_recording(filename):
         abort(404)
 
 
-# @app.route('/campaign/outbound', methods=['GET', 'POST'])
-# def campaign_outbound():
-#     if request.method == 'POST':
-#         dn = request.form['dn']
-#         number = request.form['number']
-#         message = request.form['message']
-#         category = request.form['category']
-#         sub_category = request.form['sub_category']
-
-#         # 🔹 1. บันทึกข้อความใน DB ก่อน
-#         new_msg = CampaignMessage(dn=dn, number=number, message=message, category=category, sub_category=sub_category)
-#         db.session.add(new_msg)
-#         db.session.commit()
-
-#         # ดึง config
-#         token_url = SystemConfig.get("TCX_TOKEN_URL")
-#         client_id = SystemConfig.get("TCX_CLIENT_ID")
-#         client_secret = SystemConfig.get("TCX_CLIENT_SECRET")
-#         grant_type = SystemConfig.get("TCX_GRANT_TYPE", "client_credentials")
-#         call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL")
-#         makecall_path = SystemConfig.get("TCX_MAKECALL_PATH")
-
-#         #  Access Token
-#         token_data = {
-#             "grant_type": grant_type,
-#             "client_id": client_id,
-#             "client_secret": client_secret
-#         }
-
-#         token_headers = {
-#             "Content-Type": "application/x-www-form-urlencoded"
-#         }
-
-#         try:
-#             token_resp = requests.post(token_url, data=token_data, headers=token_headers)
-#             token_resp.raise_for_status()
-#             access_token = token_resp.json().get("access_token")
-#         except Exception as e:
-#             flash(f"ไม่สามารถดึง Token ได้: {str(e)}", "error")
-#             return redirect("/campaign/outbound")
-
-#         # โทรออก
-#         call_url = f"{call_control_url}/{dn}/{makecall_path}"
-#         call_payload = {
-#             "destination": number,
-#             "timeout": 0
-#         }
-
-#         call_headers = {
-#             "Content-Type": "application/json",
-#             "Authorization": f"Bearer {access_token}"
-#         }
-
-#         try:
-#             call_resp = requests.post(call_url, json=call_payload, headers=call_headers)
-#             call_resp.raise_for_status()
-#             #Update call success status & time
-#             new_msg.call_status = 'success'
-#             new_msg.called_at = datetime.utcnow()
-#             db.session.commit()
-#             flash("โทรออกสำเร็จ", "success")
-#         except Exception as e:
-#             # Update call failed status & time
-#             new_msg.call_status = 'failed'
-#             new_msg.called_at = datetime.utcnow()
-#             db.session.commit()
-#             flash(f"โทรไม่สำเร็จ: {str(e)}", "error")
-
-#         return redirect("/campaign/outbound")
-#     messages = CampaignMessage.query.order_by(CampaignMessage.created_at.desc()).all()
-#     for message in messages:
-#         if message.created_at and message.created_at.tzinfo is None:
-#             message.created_at = message.created_at.replace(tzinfo=utc).astimezone(BANGKOK_TZ)
-#         if message.called_at and message.called_at.tzinfo is None:
-#             message.called_at = message.called_at.replace(tzinfo=utc).astimezone(BANGKOK_TZ)
-#     return render_template("test_campaign_outbound.html", messages=messages)
 
 @app.route('/campaign/outbound', methods=['GET', 'POST'])
 def campaign_outbound():
@@ -2893,7 +2817,7 @@ def api_create_campaign_message():
 
 @app.route('/api/campaign_message', methods=['POST', 'GET'])
 def api_campaign_message():
-    # 🔐 ตรวจสอบ Authorization Header
+    #ตรวจสอบ Authorization Header
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith("Bearer "):
         return jsonify({"error": "Unauthorized"}), 401
@@ -2903,7 +2827,7 @@ def api_campaign_message():
     if token != valid_token:
         return jsonify({"error": "Invalid token"}), 403
 
-    # 📤 POST method: รับข้อมูล + โทรออก
+    #POST method:
     if request.method == 'POST':
         data = request.get_json()
         if not data:
@@ -2939,7 +2863,7 @@ def api_campaign_message():
             db.session.rollback()
             return jsonify({"error": f"Server error: {str(e)}"}), 500
 
-    # 📥 GET method: ค้นหาข้อความตามเงื่อนไข
+    #GET method:
     if request.method == 'GET':
         dn = request.args.get("dn")
         category = request.args.get("category")
@@ -2968,7 +2892,7 @@ def make_outbound_call(campaign_msg: CampaignMessage):
     call_control_url = SystemConfig.get("TCX_CALL_CONTROL_URL")
     makecall_path = SystemConfig.get("TCX_MAKECALL_PATH")
 
-    # 🔐 ขอ Access Token
+    # ขอ Access Token
     token_data = {
         "grant_type": grant_type,
         "client_id": client_id,
@@ -2986,7 +2910,7 @@ def make_outbound_call(campaign_msg: CampaignMessage):
     except Exception as e:
         raise RuntimeError(f"ไม่สามารถดึง Token ได้: {str(e)}")
 
-    # 📞 โทรออก
+    # โทรออก
     call_url = f"{call_control_url}/{campaign_msg.dn}/{makecall_path}"
     call_payload = {
         "destination": campaign_msg.number,
@@ -3113,7 +3037,7 @@ def campaign_launch_bulk():
 
     for lead in leads:
         if not session.get('calling_active'):
-            flash("⛔️ หยุดการโทรแล้ว", "warning")
+            flash("หยุดการโทรแล้ว", "warning")
             break
         dn = (lead.queue or "").strip()  # ใช้ queue เป็น DN
         if not dn or not lead.phone_number:
@@ -3134,18 +3058,18 @@ def campaign_launch_bulk():
             call_resp.raise_for_status()
             lead.call_status = "success"
             lead.called_at = datetime.utcnow()
-            flash(f"📞 โทรหา {lead.phone_number} สำเร็จ", "dialing")
+            flash(f"โทรหา {lead.phone_number} สำเร็จ", "dialing")
             called += 1
         except Exception as e:
             lead.call_status = "failed"
-            flash(f"❌ โทรหา {lead.phone_number} ล้มเหลว", "dialing")
+            flash(f"โทรหา {lead.phone_number} ล้มเหลว", "dialing")
             failed += 1
 
         db.session.add(lead)
 
     db.session.commit()
     session['calling_active'] = False
-    flash(f"📞 โทรสำเร็จ {called} รายการ / ล้มเหลว {failed} รายการ", "success")
+    flash(f"โทรสำเร็จ {called} รายการ / ล้มเหลว {failed} รายการ", "success")
     return redirect("/campaign/upload")
 
 
@@ -3185,7 +3109,7 @@ def campaign_detail(name):
 @app.route('/campaign/stop')
 def campaign_stop():
     session['calling_active'] = False
-    flash("⛔️ หยุดการโทรเรียบร้อยแล้ว", "warning")
+    flash("หยุดการโทรเรียบร้อยแล้ว", "warning")
     return redirect("/campaign/upload")
 
 
@@ -3222,68 +3146,6 @@ def delete_campaign(name):
     db.session.commit()
     flash(f'ลบแคมเปญ "{name}" เรียบร้อยแล้ว', 'success')
     return redirect('/campaign/manage')
-
-
-
-
-# @app.route('/api/campaign_message', methods=['POST', 'GET'])
-# def api_campaign_message():
-#     #ตรวจสอบ Authorization Header
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header or not auth_header.startswith("Bearer "):
-#         return jsonify({"error": "Unauthorized"}), 401
-
-#     token = auth_header.split(" ")[1]
-#     valid_token = SystemConfig.get("API_TOKEN", "")
-#     if token != valid_token:
-#         return jsonify({"error": "Invalid token"}), 403
-
-#     if request.method == 'POST':
-#         #ตรวจสอบ JSON payload
-#         data = request.get_json()
-#         if not data:
-#             return jsonify({"error": "Invalid JSON"}), 400
-
-#         try:
-#             new_message = CampaignMessage(
-#                 dn=data.get("dn"),
-#                 number=data.get("number"),
-#                 message=data.get("message", ""),
-#                 category=data.get("category", ""),
-#                 sub_category=data.get("sub_category", "")
-#             )
-#             db.session.add(new_message)
-#             db.session.commit()
-
-#             return jsonify({
-#                 "message": "Campaign message created successfully",
-#                 "id": new_message.id
-#             }), 201
-
-#         except Exception as e:
-#             db.session.rollback()
-#             return jsonify({"error": f"Server error: {str(e)}"}), 500
-
-#     # GET Method
-#     if request.method == 'GET':
-#         #รับ query params
-#         dn = request.args.get("dn")
-#         category = request.args.get("category")
-#         sub_category = request.args.get("sub_category")
-
-#         #สร้าง query แบบ dynamic
-#         query = CampaignMessage.query
-#         if dn:
-#             query = query.filter(CampaignMessage.dn == dn)
-#         if category:
-#             query = query.filter(CampaignMessage.category == category)
-#         if sub_category:
-#             query = query.filter(CampaignMessage.sub_category == sub_category)
-
-#         messages = query.order_by(CampaignMessage.created_at.desc()).all()
-
-#         return jsonify([msg.to_dict() for msg in messages]), 200
-
 
 
 
