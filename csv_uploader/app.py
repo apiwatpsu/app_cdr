@@ -3036,8 +3036,46 @@ def delete_campaign(name):
     return redirect('/campaign/manage')
 
 
-@app.route('/api/campaign_message', methods=['POST'])
-def api_create_campaign_message():
+# @app.route('/api/campaign_message', methods=['POST'])
+# def api_create_campaign_message():
+#     # 🔐 ตรวจสอบ Authorization Header
+#     auth_header = request.headers.get('Authorization')
+#     if not auth_header or not auth_header.startswith("Bearer "):
+#         return jsonify({"error": "Unauthorized"}), 401
+
+#     token = auth_header.split(" ")[1]
+#     valid_token = SystemConfig.get("API_TOKEN", "")
+#     if token != valid_token:
+#         return jsonify({"error": "Invalid token"}), 403
+
+#     # 📥 ตรวจสอบ JSON payload
+#     data = request.get_json()
+#     if not data:
+#         return jsonify({"error": "Invalid JSON"}), 400
+
+#     try:
+#         new_message = CampaignMessage(
+#             dn=data.get("dn"),
+#             number=data.get("number"),
+#             message=data.get("message", ""),
+#             category=data.get("category", ""),
+#             sub_category=data.get("sub_category", "")
+
+#         )
+#         db.session.add(new_message)
+#         db.session.commit()
+
+#         return jsonify({
+#             "message": "Campaign message created successfully",
+#             "id": new_message.id
+#         }), 201
+
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@app.route('/api/campaign_message', methods=['POST', 'GET'])
+def api_campaign_message():
     # 🔐 ตรวจสอบ Authorization Header
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -3048,31 +3086,52 @@ def api_create_campaign_message():
     if token != valid_token:
         return jsonify({"error": "Invalid token"}), 403
 
-    # 📥 ตรวจสอบ JSON payload
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "Invalid JSON"}), 400
+    if request.method == 'POST':
+        # 📥 ตรวจสอบ JSON payload
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Invalid JSON"}), 400
 
-    try:
-        new_message = CampaignMessage(
-            dn=data.get("dn"),
-            number=data.get("number"),
-            message=data.get("message", ""),
-            category=data.get("category", ""),
-            sub_category=data.get("sub_category", "")
+        try:
+            new_message = CampaignMessage(
+                dn=data.get("dn"),
+                number=data.get("number"),
+                message=data.get("message", ""),
+                category=data.get("category", ""),
+                sub_category=data.get("sub_category", "")
+            )
+            db.session.add(new_message)
+            db.session.commit()
 
-        )
-        db.session.add(new_message)
-        db.session.commit()
+            return jsonify({
+                "message": "Campaign message created successfully",
+                "id": new_message.id
+            }), 201
 
-        return jsonify({
-            "message": "Campaign message created successfully",
-            "id": new_message.id
-        }), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Server error: {str(e)}"}), 500
 
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": f"Server error: {str(e)}"}), 500
+    # GET Method
+    if request.method == 'GET':
+        # 📥 รับ query params
+        dn = request.args.get("dn")
+        category = request.args.get("category")
+        sub_category = request.args.get("sub_category")
+
+        # 🔍 สร้าง query แบบ dynamic
+        query = CampaignMessage.query
+        if dn:
+            query = query.filter(CampaignMessage.dn == dn)
+        if category:
+            query = query.filter(CampaignMessage.category == category)
+        if sub_category:
+            query = query.filter(CampaignMessage.sub_category == sub_category)
+
+        messages = query.order_by(CampaignMessage.created_at.desc()).all()
+
+        return jsonify([msg.to_dict() for msg in messages]), 200
+
 
 
 
