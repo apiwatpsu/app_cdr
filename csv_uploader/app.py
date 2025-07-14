@@ -2756,10 +2756,12 @@ def campaign_outbound():
     if request.method == 'POST':
         dn = request.form['dn']
         number = request.form['number']
-        mesage = request.form['mesage']
+        message = request.form['message']
+        category = request.form['category']
+        sub_category = request.form['sub_category']
 
         # 🔹 1. บันทึกข้อความใน DB ก่อน
-        new_msg = CampaignMessage(dn=dn, number=number, message=mesage)
+        new_msg = CampaignMessage(dn=dn, number=number, message=mesage, category=category, sub_category=sub_category)
         db.session.add(new_msg)
         db.session.commit()
 
