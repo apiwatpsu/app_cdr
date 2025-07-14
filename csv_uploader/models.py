@@ -108,6 +108,8 @@ class CampaignMessage(db.Model):
     category = db.Column(db.String(100))
     sub_category = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    call_status = db.Column(db.String(50))
+    called_at = db.Column(db.DateTime)
 
     def to_dict(self):
         return {
@@ -117,7 +119,9 @@ class CampaignMessage(db.Model):
             "message": self.message,
             "category": self.category,
             "sub_category": self.sub_category,
-            "created_at": self.created_at.isoformat()
+            "call_status": self.call_status,
+            "created_at": self.created_at.isoformat(),
+            "called_at": self.called_at.isoformat()
         }
 
 

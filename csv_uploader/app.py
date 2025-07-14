@@ -2814,10 +2814,10 @@ def campaign_outbound():
         return redirect("/campaign/outbound")
     messages = CampaignMessage.query.order_by(CampaignMessage.created_at.desc()).all()
     for message in messages:
-        if message.created_at:
-            if message.created_at.tzinfo is None:
-                message.created_at = message.created_at.replace(tzinfo=utc)
-            message.created_at = message.created_at.astimezone(BANGKOK_TZ)
+        if message.created_at and message.created_at.tzinfo is None:
+            message.created_at = message.created_at.replace(tzinfo=utc).astimezone(BANGKOK_TZ)
+        if message.called_at and message.called_at.tzinfo is None:
+            message.called_at = message.called_at.replace(tzinfo=utc).astimezone(BANGKOK_TZ)
     return render_template("test_campaign_outbound.html", messages=messages)
 
 
@@ -3036,43 +3036,7 @@ def delete_campaign(name):
     return redirect('/campaign/manage')
 
 
-# @app.route('/api/campaign_message', methods=['POST'])
-# def api_create_campaign_message():
-#     # 🔐 ตรวจสอบ Authorization Header
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header or not auth_header.startswith("Bearer "):
-#         return jsonify({"error": "Unauthorized"}), 401
 
-#     token = auth_header.split(" ")[1]
-#     valid_token = SystemConfig.get("API_TOKEN", "")
-#     if token != valid_token:
-#         return jsonify({"error": "Invalid token"}), 403
-
-#     # 📥 ตรวจสอบ JSON payload
-#     data = request.get_json()
-#     if not data:
-#         return jsonify({"error": "Invalid JSON"}), 400
-
-#     try:
-#         new_message = CampaignMessage(
-#             dn=data.get("dn"),
-#             number=data.get("number"),
-#             message=data.get("message", ""),
-#             category=data.get("category", ""),
-#             sub_category=data.get("sub_category", "")
-
-#         )
-#         db.session.add(new_message)
-#         db.session.commit()
-
-#         return jsonify({
-#             "message": "Campaign message created successfully",
-#             "id": new_message.id
-#         }), 201
-
-#     except Exception as e:
-#         db.session.rollback()
-#         return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 @app.route('/api/campaign_message', methods=['POST', 'GET'])
 def api_campaign_message():
