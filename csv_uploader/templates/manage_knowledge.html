@@ -2,7 +2,7 @@
 {% block title %}Manage Knowledge{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">📂 จัดการ Knowledge</h2>
+<h2 class="mb-4">Manage Knowledge</h2>
 
 <table class="table table-bordered table-hover align-middle">
   <thead class="table-light">
@@ -24,6 +24,11 @@
       <td>
         <a href="{{ url_for('view_knowledge_group', name=group.name) }}" class="btn btn-sm btn-primary">🔍 View</a>
         <!-- ปุ่มลบสามารถเพิ่มได้ -->
+      </td>
+      <td>
+        <form action="{{ url_for('delete_knowledge', id=item.id) }}" method="POST" onsubmit="return confirm('Delete this item?');">
+          <button type="submit">Delete</button>
+        </form>
       </td>
     </tr>
     {% else %}

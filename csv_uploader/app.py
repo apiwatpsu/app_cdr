@@ -3202,6 +3202,14 @@ def view_knowledge_group(name):
     records = Knowledge.query.filter_by(name=name).order_by(Knowledge.created_at.desc()).all()
     return render_template('view_knowledge_group.html', records=records, name=name)
 
+@app.route('/knowledge/delete/<int:id>', methods=['POST'])
+def delete_knowledge(id):
+    item = Knowledge.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    flash('Item deleted successfully.')
+    return redirect(url_for('manage_knowledge'))
+
 @app.route('/logout')
 def logout():
         session.clear()

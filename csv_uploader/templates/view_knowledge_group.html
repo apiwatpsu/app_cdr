@@ -2,9 +2,9 @@
 {% block title %}View Knowledge - {{ name }}{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">📘 รายการข้อมูลในกลุ่ม <strong>{{ name }}</strong></h2>
+<h2 class="mb-3">Knowledge List <strong>{{ name }}</strong></h2>
 
-<a href="{{ url_for('manage_knowledge') }}" class="btn btn-secondary mb-3">⬅️ กลับหน้าจัดการ</a>
+<a href="{{ url_for('manage_knowledge') }}" class="btn btn-secondary mb-3">Back</a>
 
 <div class="bg-white p-3 rounded shadow-sm">
   <div style="overflow-x:auto;">
