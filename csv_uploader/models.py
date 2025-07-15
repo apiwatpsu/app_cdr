@@ -127,6 +127,7 @@ class CampaignMessage(db.Model):
 class Knowledge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     raw_data = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 
