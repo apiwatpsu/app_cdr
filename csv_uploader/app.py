@@ -3204,7 +3204,7 @@ def view_knowledge_group(name):
 
 @app.route('/knowledge/delete_group/<string:name>', methods=['POST'])
 def delete_knowledge_group(name):
-    items = Knowledge.query.filter_by(group=name).all()
+    items = Knowledge.query.filter_by(name=name).all()
     if not items:
         flash(f'No records found for group: {name}', 'warning')
     else:
