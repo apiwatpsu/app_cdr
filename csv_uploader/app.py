@@ -3238,7 +3238,7 @@ def api_knowledge_search():
     for item in all_knowledge:
         searchable_text = f"{item.name or ''} {item.raw_data or ''}".lower()
         score = fuzz.partial_ratio(query, searchable_text)
-        if score > 60:
+        if score > 80:
             results.append({
                 "id": item.id,
                 "name": item.name,
