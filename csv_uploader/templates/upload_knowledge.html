@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}Upload Knowledge{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📚 อัปโหลดข้อมูล Knowledge</h2>
+
+<form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm mb-4">
+  <div class="mb-3">
+    <label for="name" class="form-label">ชื่อกลุ่มข้อมูล:</label>
+    <input type="text" class="form-control" name="name" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="file" class="form-label">อัปโหลดไฟล์ CSV:</label>
+    <input type="file" class="form-control" name="file" accept=".csv" required>
+  </div>
+
+  <button type="submit" class="btn btn-primary">📥 อัปโหลด</button>
+</form>
+
+{% if messages %}
+  <div class="alert alert-info">{{ messages }}</div>
+{% endif %}
+
+<h4 class="mb-3">📋 ข้อมูลที่มีอยู่</h4>
+<div class="bg-white p-3 rounded shadow-sm">
+  <div style="overflow-x:auto;">
+    <table class="table table-hover table-bordered table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>ชื่อกลุ่มข้อมูล</th>
+          <th>Raw Text</th>
+          <th>วันที่เพิ่ม</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in records %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ item.name or '-' }}</td>
+          <td>{{ item.raw_data }}</td>
+          <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">ไม่มีข้อมูล</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -3155,7 +3155,35 @@ def logout():
         session.clear()
         return redirect(url_for('login'))
 
+@app.route('/knowledge/upload', methods=['GET', 'POST'])
+def upload_knowledge():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        if not name:
+            flash("กรุณากรอกชื่อกลุ่มข้อมูล", "danger")
+            return redirect('/knowledge/upload')
 
+        if 'file' not in request.files:
+            flash("ไม่พบไฟล์ CSV", "danger")
+            return redirect('/knowledge/upload')
+
+        file = request.files['file']
+        if not file.filename.endswith('.csv'):
+            flash("กรุณาอัปโหลดเฉพาะไฟล์ .csv", "danger")
+            return redirect('/knowledge/upload')
+
+        stream = StringIO(file.stream.read().decode("utf-8"))
+        reader = csv.DictReader(stream)
+
+        for row in reader:
+            raw_text = '; '.join([f"{k.strip()}: {v.strip()}" for k, v in row.items()])
+            db.session.add(Knowledge(name=name, raw_data=raw_text))
+
+        db.session.commit()
+        flash("อัปโหลดข้อมูลสำเร็จ", "success")
+        return redirect('/knowledge/upload')
+
+    return render_template('upload_knowledge.html')
 
 if __name__ == '__main__':
 
