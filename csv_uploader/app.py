@@ -3149,12 +3149,6 @@ def delete_campaign(name):
     return redirect('/campaign/manage')
 
 
-
-@app.route('/logout')
-def logout():
-        session.clear()
-        return redirect(url_for('login'))
-
 @app.route('/knowledge/upload', methods=['GET', 'POST'])
 def upload_knowledge():
     if request.method == 'POST':
@@ -3183,7 +3177,19 @@ def upload_knowledge():
         flash("อัปโหลดข้อมูลสำเร็จ", "success")
         return redirect('/knowledge/upload')
 
-    return render_template('upload_knowledge.html')
+    # 🟡 ส่วนนี้คือการ query ข้อมูลและส่งไปให้ template
+    records = Knowledge.query.order_by(Knowledge.created_at.desc()).all()
+    return render_template('upload_knowledge.html', records=records)
+
+
+
+
+@app.route('/logout')
+def logout():
+        session.clear()
+        return redirect(url_for('login'))
+
+
 
 if __name__ == '__main__':
 
