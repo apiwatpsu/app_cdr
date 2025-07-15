@@ -9,4 +9,5 @@ psutil
 pytz
 pyotp
 requests
+rapidfuzz
 qrcode[pil]

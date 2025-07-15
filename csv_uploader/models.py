@@ -124,6 +124,9 @@ class CampaignMessage(db.Model):
             "called_at": self.called_at.isoformat() if self.called_at else None,
         }
 
+class Knowledge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    raw_data = db.Column(db.Text, nullable=False)
 
 
 

@@ -1,13 +1,14 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall, CampaignMessage
+from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall, CampaignMessage, Knowledge
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone, timedelta
 from pytz import timezone, utc
 from flask import g
 from collections import defaultdict
+from rapidfuzz import fuzz
 import csv
 import psutil
 import shutil
