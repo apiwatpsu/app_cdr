@@ -3214,11 +3214,46 @@ def delete_knowledge_group(name):
         flash(f'Deleted all knowledge in group: {name}', 'success')
     return redirect(url_for('manage_knowledge'))
 
+
+@app.route('/api/knowledge', methods=['GET'])
+def api_knowledge_search():
+    # --- Authentication ---
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    token = auth_header.split(" ")[1]
+    valid_token = SystemConfig.get("API_TOKEN", "")
+    if token != valid_token:
+        return jsonify({"error": "Invalid token"}), 403
+
+    # --- Search Query ---
+    query = request.args.get('q', '').strip().lower()
+    if not query:
+        return jsonify([])
+
+    results = []
+    all_knowledge = Knowledge.query.all()  # Add .limit(500) if large dataset
+
+    for item in all_knowledge:
+        searchable_text = f"{item.name or ''} {item.raw_data or ''}".lower()
+        score = fuzz.partial_ratio(query, searchable_text)
+        if score > 60:
+            results.append({
+                "id": item.id,
+                "name": item.name,
+                "raw_data": item.raw_data,
+                "score": score
+            })
+
+    results.sort(key=lambda x: x["score"], reverse=True)
+
+    return jsonify(results)
+
 @app.route('/logout')
 def logout():
         session.clear()
         return redirect(url_for('login'))
-
 
 
 if __name__ == '__main__':
