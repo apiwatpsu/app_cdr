@@ -23,6 +23,8 @@
 {% endif %}
 
 <h4 class="mb-3">Raw Data</h4>
+
+  {% if records %}
 <div class="bg-white p-3 rounded shadow-sm">
   <div style="overflow-x:auto;">
     <table id="myTable" class="table table-hover table-bordered table-striped align-middle">
@@ -42,13 +44,11 @@
           <td>{{ item.raw_data }}</td>
           <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
         </tr>
-        {% else %}
-        <tr>
-          <td colspan="4" class="text-center text-muted">ไม่มีข้อมูล</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    {% endfor %}
+  </tbody>
+</table>
+  {% else %}
+    <p>There is no Knowledge yet</p>
+  {% endif %}
 </div>
 {% endblock %}
