@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2 class="mb-4">Manage Knowledge</h2>
-
+{% if groups %}
 <table class="table table-bordered table-hover align-middle">
   <thead class="table-light">
     <tr>
@@ -28,11 +28,11 @@
         </form>
       </td>
     </tr>
-    {% else %}
-    <tr>
-      <td colspan="5" class="text-center text-muted">ไม่มีข้อมูล</td>
-    </tr>
     {% endfor %}
   </tbody>
 </table>
+  {% else %}
+    <p>There is no Knowledge yet</p>
+  {% endif %}
+</div>
 {% endblock %}
