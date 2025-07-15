@@ -3181,8 +3181,26 @@ def upload_knowledge():
     records = Knowledge.query.order_by(Knowledge.created_at.desc()).all()
     return render_template('upload_knowledge.html', records=records)
 
+@app.route('/knowledge/manage')
+def manage_knowledge():
+    # ดึงชื่อกลุ่ม (name) ทั้งหมดและวันที่อัปโหลดล่าสุดของแต่ละกลุ่ม
+    grouped_data = (
+        db.session.query(
+            Knowledge.name,
+            db.func.count(Knowledge.id).label('record_count'),
+            db.func.max(Knowledge.created_at).label('last_upload')
+        )
+        .group_by(Knowledge.name)
+        .order_by(db.func.max(Knowledge.created_at).desc())
+        .all()
+    )
 
+    return render_template('manage_knowledge.html', groups=grouped_data)
 
+@app.route('/knowledge/group/<name>')
+def view_knowledge_group(name):
+    records = Knowledge.query.filter_by(name=name).order_by(Knowledge.created_at.desc()).all()
+    return render_template('view_knowledge_group.html', records=records, name=name)
 
 @app.route('/logout')
 def logout():

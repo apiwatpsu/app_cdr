@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Manage Knowledge{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📂 จัดการ Knowledge</h2>
+
+<table class="table table-bordered table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Record Count</th>
+      <th>Last Upload</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for group in groups %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ group.name }}</td>
+      <td>{{ group.record_count }}</td>
+      <td>{{ group.last_upload.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>
+        <a href="{{ url_for('view_knowledge_group', name=group.name) }}" class="btn btn-sm btn-primary">🔍 View</a>
+        <!-- ปุ่มลบสามารถเพิ่มได้ -->
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="5" class="text-center text-muted">ไม่มีข้อมูล</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -359,15 +359,29 @@
     </div>
     {% endif %}
 
+
     {% if can_view('knowledge') %}
     <div class="sidebar-label">Knowledge</div>
-    <a href="{{ url_for('upload_knowledge') }}" 
-      data-menu="knowledge"
-      class="{% if request.endpoint == 'knowledge' %}active{% endif %}">
+    <button class="dropdown-btn d-flex justify-content-between align-items-center w-100" data-key="campaign_outbound">
+      <span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-text-icon lucide-book-text"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/><path d="M8 11h8"/><path d="M8 7h6"/></svg>
-        Upload Knowledge
-    </a>
+        Knowledge
+      </span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="dropdown-container">
+        <a href="{{ url_for('upload_knowledge') }}" data-menu="upload_knowledge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
+         Upload Knowledge
+        </a>
+
+        <a href="{{ url_for('manage_knowledge') }}" data-menu="manage_knowledge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dot-icon lucide-dot"><circle cx="12.1" cy="12.1" r="1"/></svg>
+         Manage Knowledge
+        </a>
+    </div>
     {% endif %}
+
 
 
 
