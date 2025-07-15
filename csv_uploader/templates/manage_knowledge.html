@@ -23,11 +23,8 @@
       <td>{{ group.last_upload.strftime('%Y-%m-%d %H:%M:%S') }}</td>
       <td>
         <a href="{{ url_for('view_knowledge_group', name=group.name) }}" class="btn btn-sm btn-primary">🔍 View</a>
-        <!-- ปุ่มลบสามารถเพิ่มได้ -->
-      </td>
-      <td>
-        <form action="{{ url_for('delete_knowledge', id=item.id) }}" method="POST" onsubmit="return confirm('Delete this item?');">
-          <button type="submit">Delete</button>
+        <form action="{{ url_for('delete_knowledge', id=group.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this item?');">
+          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
         </form>
       </td>
     </tr>
