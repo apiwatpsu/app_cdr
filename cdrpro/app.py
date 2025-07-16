@@ -132,11 +132,11 @@ def setup_mfa():
     if not user:
         return redirect(url_for('login'))
 
-    # ใช้ secret จาก session ถ้ามี หรือสร้างใหม่
+    
     secret = session.get('temp_mfa_secret')
     if not secret:
         secret = pyotp.random_base32()
-        session['temp_mfa_secret'] = secret  # เก็บไว้ชั่วคราว
+        session['temp_mfa_secret'] = secret
 
     totp = pyotp.TOTP(secret)
     qr_uri = totp.provisioning_uri(name=user.username, issuer_name="CDRPro")
@@ -144,43 +144,20 @@ def setup_mfa():
     if request.method == 'POST':
         token = request.form['token']
         if totp.verify(token):
-            # ยืนยันสำเร็จ → stamp ลง db
+            
             user.mfa_secret = secret
             db.session.commit()
 
-            # ล้าง temp
+            
             session.pop('temp_mfa_secret', None)
-            session['user_id'] = user.id  # ถือว่า login สำเร็จ
-            return redirect(url_for('dashboard'))
+            session['user_id'] = user.id 
+            return redirect(url_for('consent'))
         else:
             return render_template('setup_mfa.html', error="Invalid code", qr_uri=qr_uri)
 
     return render_template('setup_mfa.html', qr_uri=qr_uri)
 
 
-
-# @app.route('/verify_mfa', methods=['GET', 'POST'])
-# def verify_mfa():
-#     user_id = session.get('pre_mfa_user_id')
-#     if not user_id:
-#         return redirect(url_for('login'))
-
-#     user = User.query.get_or_404(user_id)
-#     totp = pyotp.TOTP(user.mfa_secret)
-
-#     if request.method == 'POST':
-#         token = request.form.get('token')
-#         if totp.verify(token):
-            
-#             session['user_id'] = user.id
-#             session.pop('pre_mfa_user_id', None)
-#             user.last_login = datetime.utcnow()
-#             db.session.commit()
-#             return redirect(url_for('dashboard'))
-#         else:
-#             return render_template('verify_mfa.html', error="Invalid OTP")
-
-#     return render_template('verify_mfa.html')
 
 @app.route('/verify_mfa', methods=['GET', 'POST'])
 def verify_mfa():
