@@ -14,6 +14,7 @@
                   <th>Username</th>
                   <th>Role</th>
                   <th>MFA Status</th>
+                  <th>Consent</th>
                   <th>Actions</th>
                   <th>Last Login</th>
               </tr>
@@ -31,6 +32,13 @@
                       <span class="badge bg-warning text-dark">Pending</span>
                     {% else %}
                       <span class="badge bg-secondary">Off</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if user.consent_accepted %}
+                      <span class="badge bg-success">Accepted</span>
+                    {% else %}
+                      <span class="badge bg-danger">Not Accepted</span>
                     {% endif %}
                   </td>
                   <td>
