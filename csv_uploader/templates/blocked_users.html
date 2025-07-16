@@ -27,6 +27,7 @@
         <td>
         <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('Unlock {{ user.username }}?');">
             <button type="submit" class="btn btn-sm btn-success">Unlock</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         </form>
         </td>
     </tr>
