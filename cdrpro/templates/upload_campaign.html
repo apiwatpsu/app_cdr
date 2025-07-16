@@ -62,48 +62,4 @@
   </div>
 </div>
 
-
-
-<!--ตาราง Leads -->
-<!-- <div class="bg-white p-4 rounded shadow-sm">
-  <div style="overflow-x: auto;">
-    <table id="myTable" class="table table-hover table-striped align-middle nowrap" style="width:100%;">
-      
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>Campaign Name</th>
-          <th>Phone No.</th>
-          <th>Queue</th>
-          <th>Agent</th>
-          <th>Call State</th>
-          <th>Created At</th>
-          <th>Call At</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for lead in leads %}
-        <tr>
-          <td>{{ loop.index }}</td>
-          <td>{{ lead.name }}</td>
-          <td>{{ lead.phone_number }}</td>
-          <td>{{ lead.queue or '-' }}</td>
-          <td>{{ lead.agent or '-' }}</td>
-          <td>
-            {% if lead.call_status == 'success' %}
-                <span class="badge bg-success">Success</span>
-            {% elif lead.call_status == 'failed' %}
-                <span class="badge bg-danger">Failed</span>
-            {% else %}
-                <span class="badge bg-secondary">-</span>
-            {% endif %}
-            </td>
-          <td>{{ lead.created_at.strftime('%Y-%m-%d %H:%M:%S') if lead.created_at else '-' }}</td>
-          <td>{{ lead.called_at.strftime('%Y-%m-%d %H:%M:%S') if lead.called_at else '-' }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div> -->
 {% endblock %}

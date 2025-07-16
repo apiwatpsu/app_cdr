@@ -3,47 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ข้อตกลงการใช้งานระบบ CDRPro</title>
-    <style>
-        body {
-            font-family: 'Tahoma', sans-serif;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            color: #2c3e50;
-        }
-
-        .consent-box {
-            background-color: #ffffff;
-            padding: 20px;
-            border: 1px solid #ddd;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
-
-        .actions {
-            margin-top: 30px;
-            text-align: right;
-        }
-
-        .actions button {
-            padding: 10px 20px;
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .actions button:hover {
-            background-color: #27ae60;
-        }
-    </style>
+<link href="{{ url_for('static', filename='css/consent.css') }}" rel="stylesheet">
 </head>
 <body>
 
