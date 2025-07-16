@@ -93,7 +93,7 @@ def login():
 
 
         if not re.match(r'^[a-zA-Z0-9_]+$', username):
-            return render_template('login.html', error='Invalid username format'), 401
+            return render_template('login.html', form=form, error='Invalid username format'), 401
 
         user = User.query.filter_by(username=username).first()
 
@@ -102,7 +102,7 @@ def login():
             # เช็คว่าถูกล็อกอยู่ไหม
             if user.lockout_until and user.lockout_until > datetime.utcnow():
                 remaining = (user.lockout_until - datetime.utcnow()).seconds
-                return render_template('login.html', error=f'บัญชีถูกล็อกชั่วคราว โปรดลองอีกครั้งใน {remaining} วินาที')
+                return render_template('login.html', form=form, error=f'บัญชีถูกล็อกชั่วคราว โปรดลองอีกครั้งใน {remaining} วินาที')
 
             # เช็ค password
             if check_password_hash(user.password, password):
@@ -136,14 +136,14 @@ def login():
                 user.last_failed_platform = request.user_agent.platform
                 db.session.commit()
                 if user.lockout_until:
-                    return render_template('login.html', error=f'ล็อกอินผิดเกิน {MAX_FAILED_ATTEMPTS} ครั้ง บัญชีถูกล็อก {LOCKOUT_TIME_MINUTES} นาที')
+                    return render_template('login.html', form=form, error=f'ล็อกอินผิดเกิน {MAX_FAILED_ATTEMPTS} ครั้ง บัญชีถูกล็อก {LOCKOUT_TIME_MINUTES} นาที')
                 else:
-                    return render_template('login.html', error='Invalid credentials')
+                    return render_template('login.html', form=form, error='Invalid credentials')
 
         else:
-            return render_template('login.html', error='Invalid credentials')
+            return render_template('login.html', form=form, error='Invalid credentials')
 
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 
 
