@@ -71,6 +71,7 @@ def index():
 def login_form():
     if 'username' in request.args or 'password' in request.args:
         return "Method Not Allowed", 405
+    form = LoginForm()
     return render_template('login.html', form=form)
 
 

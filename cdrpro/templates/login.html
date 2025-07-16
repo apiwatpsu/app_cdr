@@ -19,16 +19,16 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="btn btn-primary w-100">Login</button>
         </form> -->
-          <form method="POST">
-            {{ form.hidden_tag() }}
-            
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br><br>
-            
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br><br>
-            
-            {{ form.submit() }}
+        <form method="POST" action="/login">
+        {{ form.hidden_tag() }}
+
+        <label>Username</label><br>
+        {{ form.username(size=32) }}<br>
+
+        <label>Password</label><br>
+        {{ form.password(size=32) }}<br>
+
+        {{ form.submit() }}
         </form>
     </div>
 </div>
