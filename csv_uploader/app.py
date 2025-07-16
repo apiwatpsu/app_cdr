@@ -25,7 +25,7 @@ import os
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
-
+load_dotenv()
 BANGKOK_TZ = timezone('Asia/Bangkok')
 
 app = Flask(__name__)
