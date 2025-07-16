@@ -22,7 +22,7 @@
         <td>{{ user.username }}</td>
         <td>{{ user.last_failed_ip or '-' }}</td>
         <td>{{ user.last_failed_platform or '-' }}</td>
-        <td>{{ user.lockout_until.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ user.lockout_until_bkk or '-' }}</td>
         <td>{{ user.failed_login_attempts }}</td>
         <td>
         <form action="{{ url_for('unlock_user', user_id=user.id) }}" method="post" onsubmit="return confirm('Unlock {{ user.username }}?');">
