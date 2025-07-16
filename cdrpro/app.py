@@ -59,9 +59,14 @@ migrate = Migrate(app, db)
 def index():
     return redirect(url_for('login'))
 
+@app.route('/login', methods=['GET'])
+def login_form():
+    if 'username' in request.args or 'password' in request.args:
+        return "Method Not Allowed", 405
+    return render_template('login.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     
     MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
