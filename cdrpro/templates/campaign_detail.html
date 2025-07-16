@@ -37,6 +37,7 @@
 
 <form method="POST" action="/campaign/launch_bulk">
   <input type="hidden" name="campaign_names" value="{{ campaign_name }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div class="d-flex gap-2 mt-3">
   <button type="submit" class="btn btn-primary">📞 Start</button>
   <a href="/campaign/stop" class="btn btn-danger">⛔️ Stop</a>
