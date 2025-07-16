@@ -1,6 +1,9 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired
 from flask_wtf import CSRFProtect
 from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall, CampaignMessage, Knowledge
 from werkzeug.security import check_password_hash
@@ -37,6 +40,11 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
 
 csrf = CSRFProtect(app)
 
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -72,9 +80,15 @@ def login():
     MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
     LOCKOUT_TIME_MINUTES = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
 
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    # if request.method == 'POST':
+    #     username = request.form['username']
+    #     password = request.form['password']
+    
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
 
 
         if not re.match(r'^[a-zA-Z0-9_]+$', username):
