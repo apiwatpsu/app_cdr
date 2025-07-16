@@ -1,6 +1,7 @@
 Flask
 Flask-SQLAlchemy
 Flask-Migrate
+flask-wtf
 pymysql
 psycopg2-binary
 SQLAlchemy

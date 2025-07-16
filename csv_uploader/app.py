@@ -1,6 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify, send_file, abort, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_wtf import CSRFProtect
 from models import db, User, DBConfig, SMTPConfig, SystemConfig, CSATLog, CampaignCall, CampaignMessage, Knowledge
 from werkzeug.security import check_password_hash
 from sqlalchemy import create_engine, text
@@ -30,12 +31,11 @@ app = Flask(__name__)
 
 app.secret_key = 'your_secret_key'
 
+# เปิดใช้ CSRF
+csrf = CSRFProtect(app)
+
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-
-# MAX_FAILED_ATTEMPTS = 3
-# LOCKOUT_TIME_MINUTES = 5
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
