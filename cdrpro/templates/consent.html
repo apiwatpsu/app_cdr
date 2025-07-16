@@ -70,6 +70,7 @@
         </label>
         <br><br>
         <button type="submit">ยอมรับและดำเนินการต่อ</button>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     </form>
 
 </body>
