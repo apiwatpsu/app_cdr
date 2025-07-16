@@ -30,6 +30,7 @@
             <input type="text" name="token" class="form-control" placeholder="e.g. 123456" required>
           </div>
           <button type="submit" class="btn btn-primary w-100">Verify & Enable MFA</button>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         </form>
       </div>
     </div>

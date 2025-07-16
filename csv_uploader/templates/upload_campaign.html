@@ -14,6 +14,7 @@
     </div>
     <div class="col-auto">
       <button type="submit" class="btn btn-success">Upload</button>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     </div>
   </div>
 </form>

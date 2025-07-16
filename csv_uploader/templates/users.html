@@ -42,6 +42,7 @@
                                 onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?');">
                             🗑️ Delete
                         </button>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                       </form>
                   </td>
                   <td>{{ user.last_login_local.strftime('%d-%m-%Y %H:%M:%S') if user.last_login_local else '-' }}</td>

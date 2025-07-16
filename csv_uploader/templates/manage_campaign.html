@@ -24,6 +24,7 @@
           <td>
             <form method="POST" action="{{ url_for('delete_campaign', name=c.name) }}" onsubmit="return confirm('ยืนยันการลบแคมเปญ {{ c.name }} ?')">
               <button type="submit" class="btn btn-sm btn-danger">🗑 Delete</button>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             </form>
           </td>
         </tr>
