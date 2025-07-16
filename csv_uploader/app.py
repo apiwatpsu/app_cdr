@@ -3255,23 +3255,6 @@ def logout():
         session.clear()
         return redirect(url_for('login'))
 
-# @app.after_request
-# def add_security_headers(response):
-#     response.headers["Content-Security-Policy"] = (
-#         "default-src 'self'; "
-#         "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.datatables.net https://unpkg.com; "
-#         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.datatables.net https://unpkg.com; "
-#         "img-src 'self' data:; "
-#         "font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; "
-#         "connect-src 'self'; "
-#         "frame-ancestors 'none'; "
-#         "object-src 'none';"
-#     )
-#     response.headers["X-Content-Type-Options"] = "nosniff"
-#     response.headers["X-Frame-Options"] = "DENY"
-#     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-#     response.headers["X-XSS-Protection"] = "1; mode=block"
-#     return response
     
 @app.after_request
 def add_security_headers(response):
