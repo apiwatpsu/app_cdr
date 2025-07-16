@@ -22,6 +22,7 @@ from io import StringIO
 from flask import make_response
 from email.mime.text import MIMEText
 import os
+from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 
@@ -29,7 +30,8 @@ BANGKOK_TZ = timezone('Asia/Bangkok')
 
 app = Flask(__name__)
 
-app.secret_key = 'your_secret_key'
+# app.secret_key = 'your_secret_key'
+app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
 
 # เปิดใช้ CSRF
 csrf = CSRFProtect(app)
