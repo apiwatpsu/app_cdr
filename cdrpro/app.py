@@ -182,9 +182,28 @@ def verify_mfa():
 
     return render_template('verify_mfa.html')
 
+# @app.route('/blocked_users')
+# def blocked_users():
+#     users = User.query.filter(User.lockout_until != None).filter(User.lockout_until > datetime.utcnow()).all()
+#     return render_template('blocked_users.html', users=users)
+
 @app.route('/blocked_users')
 def blocked_users():
-    users = User.query.filter(User.lockout_until != None).filter(User.lockout_until > datetime.utcnow()).all()
+    users = User.query.filter(
+        User.lockout_until != None,
+        User.lockout_until > datetime.utcnow()
+    ).all()
+
+    for user in users:
+        if user.lockout_until:
+            
+            if user.lockout_until.tzinfo is None:
+                user.lockout_until = user.lockout_until.replace(tzinfo=utc)
+            
+            user.lockout_until_bkk = user.lockout_until.astimezone(BANGKOK_TZ)
+        else:
+            user.lockout_until_bkk = None
+
     return render_template('blocked_users.html', users=users)
 
 @app.route('/unlock_user/<int:user_id>', methods=['POST'])
@@ -3127,10 +3146,10 @@ def manage_campaigns():
     campaigns = []
     for name, created_at in campaigns_raw:
         if created_at:
-            # แปลงจาก naive datetime เป็น aware datetime UTC ก่อน (ถ้ายังไม่มี tzinfo)
+            
             if created_at.tzinfo is None:
                 created_at = created_at.replace(tzinfo=utc)
-            # แปลงเป็นเวลาประเทศไทย
+            
             created_at_bkk = created_at.astimezone(BANGKOK_TZ)
         else:
             created_at_bkk = None
@@ -3144,7 +3163,7 @@ def manage_campaigns():
 
 @app.route('/campaign/delete/<name>', methods=['POST'])
 def delete_campaign(name):
-    # ลบข้อมูลทั้งหมดที่ตรงกับชื่อแคมเปญนี้
+    
     db.session.query(CampaignCall).filter_by(name=name).delete()
     db.session.commit()
     flash(f'ลบแคมเปญ "{name}" เรียบร้อยแล้ว', 'success')
@@ -3179,13 +3198,13 @@ def upload_knowledge():
         flash("อัปโหลดข้อมูลสำเร็จ", "success")
         return redirect('/knowledge/upload')
 
-    # 🟡 ส่วนนี้คือการ query ข้อมูลและส่งไปให้ template
+    
     records = Knowledge.query.order_by(Knowledge.created_at.desc()).all()
     return render_template('upload_knowledge.html', records=records)
 
 @app.route('/knowledge/manage')
 def manage_knowledge():
-    # ดึงชื่อกลุ่ม (name) ทั้งหมดและวันที่อัปโหลดล่าสุดของแต่ละกลุ่ม
+    
     grouped_data = (
         db.session.query(
             Knowledge.name,
@@ -3219,7 +3238,7 @@ def delete_knowledge_group(name):
 
 @app.route('/api/knowledge', methods=['GET'])
 def api_knowledge_search():
-    # --- Authentication ---
+    
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith("Bearer "):
         return jsonify({"error": "Unauthorized"}), 401
@@ -3229,14 +3248,13 @@ def api_knowledge_search():
     if token != valid_token:
         return jsonify({"error": "Invalid token"}), 403
 
-    # --- Search Query ---
+    
     query = request.args.get('q', '').strip().lower()
     if not query:
         return jsonify([])
 
     results = []
-    all_knowledge = Knowledge.query.all()  # Add .limit(500) if large dataset
-
+    all_knowledge = Knowledge.query.all() 
     for item in all_knowledge:
         searchable_text = f"{item.name or ''} {item.raw_data or ''}".lower()
         score = fuzz.partial_ratio(query, searchable_text)
