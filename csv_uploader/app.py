@@ -3289,9 +3289,9 @@ def add_security_headers(response):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["X-XSS-Protection"] = "1; mode=block"
+
+    response.headers.pop("Server", None)
     return response
-
-
 
 
 if __name__ == '__main__':
