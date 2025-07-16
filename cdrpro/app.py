@@ -17,6 +17,7 @@ import smtplib
 import json
 import pyotp
 import requests
+import re
 from urllib.parse import quote
 from io import StringIO
 from flask import make_response
@@ -69,6 +70,10 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+
+        if not re.match(r'^[a-zA-Z0-9_]+$', username):
+            return render_template('login.html', error='Invalid username format')
 
         user = User.query.filter_by(username=username).first()
 
