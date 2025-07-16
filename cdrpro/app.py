@@ -62,7 +62,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # ดึงค่าจากระบบ config ตอน login
+    
     MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
     LOCKOUT_TIME_MINUTES = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
 
@@ -182,10 +182,7 @@ def verify_mfa():
 
     return render_template('verify_mfa.html')
 
-# @app.route('/blocked_users')
-# def blocked_users():
-#     users = User.query.filter(User.lockout_until != None).filter(User.lockout_until > datetime.utcnow()).all()
-#     return render_template('blocked_users.html', users=users)
+
 
 @app.route('/blocked_users')
 def blocked_users():

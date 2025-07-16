@@ -27,6 +27,7 @@ class User(db.Model):
     lockout_until = db.Column(db.DateTime, nullable=True)
     last_failed_ip = db.Column(db.String(45), nullable=True)
     last_failed_platform = db.Column(db.String(50), nullable=True)
+    consent_accepted = db.Column(db.Boolean, default=False)
 
     def __init__(self, username, password, role='viewer'):
         self.username = username
