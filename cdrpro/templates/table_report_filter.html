@@ -124,7 +124,7 @@
     </div>
   </div>
 
-  <script>
+  <!-- <script>
     document.addEventListener("DOMContentLoaded", function () {
       const modalAudio = document.getElementById('modal-audio-player');
       const modalSource = document.getElementById('modal-audio-source');
@@ -138,7 +138,9 @@
         });
       });
     });
-  </script>
+  </script> -->
+
+  <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
 
 {% endblock %}
 
