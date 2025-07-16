@@ -35,6 +35,7 @@
             {% if error %}
             <div class="alert alert-danger">{{ error }}</div>
             {% endif %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="btn btn-primary w-100">Login</button>
         </form>
     </div>
