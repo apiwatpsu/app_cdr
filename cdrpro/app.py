@@ -73,7 +73,7 @@ def login():
 
 
         if not re.match(r'^[a-zA-Z0-9_]+$', username):
-            return render_template('login.html', error='Invalid username format')
+            return render_template('login.html', error='Invalid username format'), 401
 
         user = User.query.filter_by(username=username).first()
 
