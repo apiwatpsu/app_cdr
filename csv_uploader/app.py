@@ -32,8 +32,8 @@ app = Flask(__name__)
 
 # app.secret_key = 'your_secret_key'
 app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
+print(os.getenv("SECRET_KEY"))
 
-# เปิดใช้ CSRF
 csrf = CSRFProtect(app)
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
