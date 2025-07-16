@@ -12,3 +12,4 @@ pyotp
 requests
 rapidfuzz
 qrcode[pil]
+python-dotenv
