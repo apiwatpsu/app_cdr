@@ -159,6 +159,29 @@ def setup_mfa():
 
 
 
+# @app.route('/verify_mfa', methods=['GET', 'POST'])
+# def verify_mfa():
+#     user_id = session.get('pre_mfa_user_id')
+#     if not user_id:
+#         return redirect(url_for('login'))
+
+#     user = User.query.get_or_404(user_id)
+#     totp = pyotp.TOTP(user.mfa_secret)
+
+#     if request.method == 'POST':
+#         token = request.form.get('token')
+#         if totp.verify(token):
+            
+#             session['user_id'] = user.id
+#             session.pop('pre_mfa_user_id', None)
+#             user.last_login = datetime.utcnow()
+#             db.session.commit()
+#             return redirect(url_for('dashboard'))
+#         else:
+#             return render_template('verify_mfa.html', error="Invalid OTP")
+
+#     return render_template('verify_mfa.html')
+
 @app.route('/verify_mfa', methods=['GET', 'POST'])
 def verify_mfa():
     user_id = session.get('pre_mfa_user_id')
@@ -171,17 +194,36 @@ def verify_mfa():
     if request.method == 'POST':
         token = request.form.get('token')
         if totp.verify(token):
-            # ยืนยัน OTP แล้ว ค่อยตั้ง session
+
             session['user_id'] = user.id
             session.pop('pre_mfa_user_id', None)
             user.last_login = datetime.utcnow()
             db.session.commit()
+
+            if not user.consent_accepted:
+                return redirect(url_for('consent'))
+
             return redirect(url_for('dashboard'))
+
         else:
             return render_template('verify_mfa.html', error="Invalid OTP")
 
     return render_template('verify_mfa.html')
 
+
+@app.route('/consent', methods=['GET', 'POST'])
+def consent():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+
+    if request.method == 'POST':
+        user.consent_accepted = True
+        db.session.commit()
+        return redirect(url_for('dashboard'))
+
+    return render_template('consent.html', user=user)
 
 
 @app.route('/blocked_users')
