@@ -3338,6 +3338,11 @@ def view_logs():
 
     return render_template('logs.html', log_lines=log_lines)
 
+@app.route('/test-log')
+def test_log():
+    app.logger.info("✅ Test log from /test-log route")
+    return "Log written"
+
 @app.after_request
 def add_security_headers(response):
     response.headers["Content-Security-Policy"] = (
