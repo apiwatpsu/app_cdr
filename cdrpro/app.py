@@ -40,14 +40,13 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
 if not os.path.exists('logs'):
     os.mkdir('logs')
 
-
 file_handler = RotatingFileHandler('logs/cdrpro.log', maxBytes=10240, backupCount=5)
-file_handler.setLevel(logging.DEBUG)
+file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter(
     '%(asctime)s [%(levelname)s] %(message)s'))
 
 app.logger.addHandler(file_handler)
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.INFO) 
 
 
 csrf = CSRFProtect(app)
@@ -3341,8 +3340,8 @@ def view_logs():
 
 @app.before_request
 def log_request_info():
-    app.logger.debug(f"Request Headers: {request.headers}")
-    app.logger.debug(f"Request Body: {request.get_data()}")
+    app.logger.info(f"Request Headers: {request.headers}")
+    app.logger.info(f"Request Body: {request.get_data()}")
 
 @app.after_request
 def add_security_headers(response):
