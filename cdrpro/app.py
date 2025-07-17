@@ -29,13 +29,24 @@ import os
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
+import logging
+from logging.handlers import RotatingFileHandler
 load_dotenv()
 BANGKOK_TZ = timezone('Asia/Bangkok')
 
 app = Flask(__name__)
-
-
 app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
+
+if not os.path.exists('logs'):
+    os.mkdir('logs')
+
+file_handler = RotatingFileHandler('logs/cdrpro.log', maxBytes=10240, backupCount=5)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter(
+    '%(asctime)s [%(levelname)s] %(message)s'))
+
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
 
 
 csrf = CSRFProtect(app)
@@ -3316,7 +3327,17 @@ def logout():
         session.clear()
         return redirect(url_for('login'))
 
-    
+@app.route('/cdrpro/logs')
+def view_logs():
+    log_file = 'logs/cdrpro.log'
+    if not os.path.exists(log_file):
+        return "Log file not found."
+
+    with open(log_file, 'r') as f:
+        log_lines = f.readlines()[-200:]  # อ่านเฉพาะ 200 บรรทัดล่าสุด (กัน log ใหญ่เกิน)
+
+    return render_template('logs.html', log_lines=log_lines)
+
 @app.after_request
 def add_security_headers(response):
     response.headers["Content-Security-Policy"] = (

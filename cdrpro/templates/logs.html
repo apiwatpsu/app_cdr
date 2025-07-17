@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Application Logs</title>
+  <style>
+    body { font-family: monospace; background-color: #121212; color: #e0e0e0; padding: 20px; }
+    pre { white-space: pre-wrap; word-wrap: break-word; }
+    .log-line { border-bottom: 1px solid #333; padding: 5px 0; }
+    .error { color: #ff4c4c; }
+    .info { color: #4caf50; }
+    .warn { color: #ffc107; }
+  </style>
+</head>
+<body>
+  <h1>📄 Application Logs</h1>
+  {% for line in log_lines %}
+    <div class="log-line 
+      {% if 'ERROR' in line %}error{% elif 'WARNING' in line %}warn{% elif 'INFO' in line %}info{% endif %}">
+      {{ line }}
+    </div>
+  {% endfor %}
+</body>
+</html>
