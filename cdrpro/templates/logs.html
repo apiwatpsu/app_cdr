@@ -8,7 +8,11 @@
 <div style="font-family: monospace; background: #121212; color: #e0e0e0; padding: 1em; border-radius: 8px;">
   {% for line in log_lines %}
     <div class="log-line 
-      {% if 'ERROR' in line %}error{% elif 'WARNING' in line %}warn{% elif 'INFO' in line %}info{% endif %}">
+      {% if 'ERROR' in line %}error
+      {% elif 'WARNING' in line %}warn
+      {% elif 'INFO' in line %}info
+      {% elif 'DEBUG' in line %}debug
+      {% endif %}">
       {{ line }}
     </div>
   {% endfor %}
