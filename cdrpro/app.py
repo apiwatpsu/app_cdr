@@ -40,13 +40,14 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
 if not os.path.exists('logs'):
     os.mkdir('logs')
 
+
 file_handler = RotatingFileHandler('logs/cdrpro.log', maxBytes=10240, backupCount=5)
-file_handler.setLevel(logging.INFO)
+file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(logging.Formatter(
     '%(asctime)s [%(levelname)s] %(message)s'))
 
 app.logger.addHandler(file_handler)
-app.logger.setLevel(logging.INFO)
+app.logger.setLevel(logging.DEBUG)
 
 
 csrf = CSRFProtect(app)
@@ -3334,7 +3335,7 @@ def view_logs():
         return "Log file not found."
 
     with open(log_file, 'r') as f:
-        log_lines = f.readlines()[-200:]  # อ่านเฉพาะ 200 บรรทัดล่าสุด (กัน log ใหญ่เกิน)
+        log_lines = f.readlines()[-200:]
 
     return render_template('logs.html', log_lines=log_lines)
 
