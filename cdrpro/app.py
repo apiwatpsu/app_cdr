@@ -14,6 +14,8 @@ from flask import g
 from collections import defaultdict
 from rapidfuzz import fuzz
 import google.generativeai as genai
+import google.auth
+from google.oauth2 import service_account
 import csv
 import psutil
 import shutil
@@ -63,7 +65,14 @@ class LoginForm(FlaskForm):
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+UPLOAD_FOLDER_CREDENTIALS = 'credentials'
+ALLOWED_CREDENTIALS_EXTENSIONS = {'json'}
+os.makedirs(UPLOAD_FOLDER_CREDENTIALS, exist_ok=True)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.config['UPLOAD_FOLDER_CREDENTIALS'] = UPLOAD_FOLDER_CREDENTIALS
+app.config['ALLOWED_CREDENTIALS_EXTENSIONS'] = ALLOWED_CREDENTIALS_EXTENSIONS
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -3341,11 +3350,43 @@ def get_filtered_context(keyword):
     results = Knowledge.query.filter(Knowledge.raw_data.ilike(f"%{keyword}%")).all()
     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
 
+@app.route('/upload_credentials', methods=['GET', 'POST'])
+def upload_credentials():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part in credentials upload')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected credentials file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename, app.config['ALLOWED_CREDENTIALS_EXTENSIONS']):
+            filename = secure_filename('service_account.json')
+            filepath = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], filename)
+            file.save(filepath)
+            flash('Google credentials uploaded successfully')
+            return redirect(url_for('upload_credentials'))
+        else:
+            flash('Invalid credentials file type. Only JSON allowed.')
+            return redirect(request.url)
+    return render_template('upload_credentials.html')
+
 @app.route("/ask", methods=["GET", "POST"])
 def ask_ai():
     answer = ""
     keyword = ""
     prompt = ""
+
+    # Load credentials and configure
+    SERVICE_ACCOUNT_FILE = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], "service_account.json")
+    credentials = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE,
+        scopes=["https://www.googleapis.com/auth/generative-language.retriever",
+                "https://www.googleapis.com/auth/cloud-platform"]
+    )
+    genai.configure(credentials=credentials)
+
+    model = genai.GenerativeModel("gemini-pro")
 
     if request.method == "POST":
         keyword = request.form.get("keyword")
@@ -3358,6 +3399,7 @@ def ask_ai():
         answer = response.text
 
     return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
+
 
 # @app.before_request
 # def log_request_info():
