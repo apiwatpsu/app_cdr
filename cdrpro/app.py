@@ -77,7 +77,7 @@ else:
     app.logger.error(f"Service account credential file not found at {credential_path}")
 print("Credential file path:", os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'))
 genai.configure()
-model = genai.GenerativeModel("gemini-pro")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
