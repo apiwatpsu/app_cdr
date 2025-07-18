@@ -77,6 +77,10 @@ app.config['ALLOWED_CREDENTIALS_EXTENSIONS'] = ALLOWED_CREDENTIALS_EXTENSIONS
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def allowed_credentials_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_CREDENTIALS_EXTENSIONS']
+
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp:!Q1q2w3e4r5t@localhost/myapp'
 
@@ -3360,7 +3364,7 @@ def upload_credentials():
         if file.filename == '':
             flash('No selected credentials file')
             return redirect(request.url)
-        if file and allowed_file(file.filename, app.config['ALLOWED_CREDENTIALS_EXTENSIONS']):
+        if file and allowed_credentials_file(file.filename, app.config['ALLOWED_CREDENTIALS_EXTENSIONS']):
             filename = secure_filename('service_account.json')
             filepath = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], filename)
             file.save(filepath)
