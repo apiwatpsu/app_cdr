@@ -39,7 +39,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-pro")
 
 if not os.path.exists('logs'):
     os.mkdir('logs')
