@@ -40,8 +40,6 @@ BANGKOK_TZ = timezone('Asia/Bangkok')
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
 
-
-
 if not os.path.exists('logs'):
     os.mkdir('logs')
 
@@ -72,6 +70,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config['UPLOAD_FOLDER_CREDENTIALS'] = UPLOAD_FOLDER_CREDENTIALS
 app.config['ALLOWED_CREDENTIALS_EXTENSIONS'] = ALLOWED_CREDENTIALS_EXTENSIONS
+
+credential_path = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], "service_account.json")
+if os.path.exists(credential_path):
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+else:
+    app.logger.error(f"Service account credential file not found at {credential_path}")
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -3380,16 +3384,21 @@ def ask_ai():
     keyword = ""
     prompt = ""
 
-    # Load credentials and configure
-    SERVICE_ACCOUNT_FILE = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], "service_account.json")
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE,
-        scopes=["https://www.googleapis.com/auth/generative-language.retriever",
-                "https://www.googleapis.com/auth/cloud-platform"]
-    )
-    genai.configure(credentials=credentials)
+    # Path ไฟล์ credentials
+    credential_path = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], "service_account.json")
 
-    model = genai.GenerativeModel("gemini-pro")
+    if os.path.exists(credential_path):
+        # ตั้ง environment variable ให้ SDK โหลด credential อัตโนมัติ
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
+        # เรียก configure() แบบไม่มี args
+        genai.configure()
+        model = genai.GenerativeModel("gemini-pro")
+    else:
+        # ถ้าไม่มีไฟล์ แจ้ง error และไม่เรียก AI model
+        app.logger.error(f"Service account credential file not found at {credential_path}")
+        flash("Google service account credentials not found. กรุณาอัปโหลดไฟล์ก่อนใช้งาน.")
+        # render หน้าโดยไม่มีการเรียก AI
+        return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
 
     if request.method == "POST":
         keyword = request.form.get("keyword")
@@ -3398,8 +3407,12 @@ def ask_ai():
         context = get_filtered_context(keyword)
         prompt = f"""Context:\n{context}\n\nQuestion: {question}"""
 
-        response = model.generate_content(prompt)
-        answer = response.text
+        try:
+            response = model.generate_content(prompt)
+            answer = response.text
+        except Exception as e:
+            app.logger.error(f"Error calling generative AI: {e}")
+            flash("เกิดข้อผิดพลาดในการติดต่อ AI กรุณาลองใหม่ภายหลัง")
 
     return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
 
