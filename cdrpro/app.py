@@ -77,6 +77,9 @@ if os.path.exists(credential_path):
 else:
     app.logger.error(f"Service account credential file not found at {credential_path}")
 
+genai.configure()  # เรียกโดยไม่ต้องใส่ api_key หรือ credentials อื่น ๆ
+model = genai.GenerativeModel("gemini-pro")
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -3384,37 +3387,22 @@ def ask_ai():
     keyword = ""
     prompt = ""
 
-    # Path ไฟล์ credentials
-    credential_path = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], "service_account.json")
-
-    if os.path.exists(credential_path):
-        # ตั้ง environment variable ให้ SDK โหลด credential อัตโนมัติ
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
-        # เรียก configure() แบบไม่มี args
-        genai.configure()
-        model = genai.GenerativeModel("gemini-pro")
-    else:
-        # ถ้าไม่มีไฟล์ แจ้ง error และไม่เรียก AI model
-        app.logger.error(f"Service account credential file not found at {credential_path}")
-        flash("Google service account credentials not found. กรุณาอัปโหลดไฟล์ก่อนใช้งาน.")
-        # render หน้าโดยไม่มีการเรียก AI
-        return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
-
     if request.method == "POST":
         keyword = request.form.get("keyword")
         question = request.form.get("question")
 
         context = get_filtered_context(keyword)
-        prompt = f"""Context:\n{context}\n\nQuestion: {question}"""
+        prompt = f"Context:\n{context}\n\nQuestion: {question}"
 
         try:
             response = model.generate_content(prompt)
             answer = response.text
         except Exception as e:
             app.logger.error(f"Error calling generative AI: {e}")
-            flash("เกิดข้อผิดพลาดในการติดต่อ AI กรุณาลองใหม่ภายหลัง")
+            answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
 
     return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
+
 
 
 # @app.before_request
