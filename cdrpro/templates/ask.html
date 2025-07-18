@@ -28,8 +28,11 @@
 
 {% if answer %}
   <hr>
+  <!-- <h2>Prompt:</h2>
+  <pre>{{ prompt }}</pre> -->
   <h2>Prompt:</h2>
-  <pre>{{ prompt }}</pre>
+  <pre style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 1em; border-radius: 0.25rem;">{{ prompt }}</pre>
+
 
   <h2>AI Answered:</h2>
   <div>{{ answer }}</div>
