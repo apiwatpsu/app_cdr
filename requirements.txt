@@ -14,3 +14,4 @@ rapidfuzz
 qrcode[pil]
 python-dotenv
 google-generativeai>=0.3.2
+pythainlp>=3.0

@@ -16,6 +16,7 @@ from rapidfuzz import fuzz
 import google.generativeai as genai
 import google.auth
 from google.oauth2 import service_account
+from pythainlp.tokenize import word_tokenize
 import csv
 import psutil
 import shutil
@@ -3355,22 +3356,26 @@ def view_logs():
 
     return render_template('logs.html', log_lines=log_lines)
 
+def extract_keywords(text, top_k=3):
+    common_ignore = {"คือ", "และ", "หรือ", "ว่า", "ที่", "ใน", "ของ", "ให้", "ช่วย", "หา"}
+    tokens = word_tokenize(text, engine='newmm')
+    keywords = [t for t in tokens if t not in common_ignore and len(t.strip()) > 1]
+    return keywords[:top_k]
 
-
-def get_filtered_context(keyword):
+def get_filtered_context(keyword, top_n=10):
+    if not keyword:
+        return ""
     pattern = f"%{keyword}%"
-    results = Knowledge.query.filter(Knowledge.raw_data.ilike(pattern)).all()
+    results = Knowledge.query.filter(Knowledge.raw_data.ilike(pattern)).limit(top_n).all()
     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
 
-# def get_filtered_context(keyword, limit=2):
+
+# def get_filtered_context(keyword):
 #     pattern = f"%{keyword}%"
-#     results = (
-#         Knowledge.query
-#         .filter(Knowledge.raw_data.ilike(pattern))
-#         .limit(limit)
-#         .all()
-#     )
+#     results = Knowledge.query.filter(Knowledge.raw_data.ilike(pattern)).all()
 #     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
+
+
 
 
 @app.route('/upload_credentials', methods=['GET', 'POST'])
@@ -3396,6 +3401,40 @@ def upload_credentials():
 
 
 
+# @app.route("/ask", methods=["GET", "POST"])
+# def ask_ai():
+#     answer = ""
+#     keyword = ""
+#     system_prompt = "You are a helpful assistant."
+#     user_prompt = ""
+#     prompt = ""
+
+#     if request.method == "POST":
+#         keyword = request.form.get("keyword", "")
+#         system_prompt = request.form.get("system_prompt", system_prompt)
+#         user_prompt = request.form.get("user_prompt", "")
+
+#         context = get_filtered_context(keyword)
+
+#         prompt = f"System:\n{system_prompt}\n\nContext:\n{context}\n\nUser:\n{user_prompt}"
+
+#         try:
+            
+#             response = model.generate_content(prompt)  
+#             answer = response.text
+#         except Exception as e:
+#             app.logger.error(f"Error calling generative AI: {e}")
+#             answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
+
+#     return render_template(
+#         "ask.html",
+#         answer=answer,
+#         keyword=keyword,
+#         system_prompt=system_prompt,
+#         user_prompt=user_prompt,
+#         prompt=prompt
+#     )
+
 @app.route("/ask", methods=["GET", "POST"])
 def ask_ai():
     answer = ""
@@ -3405,17 +3444,19 @@ def ask_ai():
     prompt = ""
 
     if request.method == "POST":
-        keyword = request.form.get("keyword", "")
         system_prompt = request.form.get("system_prompt", system_prompt)
         user_prompt = request.form.get("user_prompt", "")
+
+        # แยก keyword อัตโนมัติจาก user_prompt
+        keywords = extract_keywords(user_prompt)
+        keyword = keywords[0] if keywords else ""
 
         context = get_filtered_context(keyword)
 
         prompt = f"System:\n{system_prompt}\n\nContext:\n{context}\n\nUser:\n{user_prompt}"
 
         try:
-            # สมมติ model.generate_content เป็นฟังก์ชันเรียก AI
-            response = model.generate_content(prompt)  
+            response = model.generate_content(prompt)
             answer = response.text
         except Exception as e:
             app.logger.error(f"Error calling generative AI: {e}")
