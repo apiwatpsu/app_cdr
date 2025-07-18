@@ -1,54 +1,34 @@
 {% extends "layout.html" %}
 
-{% block title %}Chat with AI Assistant{% endblock %}
+{% block title %}Ask AI{% endblock %}
 
 {% block content %}
-<h1>💬 Chat with AI Assistant</h1>
+<h1>Ask AI From Knowledge</h1>
 
-<div class="card mb-4" style="max-height: 500px; overflow-y: auto;" id="chat-box">
-  <div class="card-body">
-    {% if chat_history %}
-      {% for msg in chat_history %}
-        <div class="mb-2">
-          {% if msg.role == 'user' %}
-            <div class="text-end">
-              <span class="badge bg-primary">You</span>
-              <div class="d-inline-block p-2 bg-primary text-white rounded">{{ msg.content }}</div>
-            </div>
-          {% else %}
-            <div class="text-start">
-              <span class="badge bg-success">Assistant</span>
-              <div class="d-inline-block p-2 bg-light rounded">{{ msg.content }}</div>
-            </div>
-          {% endif %}
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="text-muted">เริ่มสนทนาได้เลย...</p>
-    {% endif %}
-  </div>
-</div>
+<form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
 
-<form method="POST" class="mb-3">
   <div class="mb-3">
     <label for="systemPrompt" class="form-label">System Prompt:</label>
-    <textarea id="systemPrompt" name="system_prompt" rows="4" class="form-control">{{ system_prompt or "คุณคือผู้ช่วย AI" }}</textarea>
+    <textarea id="systemPrompt" name="system_prompt" rows="8" class="form-control">{{ system_prompt or "คำสั่ง AI" }}</textarea>
   </div>
 
   <div class="mb-3">
-    <label for="userPrompt" class="form-label">พิมพ์ข้อความ:</label>
-    <textarea id="userPrompt" name="user_prompt" rows="2" class="form-control" required></textarea>
+    <label for="userPrompt" class="form-label">User Prompt:</label>
+    <textarea id="userPrompt" name="user_prompt" rows="4" class="form-control" required>{{ user_prompt }}</textarea>
   </div>
 
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-  <button type="submit" class="btn btn-success">ส่งข้อความ</button>
+  <button type="submit" class="btn btn-success">ถาม</button>
 </form>
 
-<script>
-// ให้ scroll ลงล่างสุดเมื่อโหลดหน้า
-window.onload = function() {
-  var chatBox = document.getElementById("chat-box");
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-</script>
+
+{% if answer %}
+  <hr>
+  <h2>Prompt:</h2>
+  <pre style="max-height: 200px; overflow-y: auto; padding: 1em; border-radius: 0.25rem;">{{ prompt }}</pre>
+
+
+  <h2>AI Answered:</h2>
+  <div>{{ answer }}</div>
+{% endif %}
 {% endblock %}
