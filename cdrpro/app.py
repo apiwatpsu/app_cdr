@@ -3355,8 +3355,13 @@ def view_logs():
 
     return render_template('logs.html', log_lines=log_lines)
 
+# def get_filtered_context(keyword):
+#     results = Knowledge.query.filter(Knowledge.raw_data.ilike(f"%{keyword}%")).all()
+#     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
+
 def get_filtered_context(keyword):
-    results = Knowledge.query.filter(Knowledge.raw_data.ilike(f"%{keyword}%")).all()
+    pattern = f"%{keyword}%"
+    results = Knowledge.query.filter(Knowledge.raw_data.ilike(pattern)).all()
     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
 
 @app.route('/upload_credentials', methods=['GET', 'POST'])
@@ -3380,31 +3385,64 @@ def upload_credentials():
             return redirect(request.url)
     return render_template('upload_credentials.html')
 
+# @app.route("/ask", methods=["GET", "POST"])
+# def ask_ai():
+#     answer = ""
+#     keyword = ""
+#     prompt = ""
+
+#     if request.method == "POST":
+#         keyword = request.form.get("keyword")
+#         question = request.form.get("question")
+
+#         context = get_filtered_context(keyword)
+#         prompt = f"Context:\n{context}\n\nQuestion: {question}"
+
+#         try:
+#             response = model.generate_content(prompt)
+#             answer = response.text
+#         except Exception as e:
+#             app.logger.error(f"Error calling generative AI: {e}")
+#             answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
+
+#     return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
+
+
 @app.route("/ask", methods=["GET", "POST"])
 def ask_ai():
     answer = ""
     keyword = ""
+    system_prompt = "You are a helpful assistant."
+    user_prompt = ""
     prompt = ""
 
     if request.method == "POST":
-        keyword = request.form.get("keyword")
-        question = request.form.get("question")
+        keyword = request.form.get("keyword", "")
+        system_prompt = request.form.get("system_prompt", system_prompt)
+        user_prompt = request.form.get("user_prompt", "")
 
         context = get_filtered_context(keyword)
-        prompt = f"Context:\n{context}\n\nQuestion: {question}"
+
+        prompt = f"System:\n{system_prompt}\n\nContext:\n{context}\n\nUser:\n{user_prompt}"
 
         try:
-            response = model.generate_content(prompt)
+            # สมมติ model.generate_content เป็นฟังก์ชันเรียก AI
+            response = model.generate_content(prompt)  
             answer = response.text
         except Exception as e:
             app.logger.error(f"Error calling generative AI: {e}")
             answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
 
-    return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
+    return render_template(
+        "ask.html",
+        answer=answer,
+        keyword=keyword,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        prompt=prompt
+    )
 
-@app.route("/check_credential")
-def check_credential():
-    return f"Credential path: {os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')}"
+
 
 # @app.before_request
 # def log_request_info():

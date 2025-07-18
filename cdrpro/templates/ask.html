@@ -3,11 +3,17 @@
 {% block title %}Ask AI{% endblock %}
 
 {% block content %}
-<h1>💬 ถาม AI จากฐานข้อมูล Knowledge</h1>
+<h1>Ask AI From Knowledge</h1>
 
-<form method="POST">
+<form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
   <input type="text" name="keyword" placeholder="คำค้นใน raw_data" value="{{ keyword }}" required>
-  <textarea name="question" placeholder="พิมพ์คำถาม..." rows="4" style="width: 100%;" required></textarea>
+
+  <label>System Prompt:</label>
+  <textarea name="system_prompt" rows="3" style="width: 100%;">{{ system_prompt or "You are a helpful assistant." }}</textarea>
+
+  <label>User Prompt:</label>
+  <textarea name="user_prompt" rows="4" style="width: 100%;" required>{{ user_prompt }}</textarea>
+
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <button type="submit">ถาม</button>
 </form>
