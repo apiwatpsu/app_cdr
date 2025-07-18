@@ -91,10 +91,6 @@ def login():
     
     MAX_FAILED_ATTEMPTS = SystemConfig.get("MAX_FAILED_ATTEMPTS", 3, int)
     LOCKOUT_TIME_MINUTES = SystemConfig.get("LOCKOUT_TIME_MINUTES", 5, int)
-
-    # if request.method == 'POST':
-    #     username = request.form['username']
-    #     password = request.form['password']
     
     form = LoginForm()
 
@@ -108,16 +104,16 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
-        # ถ้า user เจอ
+        
         if user:
-            # เช็คว่าถูกล็อกอยู่ไหม
+            
             if user.lockout_until and user.lockout_until > datetime.utcnow():
                 remaining = (user.lockout_until - datetime.utcnow()).seconds
                 return render_template('login.html', form=form, error=f'บัญชีถูกล็อกชั่วคราว โปรดลองอีกครั้งใน {remaining} วินาที')
 
-            # เช็ค password
+            
             if check_password_hash(user.password, password):
-                # reset ตัวนับ
+                
                 user.failed_login_attempts = 0
                 user.lockout_until = None
                 db.session.commit()
@@ -138,7 +134,6 @@ def login():
                 return redirect(url_for('dashboard'))
 
             else:
-                # password ผิด เพิ่ม count
                 
                 user.failed_login_attempts += 1
                 if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
@@ -3338,10 +3333,41 @@ def view_logs():
 
     return render_template('logs.html', log_lines=log_lines)
 
+# @app.before_request
+# def log_request_info():
+#     app.logger.info(f"Request Headers: {request.headers}")
+#     app.logger.info(f"Request Body: {request.get_data()}")
+
 @app.before_request
-def log_request_info():
-    app.logger.info(f"Request Headers: {request.headers}")
-    app.logger.info(f"Request Body: {request.get_data()}")
+def waf_and_log():
+    
+    app.logger.info(f"[WAF] Request Headers: {dict(request.headers)}")
+    app.logger.info(f"[WAF] Request Body: {request.get_data(as_text=True)}")
+    app.logger.info(f"[WAF] Request Args: {request.args.to_dict()}")
+    app.logger.info(f"[WAF] Request Form: {request.form.to_dict()}")
+
+    
+    dangerous_patterns = [
+        r"(?i)(\bor\b|\band\b).*(=|like)",   
+        r"(?i)<script.*?>",                  
+        r"(?i)union\s+select",               
+        r"(?i)1\s*=\s*1",                    
+    ]
+    data_to_check = {}
+    data_to_check.update(request.args.to_dict(flat=True))
+    data_to_check.update(request.form.to_dict(flat=True))
+
+    for value in data_to_check.values():
+        for pattern in dangerous_patterns:
+            if re.search(pattern, value):
+                app.logger.warning(f"[WAF BLOCKED] Suspicious input: {value}")
+                abort(403, "Blocked by WAF")
+
+    
+    user_agent = request.headers.get("User-Agent", "")
+    if "sqlmap" in user_agent.lower():
+        app.logger.warning(f"[WAF BLOCKED] User-Agent: {user_agent}")
+        abort(403, "Blocked by WAF")
 
 @app.after_request
 def add_security_headers(response):
