@@ -3355,24 +3355,22 @@ def view_logs():
 
     return render_template('logs.html', log_lines=log_lines)
 
-# def get_filtered_context(keyword):
-#     results = Knowledge.query.filter(Knowledge.raw_data.ilike(f"%{keyword}%")).all()
-#     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
 
-# def get_filtered_context(keyword):
-#     pattern = f"%{keyword}%"
-#     results = Knowledge.query.filter(Knowledge.raw_data.ilike(pattern)).all()
-#     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
 
-def get_filtered_context(keyword, limit=2):
+def get_filtered_context(keyword):
     pattern = f"%{keyword}%"
-    results = (
-        Knowledge.query
-        .filter(Knowledge.raw_data.ilike(pattern))
-        .limit(limit)
-        .all()
-    )
+    results = Knowledge.query.filter(Knowledge.raw_data.ilike(pattern)).all()
     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
+
+# def get_filtered_context(keyword, limit=2):
+#     pattern = f"%{keyword}%"
+#     results = (
+#         Knowledge.query
+#         .filter(Knowledge.raw_data.ilike(pattern))
+#         .limit(limit)
+#         .all()
+#     )
+#     return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
 
 
 @app.route('/upload_credentials', methods=['GET', 'POST'])
