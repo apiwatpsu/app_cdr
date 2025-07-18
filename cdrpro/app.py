@@ -3530,6 +3530,50 @@ def ask_ai():
         conversation_id=conversation_id
     )
 
+from flask import session, request, render_template
+import uuid
+
+@app.route("/chat", methods=["GET", "POST"])
+def chat():
+    if 'conversation_id' not in session:
+        session['conversation_id'] = str(uuid.uuid4())
+
+    if 'chat_history' not in session:
+        session['chat_history'] = []
+
+    chat_history = session['chat_history']
+
+    system_prompt = "คุณคือผู้ช่วย AI"
+    answer = ""
+
+    if request.method == "POST":
+        system_prompt = request.form.get("system_prompt", system_prompt)
+        user_input = request.form.get("user_prompt", "").strip()
+
+        # เก็บข้อความผู้ใช้ใน history
+        chat_history.append({"role": "user", "content": user_input})
+
+        # สร้าง prompt สำหรับ AI (รวม system prompt + ประวัติ)
+        prompt = f"System:\n{system_prompt}\n\n"
+        for msg in chat_history:
+            role = msg['role'].capitalize()
+            prompt += f"{role}: {msg['content']}\n"
+
+        try:
+            response = model.generate_content(prompt)  # เรียก AI model ของคุณ
+            answer = response.text
+        except Exception as e:
+            answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
+
+        # เก็บข้อความตอบกลับใน history
+        chat_history.append({"role": "assistant", "content": answer})
+
+        # อัปเดต session
+        session['chat_history'] = chat_history
+
+    return render_template("chat.html",
+                           chat_history=chat_history,
+                           system_prompt=system_prompt)
 
 
 
