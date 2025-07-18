@@ -75,7 +75,7 @@ if os.path.exists(credential_path):
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 else:
     app.logger.error(f"Service account credential file not found at {credential_path}")
-
+print("Credential file path:", os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'))
 genai.configure()
 model = genai.GenerativeModel("gemini-pro")
 
