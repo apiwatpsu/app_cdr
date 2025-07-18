@@ -3364,7 +3364,7 @@ def upload_credentials():
         if file.filename == '':
             flash('No selected credentials file')
             return redirect(request.url)
-        if file and allowed_credentials_file(file.filename, app.config['ALLOWED_CREDENTIALS_EXTENSIONS']):
+        if file and allowed_credentials_file(file.filename):
             filename = secure_filename('service_account.json')
             filepath = os.path.join(app.config['UPLOAD_FOLDER_CREDENTIALS'], filename)
             file.save(filepath)
