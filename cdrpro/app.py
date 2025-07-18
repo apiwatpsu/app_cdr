@@ -13,6 +13,7 @@ from pytz import timezone, utc
 from flask import g
 from collections import defaultdict
 from rapidfuzz import fuzz
+import google.generativeai as genai
 import csv
 import psutil
 import shutil
@@ -36,6 +37,9 @@ BANGKOK_TZ = timezone('Asia/Bangkok')
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_if_missing")
+
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 if not os.path.exists('logs'):
     os.mkdir('logs')
@@ -3332,6 +3336,28 @@ def view_logs():
         log_lines = f.readlines()[-200:]
 
     return render_template('logs.html', log_lines=log_lines)
+
+def get_filtered_context(keyword):
+    results = Knowledge.query.filter(Knowledge.raw_data.ilike(f"%{keyword}%")).all()
+    return "\n\n".join(f"{r.name}: {r.raw_data}" for r in results)
+
+@app.route("/ask", methods=["GET", "POST"])
+def ask_ai():
+    answer = ""
+    keyword = ""
+    prompt = ""
+
+    if request.method == "POST":
+        keyword = request.form.get("keyword")
+        question = request.form.get("question")
+
+        context = get_filtered_context(keyword)
+        prompt = f"""Context:\n{context}\n\nQuestion: {question}"""
+
+        response = model.generate_content(prompt)
+        answer = response.text
+
+    return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
 
 # @app.before_request
 # def log_request_info():

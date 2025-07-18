@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Ask AI{% endblock %}
+
+{% block content %}
+<h1>💬 ถาม AI จากฐานข้อมูล Knowledge</h1>
+
+<form method="POST">
+  <input type="text" name="keyword" placeholder="คำค้นใน raw_data" value="{{ keyword }}" required>
+  <textarea name="question" placeholder="พิมพ์คำถาม..." rows="4" style="width: 100%;" required></textarea>
+  <button type="submit">ถาม</button>
+</form>
+
+{% if answer %}
+  <hr>
+  <h2>🧠 Prompt ที่ส่ง:</h2>
+  <pre>{{ prompt }}</pre>
+
+  <h2>✅ คำตอบ:</h2>
+  <div style="background: #eee; padding: 1em;">{{ answer }}</div>
+{% endif %}
+{% endblock %}
