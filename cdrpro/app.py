@@ -3357,7 +3357,7 @@ def view_logs():
     return render_template('logs.html', log_lines=log_lines)
 
 def extract_keywords(text, top_k=3):
-    common_ignore = {"คือ", "และ", "หรือ", "ว่า", "ที่", "ใน", "ของ", "ให้", "ช่วย", "หา"}
+    common_ignore = {"คือ", "และ", "หรือ", "ว่า", "ที่", "ใน", "ของ", "ให้", "ช่วย", "หา", "สาขา"}
     tokens = word_tokenize(text, engine='newmm')
     keywords = [t for t in tokens if t not in common_ignore and len(t.strip()) > 1]
     return keywords[:top_k]
