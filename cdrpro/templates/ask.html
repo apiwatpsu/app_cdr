@@ -7,12 +7,13 @@
 
 <form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
   <div class="mb-3">
+    <label for="keyword" class="form-label">Keyword:</label>
     <input type="text" name="keyword" class="form-control form-control-lg" placeholder="คำค้นใน raw_data" value="{{ keyword }}" required>
   </div>
 
   <div class="mb-3">
     <label for="systemPrompt" class="form-label">System Prompt:</label>
-    <textarea id="systemPrompt" name="system_prompt" rows="3" class="form-control">{{ system_prompt or "คำสั่ง AI" }}</textarea>
+    <textarea id="systemPrompt" name="system_prompt" rows="8" class="form-control">{{ system_prompt or "คำสั่ง AI" }}</textarea>
   </div>
 
   <div class="mb-3">
