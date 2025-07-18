@@ -61,13 +61,12 @@ class LoginForm(FlaskForm):
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 UPLOAD_FOLDER_CREDENTIALS = 'credentials'
 ALLOWED_CREDENTIALS_EXTENSIONS = {'json'}
 os.makedirs(UPLOAD_FOLDER_CREDENTIALS, exist_ok=True)
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 app.config['UPLOAD_FOLDER_CREDENTIALS'] = UPLOAD_FOLDER_CREDENTIALS
 app.config['ALLOWED_CREDENTIALS_EXTENSIONS'] = ALLOWED_CREDENTIALS_EXTENSIONS
 
@@ -77,7 +76,7 @@ if os.path.exists(credential_path):
 else:
     app.logger.error(f"Service account credential file not found at {credential_path}")
 
-genai.configure()  # เรียกโดยไม่ต้องใส่ api_key หรือ credentials อื่น ๆ
+genai.configure()
 model = genai.GenerativeModel("gemini-pro")
 
 def allowed_file(filename):
