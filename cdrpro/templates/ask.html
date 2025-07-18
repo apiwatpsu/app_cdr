@@ -8,6 +8,7 @@
 <form method="POST">
   <input type="text" name="keyword" placeholder="คำค้นใน raw_data" value="{{ keyword }}" required>
   <textarea name="question" placeholder="พิมพ์คำถาม..." rows="4" style="width: 100%;" required></textarea>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <button type="submit">ถาม</button>
 </form>
 
