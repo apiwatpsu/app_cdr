@@ -3402,7 +3402,9 @@ def ask_ai():
 
     return render_template("ask.html", answer=answer, keyword=keyword, prompt=prompt)
 
-
+@app.route("/check_credential")
+def check_credential():
+    return f"Credential path: {os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')}"
 
 # @app.before_request
 # def log_request_info():
