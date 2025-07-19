@@ -7,7 +7,7 @@
 
 <div class="row">
   <!-- ฝั่งซ้าย: ตั้งค่า System Prompt -->
-  <div class="col-md-4">
+  <div class="col-md-6">
     <form method="POST">
       <div class="mb-3">
         <label for="systemPrompt" class="form-label">System Prompt:</label>
@@ -19,7 +19,7 @@
   </div>
 
   <!-- ฝั่งขวา: Chat Box -->
-  <div class="col-md-8 d-flex flex-column" style="height: 80vh;">
+  <div class="col-md-6 d-flex flex-column" style="height: 80vh;">
     <div class="card flex-grow-1 mb-3" style="overflow-y: auto;" id="chat-box">
       <div class="card-body">
         {% if chat_history %}
