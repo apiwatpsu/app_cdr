@@ -3472,9 +3472,6 @@ def upload_credentials():
 #         prompt=prompt
 #     )
 
-
-import uuid
-
 @app.route("/ask", methods=["GET", "POST"])
 def ask_ai():
     if 'conversation_id' not in session:
@@ -3537,49 +3534,65 @@ def chat():
     if 'conversation_id' not in session:
         session['conversation_id'] = str(uuid.uuid4())
 
-    if 'chat_history' not in session:
-        session['chat_history'] = []
+    conversation_id = session['conversation_id']
+    context_history = session.get('context_history', [])
 
-    chat_history = session['chat_history']
-    system_prompt = "คุณคือผู้ช่วย AI"
     answer = ""
+    keyword = ""
+    system_prompt = "คุณคือผู้ช่วย AI"
+    user_prompt = ""
+    prompt = ""
 
     if request.method == "POST":
         system_prompt = request.form.get("system_prompt", system_prompt)
-        user_input = request.form.get("user_prompt", "").strip()
+        user_prompt = request.form.get("user_prompt", "").strip()
 
-        if user_input:
-            # ดึง keywords จากข้อความผู้ใช้
-            keywords = extract_keywords(user_input)
+        if user_prompt:
+            # ดึง keyword
+            keywords = extract_keywords(user_prompt)
+            keyword = keywords[0] if keywords else ""
 
-            # ดึง context จาก keyword (อาจใช้แค่คำแรกเป็นหลัก)
-            context = ""
-            if keywords:
-                context = get_filtered_context(keywords[0])
+            # บันทึกข้อความผู้ใช้ลง history
+            context_history.append({"role": "user", "content": user_prompt})
 
-            # รวม system prompt กับ context ที่เจอ
-            full_prompt = system_prompt
-            if context:
-                full_prompt += f"\n\nข้อมูลที่เกี่ยวข้อง:\n{context}"
+            # ดึง context
+            context = get_filtered_context(keyword)
 
-            # เก็บประวัติ
-            chat_history.append({"role": "user", "content": user_input})
+            # สร้าง prompt ทีละส่วน
+            prompt_parts = [
+                f"System:\n{system_prompt}\n",
+                f"Context:\n{context}\n"
+            ]
 
-            # รวม prompt สำหรับ model
-            full_conversation = [{"role": "system", "content": full_prompt}] + chat_history
+            for msg in context_history:
+                role = msg["role"].capitalize()
+                content = msg["content"]
+                prompt_parts.append(f"{role}:\n{content}\n")
+
+            prompt = "\n".join(prompt_parts)
 
             try:
-                response = model.generate_content(full_conversation)
+                response = model.generate_content(prompt)
                 answer = response.text
-            except Exception:
+
+                context_history.append({"role": "assistant", "content": answer})
+                session['context_history'] = context_history
+
+            except Exception as e:
+                app.logger.error(f"Error calling generative AI: {e}")
                 answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
 
-            chat_history.append({"role": "assistant", "content": answer})
-            session['chat_history'] = chat_history
+    return render_template(
+        "chat.html",
+        chat_history=context_history,
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        prompt=prompt,
+        keyword=keyword,
+        answer=answer,
+        conversation_id=conversation_id
+    )
 
-    return render_template("chat.html",
-                           chat_history=chat_history,
-                           system_prompt=system_prompt)
 
 
 
