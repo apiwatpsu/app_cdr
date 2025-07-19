@@ -3436,50 +3436,8 @@ def upload_credentials():
 #         prompt=prompt
 #     )
 
-# @app.route("/ask", methods=["GET", "POST"])
-# def ask_ai():
-#     answer = ""
-#     keyword = ""
-#     system_prompt = "You are a helpful assistant."
-#     user_prompt = ""
-#     prompt = ""
-
-#     if request.method == "POST":
-#         system_prompt = request.form.get("system_prompt", system_prompt)
-#         user_prompt = request.form.get("user_prompt", "")
-
-        
-#         keywords = extract_keywords(user_prompt)
-#         keyword = keywords[0] if keywords else ""
-
-#         context = get_filtered_context(keyword)
-
-#         prompt = f"System:\n{system_prompt}\n\nContext:\n{context}\n\nUser:\n{user_prompt}"
-
-#         try:
-#             response = model.generate_content(prompt)
-#             answer = response.text
-#         except Exception as e:
-#             app.logger.error(f"Error calling generative AI: {e}")
-#             answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
-
-#     return render_template(
-#         "ask.html",
-#         answer=answer,
-#         keyword=keyword,
-#         system_prompt=system_prompt,
-#         user_prompt=user_prompt,
-#         prompt=prompt
-#     )
-
 @app.route("/ask", methods=["GET", "POST"])
 def ask_ai():
-    if 'conversation_id' not in session:
-        session['conversation_id'] = str(uuid.uuid4())
-
-    conversation_id = session['conversation_id']
-    context_history = session.get('context_history', [])
-
     answer = ""
     keyword = ""
     system_prompt = "You are a helpful assistant."
@@ -3490,30 +3448,17 @@ def ask_ai():
         system_prompt = request.form.get("system_prompt", system_prompt)
         user_prompt = request.form.get("user_prompt", "")
 
+        
         keywords = extract_keywords(user_prompt)
         keyword = keywords[0] if keywords else ""
 
-        context_history.append({"role": "user", "content": user_prompt})
-
         context = get_filtered_context(keyword)
 
-        prompt_parts = [f"System:\n{system_prompt}\n", f"Context:\n{context}\n"]
-
-        for msg in context_history:
-            role = msg["role"].capitalize()
-            content = msg["content"]
-            prompt_parts.append(f"{role}:\n{content}\n")
-
-        prompt = "\n".join(prompt_parts)
+        prompt = f"System:\n{system_prompt}\n\nContext:\n{context}\n\nUser:\n{user_prompt}"
 
         try:
             response = model.generate_content(prompt)
             answer = response.text
-
-            context_history.append({"role": "assistant", "content": answer})
-
-            session['context_history'] = context_history
-
         except Exception as e:
             app.logger.error(f"Error calling generative AI: {e}")
             answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
@@ -3524,9 +3469,10 @@ def ask_ai():
         keyword=keyword,
         system_prompt=system_prompt,
         user_prompt=user_prompt,
-        prompt=prompt,
-        conversation_id=conversation_id
+        prompt=prompt
     )
+
+
 
 
 @app.route("/chat", methods=["GET", "POST"])
