@@ -34,6 +34,7 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 import logging
+import uuid
 from logging.handlers import RotatingFileHandler
 load_dotenv()
 BANGKOK_TZ = timezone('Asia/Bangkok')
@@ -3530,8 +3531,6 @@ def ask_ai():
         conversation_id=conversation_id
     )
 
-from flask import session, request, render_template
-import uuid
 
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
@@ -3542,7 +3541,6 @@ def chat():
         session['chat_history'] = []
 
     chat_history = session['chat_history']
-
     system_prompt = "คุณคือผู้ช่วย AI"
     answer = ""
 
@@ -3550,30 +3548,40 @@ def chat():
         system_prompt = request.form.get("system_prompt", system_prompt)
         user_input = request.form.get("user_prompt", "").strip()
 
-        # เก็บข้อความผู้ใช้ใน history
-        chat_history.append({"role": "user", "content": user_input})
+        if user_input:
+            # ดึง keywords จากข้อความผู้ใช้
+            keywords = extract_keywords(user_input)
 
-        # สร้าง prompt สำหรับ AI (รวม system prompt + ประวัติ)
-        prompt = f"System:\n{system_prompt}\n\n"
-        for msg in chat_history:
-            role = msg['role'].capitalize()
-            prompt += f"{role}: {msg['content']}\n"
+            # ดึง context จาก keyword (อาจใช้แค่คำแรกเป็นหลัก)
+            context = ""
+            if keywords:
+                context = get_filtered_context(keywords[0])
 
-        try:
-            response = model.generate_content(prompt)  # เรียก AI model ของคุณ
-            answer = response.text
-        except Exception as e:
-            answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
+            # รวม system prompt กับ context ที่เจอ
+            full_prompt = system_prompt
+            if context:
+                full_prompt += f"\n\nข้อมูลที่เกี่ยวข้อง:\n{context}"
 
-        # เก็บข้อความตอบกลับใน history
-        chat_history.append({"role": "assistant", "content": answer})
+            # เก็บประวัติ
+            chat_history.append({"role": "user", "content": user_input})
 
-        # อัปเดต session
-        session['chat_history'] = chat_history
+            # รวม prompt สำหรับ model
+            full_conversation = [{"role": "system", "content": full_prompt}] + chat_history
+
+            try:
+                response = model.generate_content(full_conversation)
+                answer = response.text
+            except Exception:
+                answer = "เกิดข้อผิดพลาดในการเชื่อมต่อ AI กรุณาลองใหม่"
+
+            chat_history.append({"role": "assistant", "content": answer})
+            session['chat_history'] = chat_history
 
     return render_template("chat.html",
                            chat_history=chat_history,
                            system_prompt=system_prompt)
+
+
 
 
 
