@@ -56,11 +56,5 @@
 </form>
 </div>
 
-<script>
-// ให้ scroll ลงล่างสุดเมื่อโหลดหน้า
-window.onload = function () {
-  var chatBox = document.getElementById("chat-box");
-  chatBox.scrollTop = chatBox.scrollHeight;
-};
-</script>
+<script src="{{ url_for('static', filename='chat.js') }}"></script>
 {% endblock %}
