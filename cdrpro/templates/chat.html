@@ -8,7 +8,7 @@
 <div class="row g-4">
   <!-- ฝั่งซ้าย: System Prompt -->
   <div class="col-md-6">
-    <form method="POST" class="bg-white p-4 rounded shadow-sm">
+    <form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
       <div class="mb-3">
         <label for="systemPrompt" class="form-label fw-bold">System Prompt:</label>
         <textarea id="systemPrompt" name="system_prompt" rows="10" class="form-control rounded-3 shadow-sm">{{ system_prompt or "คุณคือผู้ช่วย AI" }}</textarea>
@@ -18,12 +18,12 @@
   </div>
 
   <!-- ฝั่งขวา: Chat -->
-  <div class="col-md-6 d-flex flex-column">
-    <label for="chat" class="form-label fw-bold">Chat:</label>
-    <div class="card flex-grow-1 d-flex flex-column shadow-sm rounded-3" style="height: 80vh; overflow: hidden;">
-      
+  <div class="col-md-6">
+    <div class="bg-white p-4 rounded shadow-sm mb-4 d-flex flex-column" style="height: 80vh; overflow: hidden;">
+      <label for="chat" class="form-label fw-bold">Chat:</label>
+
       <!-- กล่องแชท -->
-      <div id="chat-box" class="card-body flex-grow-1 overflow-auto" style="min-height: 0;">
+      <div id="chat-box" class="flex-grow-1 overflow-auto mb-3" style="min-height: 0;">
         {% if chat_history %}
           {% for msg in chat_history %}
             <div class="mb-3">
@@ -46,7 +46,7 @@
       </div>
 
       <!-- กล่องพิมพ์ข้อความ -->
-      <form method="POST" class="border-top p-3">
+      <form method="POST" class="border-top pt-3">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="input-group">
           <textarea id="userPrompt" name="user_prompt" rows="1" class="form-control rounded-start rounded-3" placeholder="พิมพ์ข้อความ..." required></textarea>
@@ -55,7 +55,6 @@
           </button>
         </div>
       </form>
-
     </div>
   </div>
 </div>
