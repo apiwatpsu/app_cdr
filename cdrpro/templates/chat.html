@@ -8,7 +8,7 @@
 <div class="row">
   <!-- ฝั่งซ้าย: ตั้งค่า System Prompt -->
   <div class="col-md-6">
-    <form method="POST">
+    <form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
       <div class="mb-3">
         <label for="systemPrompt" class="form-label">System Prompt:</label>
         <textarea id="systemPrompt" name="system_prompt" rows="10" class="form-control">{{ system_prompt or "คุณคือผู้ช่วย AI" }}</textarea>
@@ -18,7 +18,6 @@
       <!-- Submit ซ้ำได้ทั้ง 2 ฝั่ง -->
   </div>
 
-  <!-- ฝั่งขวา: Chat Box -->
 <!-- ฝั่งขวา: Chat Box -->
 <div class="col-md-6 d-flex flex-column" style="height: 80vh;">
   <label for="chat" class="form-label">Chat:</label>
