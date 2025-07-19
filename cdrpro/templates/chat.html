@@ -3,63 +3,62 @@
 {% block title %}Chat with AI Assistant{% endblock %}
 
 {% block content %}
-<h1>💬 Chat with AI Assistant</h1>
+<h1 class="mb-4">💬 Chat with AI Assistant</h1>
 
-<div class="row">
-  
+<div class="row g-4">
+  <!-- ฝั่งซ้าย: System Prompt -->
   <div class="col-md-6">
-    <form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
+    <form method="POST" class="bg-white p-4 rounded shadow-sm border">
       <div class="mb-3">
-        <label for="systemPrompt" class="form-label">System Prompt:</label>
-        <textarea id="systemPrompt" name="system_prompt" rows="10" class="form-control">{{ system_prompt or "คุณคือผู้ช่วย AI" }}</textarea>
+        <label for="systemPrompt" class="form-label fw-bold">System Prompt:</label>
+        <textarea id="systemPrompt" name="system_prompt" rows="10" class="form-control rounded-3 shadow-sm">{{ system_prompt or "คุณคือผู้ช่วย AI" }}</textarea>
       </div>
-
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      
+    </form>
   </div>
 
+  <!-- ฝั่งขวา: Chat -->
+  <div class="col-md-6 d-flex flex-column">
+    <label for="chat" class="form-label fw-bold">Chat:</label>
+    <div class="card flex-grow-1 d-flex flex-column shadow-sm rounded-3" style="height: 80vh; overflow: hidden;">
+      
+      <!-- กล่องแชท -->
+      <div id="chat-box" class="card-body flex-grow-1 overflow-auto" style="min-height: 0;">
+        {% if chat_history %}
+          {% for msg in chat_history %}
+            <div class="mb-3">
+              {% if msg.role == 'user' %}
+                <div class="text-end">
+                  <span class="badge bg-primary">You</span>
+                  <div class="d-inline-block mt-1 p-2 bg-primary text-white rounded-3">{{ msg.content }}</div>
+                </div>
+              {% else %}
+                <div class="text-start">
+                  <span class="badge bg-success">Assistant</span>
+                  <div class="d-inline-block mt-1 p-2 bg-light border rounded-3">{{ msg.content }}</div>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">เริ่มสนทนาได้เลย...</p>
+        {% endif %}
+      </div>
 
-<div class="col-md-6 d-flex flex-column rounded" style="height: 80vh;">
-  <label for="chat" class="form-label">Chat:</label>
-  <div class="card flex-grow-1 d-flex flex-column" style="overflow: hidden;">
-    
-    <div id="chat-box" class="card-body flex-grow-1 overflow-auto mb-2" style="min-height: 0;">
-      {% if chat_history %}
-        {% for msg in chat_history %}
-          <div class="mb-2">
-            {% if msg.role == 'user' %}
-              <div class="text-end">
-                <span class="badge bg-primary">You</span>
-                <div class="d-inline-block p-2 bg-primary text-white rounded">{{ msg.content }}</div>
-              </div>
-            {% else %}
-              <div class="text-start">
-                <span class="badge bg-success">Assistant</span>
-                <div class="d-inline-block p-2 bg-light rounded">{{ msg.content }}</div>
-              </div>
-            {% endif %}
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-muted">เริ่มสนทนาได้เลย...</p>
-      {% endif %}
-    </div>
-
-    
-    <form method="POST">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-    <div class="p-3 border-top">
+      <!-- กล่องพิมพ์ข้อความ -->
+      <form method="POST" class="border-top p-3">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="input-group">
-        <textarea id="userPrompt" name="user_prompt" rows="1" class="form-control" placeholder="พิมพ์ข้อความ..." required></textarea>
-        <button type="submit" class="btn btn-success">
+          <textarea id="userPrompt" name="user_prompt" rows="1" class="form-control rounded-start rounded-3" placeholder="พิมพ์ข้อความ..." required></textarea>
+          <button type="submit" class="btn btn-primary rounded-end rounded-3 px-4">
             <i class="bi bi-send"></i>
-        </button>
+          </button>
         </div>
+      </form>
+
     </div>
-    </form>
-
-
+  </div>
+</div>
 
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 {% endblock %}
