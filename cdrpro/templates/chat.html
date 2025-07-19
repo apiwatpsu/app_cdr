@@ -6,7 +6,7 @@
 <h1>💬 Chat with AI Assistant</h1>
 
 <div class="row">
-  <!-- ฝั่งซ้าย: ตั้งค่า System Prompt -->
+  
   <div class="col-md-6">
     <form method="POST" class="bg-white p-4 rounded shadow-sm mb-4">
       <div class="mb-3">
@@ -15,14 +15,14 @@
       </div>
 
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <!-- Submit ซ้ำได้ทั้ง 2 ฝั่ง -->
+      
   </div>
 
-<!-- ฝั่งขวา: Chat Box -->
+
 <div class="col-md-6 d-flex flex-column rounded" style="height: 80vh;">
   <label for="chat" class="form-label">Chat:</label>
   <div class="card flex-grow-1 d-flex flex-column" style="overflow: hidden;">
-    <!-- กล่องแสดงข้อความแชท -->
+    
     <div id="chat-box" class="card-body flex-grow-1 overflow-auto mb-2" style="min-height: 0;">
       {% if chat_history %}
         {% for msg in chat_history %}
@@ -45,16 +45,20 @@
       {% endif %}
     </div>
 
-    <!-- กล่องพิมพ์ข้อความที่อยู่ล่างสุด -->
+    
+    <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
     <div class="p-3 border-top">
-      <div class="mb-2">
-        <label for="userPrompt" class="form-label">พิมพ์ข้อความ:</label>
-        <textarea id="userPrompt" name="user_prompt" rows="2" class="form-control" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-success">ส่งข้อความ</button>
+        <div class="input-group">
+        <textarea id="userPrompt" name="user_prompt" rows="1" class="form-control" placeholder="พิมพ์ข้อความ..." required></textarea>
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-send"></i>
+        </button>
+        </div>
     </div>
-  </div>
-</div>
+    </form>
+
 
 
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
