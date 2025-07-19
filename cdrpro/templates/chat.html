@@ -19,44 +19,45 @@
   </div>
 
   <!-- ฝั่งขวา: Chat Box -->
-  <div class="col-md-6 d-flex flex-column" style="height: 80vh;">
-    <label for="chat" class="form-label">Chat:</label>
-    <div class="card flex-grow-1 mb-3" style="overflow-y: auto;" id="chat-box">
-        
-      <div class="card-body">
-        {% if chat_history %}
-          {% for msg in chat_history %}
-            <div class="mb-2">
-              {% if msg.role == 'user' %}
-                <div class="text-end">
-                  <span class="badge bg-primary">You</span>
-                  <div class="d-inline-block p-2 bg-primary text-white rounded">{{ msg.content }}</div>
-                </div>
-              {% else %}
-                <div class="text-start">
-                  <span class="badge bg-success">Assistant</span>
-                  <div class="d-inline-block p-2 bg-light rounded">{{ msg.content }}</div>
-                </div>
-              {% endif %}
-            </div>
-          {% endfor %}
-        {% else %}
-          <p class="text-muted">เริ่มสนทนาได้เลย...</p>
-        {% endif %}
-      </div>
+<!-- ฝั่งขวา: Chat Box -->
+<div class="col-md-6 d-flex flex-column" style="height: 80vh;">
+  <label for="chat" class="form-label">Chat:</label>
+
+  <div class="card flex-grow-1 d-flex flex-column" style="overflow: hidden;">
+    <!-- กล่องแสดงข้อความแชท -->
+    <div id="chat-box" class="card-body flex-grow-1 overflow-auto mb-2" style="min-height: 0;">
+      {% if chat_history %}
+        {% for msg in chat_history %}
+          <div class="mb-2">
+            {% if msg.role == 'user' %}
+              <div class="text-end">
+                <span class="badge bg-primary">You</span>
+                <div class="d-inline-block p-2 bg-primary text-white rounded">{{ msg.content }}</div>
+              </div>
+            {% else %}
+              <div class="text-start">
+                <span class="badge bg-success">Assistant</span>
+                <div class="d-inline-block p-2 bg-light rounded">{{ msg.content }}</div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">เริ่มสนทนาได้เลย...</p>
+      {% endif %}
     </div>
 
-    <div>
-      <div class="mb-3">
+    <!-- กล่องพิมพ์ข้อความที่อยู่ล่างสุด -->
+    <div class="p-3 border-top">
+      <div class="mb-2">
         <label for="userPrompt" class="form-label">พิมพ์ข้อความ:</label>
         <textarea id="userPrompt" name="user_prompt" rows="2" class="form-control" required></textarea>
       </div>
-
       <button type="submit" class="btn btn-success">ส่งข้อความ</button>
     </div>
   </div>
-</form>
 </div>
+
 
 <script src="{{ url_for('static', filename='chat.js') }}"></script>
 {% endblock %}
